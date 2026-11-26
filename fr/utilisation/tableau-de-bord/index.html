@@ -1,0 +1,2013 @@
+
+<!doctype html>
+<html lang="fr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Suivi mensuel du patrimoine net, affiché en pyramide">
+      
+      
+      
+        <link rel="canonical" href="https://kartnico.github.io/patrimeter/fr/utilisation/tableau-de-bord/">
+      
+      
+      
+        <link rel="prev" href="../saisie/">
+      
+      
+        <link rel="next" href="../biens/">
+      
+      
+        
+          <link rel="alternate" href="/patrimeter/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/patrimeter/en/" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="zensical-0.1.0">
+    
+    
+      
+        <title>Patrimoine et historique - Patrimeter</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.4ab2de0c.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Aller au contenu
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href="../.." title="Patrimeter" class="md-header__button md-logo" aria-label="Patrimeter" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Patrimeter
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Patrimoine et historique
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Thème clair"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Thème clair" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun-moon" viewBox="0 0 24 24"><path d="M12 2v2M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715M16 12a4 4 0 0 0-4-4M19 5l-1.256 1.256M20 12h2"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-label="Thème sombre"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Thème sombre" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-label="Thème du système"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Thème du système" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Sélectionner la langue">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-languages" viewBox="0 0 24 24"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/patrimeter/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/patrimeter/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Recherche</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Recherche">
+  <button type="button" class="md-search__button">
+    Recherche
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/kartnico/patrimeter" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kartnico/patrimeter
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Onglets" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  Accueil
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../demarrage-rapide/" class="md-tabs__link">
+        
+  
+  Démarrage rapide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../premiere-connexion/" class="md-tabs__link">
+          
+  
+  Utilisation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../exploitation/installation/" class="md-tabs__link">
+          
+  
+  Installation et exploitation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CHANGELOG/" class="md-tabs__link">
+        
+  
+  Versions
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../SECURITY/" class="md-tabs__link">
+        
+  
+  Sécurité
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Patrimeter" class="md-nav__button md-logo" aria-label="Patrimeter" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    Patrimeter
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kartnico/patrimeter" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kartnico/patrimeter
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Accueil
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../demarrage-rapide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Démarrage rapide
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Utilisation
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Utilisation
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../premiere-connexion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Première connexion
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comptes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Comptes et crédits
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../saisie/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Saisie du mois
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Patrimoine et historique
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Patrimoine et historique
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#patrimoine" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Patrimoine
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tendances-du-patrimoine" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Tendances du patrimoine
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partager-un-rapport" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Partager un rapport
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repartition-de-vos-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Répartition de vos placements
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Répartition de vos placements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#depuis-le-debut-de-lannee" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Depuis le début de l'année
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommandations" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Recommandations
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#votre-place-parmi-les-menages-francais" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Votre place parmi les ménages français
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#votre-place-parmi-les-adultes-du-monde" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Votre place parmi les adultes du monde
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historique" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Historique
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../biens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Biens immobiliers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../objectifs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Objectifs d'épargne
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../indicateurs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Indicateurs
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Défis et étoiles
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../budget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Budget du foyer
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../famille/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Compte famille
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../carbure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Carbure : le réel face au prévu
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../securite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mon compte
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../donnees/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export et import de vos données
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../import-csv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Import CSV
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API et assistants (MCP)
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Questions fréquentes
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../accessibilite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Accessibilité
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installation et exploitation
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Installation et exploitation
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installer sur Linux
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installer avec Docker
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/mise-a-jour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mettre à jour Patrimeter
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/reglages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Réglages
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/backup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Sauvegarde et restauration
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/supervision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Supervision
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export et import des données
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API REST et service MCP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Référence de l'API
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Chiffrement et gestion des clés
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/technologies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Technologies et licences
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Versions
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SECURITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Sécurité
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#patrimoine" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Patrimoine
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tendances-du-patrimoine" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Tendances du patrimoine
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partager-un-rapport" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Partager un rapport
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repartition-de-vos-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Répartition de vos placements
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Répartition de vos placements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#depuis-le-debut-de-lannee" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Depuis le début de l'année
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommandations" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Recommandations
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#votre-place-parmi-les-menages-francais" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Votre place parmi les ménages français
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#votre-place-parmi-les-adultes-du-monde" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Votre place parmi les adultes du monde
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historique" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Historique
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  
+  <span class="md-ellipsis">
+    Accueil
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+    
+    
+    
+      <li class="md-path__item">
+        <a href="../premiere-connexion/" class="md-path__link">
+          
+  
+  <span class="md-ellipsis">
+    Utilisation
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="patrimoine-et-historique">Patrimoine et historique<a class="headerlink" href="#patrimoine-et-historique" title="Permanent link">&para;</a></h1>
+<h2 id="patrimoine">Patrimoine<a class="headerlink" href="#patrimoine" title="Permanent link">&para;</a></h2>
+<p>La page <strong>Patrimoine</strong>, premier menu et page d'accueil, montre le <strong>patrimoine net du mois</strong> et sa <strong>pyramide</strong>. Le
+cadre du patrimoine net rappelle aussi votre <strong>niveau</strong> des <a href="../defis/">défis</a> et votre nombre d'étoiles, avec un lien
+vers eux ; les boutons <strong>Comptes</strong> et <strong>Biens immobiliers</strong>, en haut, mènent à ce qui le compose, et
+<strong>Indicateurs</strong> à vos propres totaux (<a href="../indicateurs/">indicateurs</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Niveau</th>
+<th>Exemples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Résidence principale</td>
+<td>Votre résidence, et son crédit</td>
+</tr>
+<tr>
+<td>Épargne de précaution</td>
+<td>Compte courant, livrets</td>
+</tr>
+<tr>
+<td>Fonds euros</td>
+<td>Fonds euros d'assurance-vie</td>
+</tr>
+<tr>
+<td>Actions</td>
+<td>PEA, compte-titres, unités de compte</td>
+</tr>
+<tr>
+<td>Immobilier</td>
+<td>Biens locatifs, SCPI</td>
+</tr>
+<tr>
+<td>Exotique</td>
+<td>Cryptoactifs, or et autres métaux précieux, bijoux, montres, œuvres d'art, vins, voiture, moto, placements atypiques</td>
+</tr>
+</tbody>
+</table>
+<p>Chaque niveau affiche sa <strong>valeur nette</strong> (ses actifs moins les crédits qui lui sont rattachés) et sa part
+du total. Les flèches et le sélecteur changent de mois. Tant qu'aucun compte n'existe, la page reste sur le mois en
+cours, celui où vous créez vos premiers comptes : ni flèches ni sélecteur (de même pour la <a href="../saisie/">saisie du mois</a>).</p>
+<p>Survoler un niveau de la pyramide, ou cliquer dessus, <strong>surligne ses lignes</strong> dans les autres cadres (<strong>Détail par
+niveau</strong>, <strong>Répartition de vos placements</strong>, <strong>Depuis le début de l'année</strong>) : fond teinté et barre à gauche, les
+autres niveaux de la pyramide pâlissent. Un clic garde le surlignage ; un second clic, un clic ailleurs ou <strong>Échap</strong>
+le retire. À l'inverse, survoler une ligne ou y arriver au clavier surligne son niveau dans la pyramide.</p>
+<p><img alt="Page Patrimoine sur téléphone" src="../../captures/tableau-de-bord-mobile.png" /></p>
+<p>Règles de calcul :</p>
+<ul>
+<li>la valeur d'un compte pour un mois est son relevé de ce mois, sinon son <strong>dernier relevé antérieur</strong>
+  (reporté) ;</li>
+<li>un compte compte à partir du mois de son ouverture, et jusqu'au mois qui précède sa clôture.</li>
+</ul>
+<p>Dans un <a href="../famille/">compte famille</a>, un choix en tête de page montre <strong>toute la famille</strong>, <strong>un membre</strong> ou <strong>ce
+compte</strong> ; il vaut aussi pour le rapport et le budget.</p>
+<h2 id="tendances-du-patrimoine">Tendances du patrimoine<a class="headerlink" href="#tendances-du-patrimoine" title="Permanent link">&para;</a></h2>
+<p>Sous les recommandations, <strong>Tendances du patrimoine</strong> donne l'évolution du patrimoine net sur 3, 6 et 12 mois jusqu'au
+mois affiché (et ce que cela fait par mois), à côté de celle de la même durée juste avant : votre patrimoine
+progresse-t-il plus vite ou moins vite qu'avant ?</p>
+<p>À partir du 20 du mois, si aucun solde du mois en cours n'est saisi, la page le rappelle en tête, avec un lien vers la
+<a href="../saisie/">saisie</a>.</p>
+<h2 id="partager-un-rapport">Partager un rapport<a class="headerlink" href="#partager-un-rapport" title="Permanent link">&para;</a></h2>
+<p>Pour montrer votre patrimoine à des proches, <strong>Partager</strong> (à côté du choix du mois) ouvre un <strong>rapport</strong> du mois :
+une carte sans menu, avec le patrimoine net, son évolution sur 1 mois et sur 1 an, la pyramide, les actifs bruts et
+les passifs. Sur téléphone, elle occupe tout l'écran : une <strong>capture d'écran</strong> la montre seule.</p>
+<p><img alt="Rapport à partager, sur téléphone" src="../../captures/rapport-mobile.png" /></p>
+<ul>
+<li>Le rapport ne montre que les <strong>niveaux</strong> de la pyramide, jamais le nom de vos comptes ni de vos banques.</li>
+<li><strong>Masquer les montants</strong> ne garde que les <strong>pourcentages</strong> : la répartition et l'évolution, sans dévoiler les
+  sommes. <strong>Afficher les montants</strong> les remet.</li>
+<li><strong>Afficher mes étoiles</strong> ajoute, sous la pyramide, vos étoiles et votre niveau des <a href="../defis/">défis</a>
+  (« ★ 15 étoiles · niveau 4 : Prévoyant »), sur la carte et sur l'image ; jamais un montant. Proposé seulement pour
+  votre propre patrimoine, défis activés ; <strong>Masquer mes étoiles</strong> les retire.</li>
+<li>Le rapport suit le mois choisi sur la page Patrimoine, et le thème clair ou sombre de l'écran.</li>
+<li>Rien n'est publié ni envoyé par Patrimeter : la page reste réservée à votre compte, seule l'image que vous
+  partagez quitte votre appareil.</li>
+</ul>
+<p>Sous la carte, Patrimeter en fait une <strong>image</strong> (PNG de 1080 × 1350 pixels, le format portrait d'Instagram), dans
+votre navigateur :</p>
+<ul>
+<li><strong>Partager l'image…</strong> ouvre le partage du téléphone (ou de l'ordinateur, s'il le propose) : choisissez l'application,
+  Instagram, WhatsApp, Mastodon, Signal…</li>
+<li><strong>Enregistrer l'image</strong> la télécharge.</li>
+<li><strong>Publier sur</strong> Mastodon, X (Twitter), Facebook, WhatsApp ou Instagram : sur téléphone, le partage du téléphone
+  s'ouvre avec l'image ; sur ordinateur, l'image est enregistrée et le réseau s'ouvre dans un nouvel onglet, avec un
+  court texte pour Mastodon, X et WhatsApp : ajoutez-y l'image enregistrée. Pour Mastodon, indiquez votre instance
+  (par exemple <code>mastodon.social</code>) ; le navigateur s'en souvient.</li>
+<li>Avec les montants, un avertissement le rappelle : publiée sur un réseau social, l'image les rend publics.
+  <strong>Masquer les montants</strong> avant de partager ne laisse que les pourcentages.</li>
+</ul>
+<p><img alt="Rapport sans montants, en pourcentages" src="../../captures/rapport-pourcentages-mobile.png" /></p>
+<h2 id="repartition-de-vos-placements">Répartition de vos placements<a class="headerlink" href="#repartition-de-vos-placements" title="Permanent link">&para;</a></h2>
+<p>Sous la pyramide, un tableau compare la part de chaque niveau dans vos <strong>placements</strong> à un repère : l'allocation
+« équilibrée » d'<a href="https://avenuedesinvestisseurs.fr/allocation-patrimoniale-repartition-allocation-ideale-actifs/">Avenue des Investisseurs</a>
+(mise à jour du 7 février 2026), dont s'inspire la pyramide du patrimoine.</p>
+<table>
+<thead>
+<tr>
+<th>Niveau</th>
+<th>Repère</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fonds euros</td>
+<td>45 %</td>
+</tr>
+<tr>
+<td>Actions</td>
+<td>25 %</td>
+</tr>
+<tr>
+<td>Immobilier</td>
+<td>25 %</td>
+</tr>
+<tr>
+<td>Exotique</td>
+<td>5 % (10 % au plus)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Les placements sont la somme de ces quatre niveaux, crédits déduits. La résidence principale (socle de la
+  pyramide) et l'épargne de précaution (environ trois mois de dépenses) n'ont pas de pourcentage.</li>
+<li>C'est un repère indicatif, et non un conseil en investissement : la bonne répartition dépend de votre horizon
+  et de votre goût du risque.</li>
+<li>Sans placement positif, le tableau n'est pas affiché.</li>
+</ul>
+<h3 id="depuis-le-debut-de-lannee">Depuis le début de l'année<a class="headerlink" href="#depuis-le-debut-de-lannee" title="Permanent link">&para;</a></h3>
+<p>Sous la source du repère, un second tableau montre ce qui a été <strong>mis ou retiré</strong> dans chaque niveau de la pyramide
+depuis le début de l'année, puis pour le patrimoine net : la valeur nette du mois choisi moins celle de <strong>fin
+décembre</strong> de l'année précédente (ou de janvier, si vos relevés commencent cette année). Il donne un aperçu de
+l'épargne de l'année.</p>
+<ul>
+<li>Patrimeter ne connaît que des soldes : la variation comprend aussi les <strong>plus-values</strong> et <strong>moins-values</strong> (actions,
+  immobilier…) et, pour les niveaux qui ont un crédit, le capital remboursé.</li>
+<li>Une hausse s'affiche avec un signe <strong>+</strong>, une baisse avec un signe <strong>−</strong> : le sens ne repose pas sur la couleur.</li>
+</ul>
+<h2 id="recommandations">Recommandations<a class="headerlink" href="#recommandations" title="Permanent link">&para;</a></h2>
+<p>À droite de la répartition de vos placements, l'encadré <strong>Recommandations</strong> lit la pyramide du mois avec votre
+<a href="../budget/">budget</a> du même mois.</p>
+<ul>
+<li><strong>Épargne de précaution</strong> : son montant rapporté aux dépenses mensuelles du budget (besoins et envies, épargne non
+  comprise), en mois de dépenses, sur une jauge :<ul>
+<li>la piste est découpée en trois zones : moins d'un mois, sous la cible du foyer, de la cible à son double ;</li>
+<li>la barre s'arrête au nombre de mois couverts, le trait marque la cible (3 mois par défaut, à régler dans
+  <strong>Foyer fiscal et catégories</strong>) ;</li>
+<li>un constat accompagne la jauge : <strong>Alerte</strong> sous un mois de dépenses, <strong>Attention</strong> sous la cible (avec le
+  montant qui manque), <strong>Bon point</strong> une fois la cible atteinte, <strong>À noter</strong> au-delà du double de la cible
+  (l'excédent pourrait être placé plus haut dans la pyramide).</li>
+</ul>
+</li>
+<li>Sans budget pour ce mois, Patrimeter ne connaît pas vos dépenses : l'encadré invite à saisir le budget, et
+  signale une <strong>Alerte</strong> si l'épargne de précaution est vide.</li>
+<li><strong>Pyramide</strong> : la pyramide se construit par la base. Une remarque signale des actions ou des placements exotiques
+  détenus alors que l'épargne de précaution n'atteint pas sa cible, un niveau négatif (crédits supérieurs à la
+  valeur des biens), et l'écart le plus marqué avec le repère de répartition, à partir de 15 points. Sans remarque :
+  « Rien à signaler ».</li>
+</ul>
+<p>Chaque constat porte un mot et une icône, en plus de sa couleur. Ce sont des repères indicatifs, et non un conseil
+en investissement.</p>
+<h2 id="votre-place-parmi-les-menages-francais">Votre place parmi les ménages français<a class="headerlink" href="#votre-place-parmi-les-menages-francais" title="Permanent link">&para;</a></h2>
+<p>Sous le détail par niveau, deux cartes côte à côte (l'une sous l'autre sur un téléphone) situent votre patrimoine.
+Celle de gauche situe votre patrimoine net du mois parmi celui des <strong>ménages français</strong> :
+« votre patrimoine net dépasse celui d'environ 63 % des ménages », votre décile, et une échelle des moins
+dotés aux mieux dotés, avec la médiane marquée. <strong>Repères et source</strong> détaille les seuils.</p>
+<ul>
+<li>Référence : Insee, enquête Histoire de vie et Patrimoine 2023-2024, patrimoine net des ménages début 2024
+  (médiane : 148 100 € ; 10 % les mieux dotés : plus de 750 400 € ; 1 % : plus de 2 728 900 €).</li>
+<li>Entre deux seuils publiés, la place est estimée en ligne droite.</li>
+<li>La comparaison porte sur des <strong>ménages</strong> : si vous ne suivez que votre part, et non le patrimoine de tout
+  votre foyer, votre place est sous-estimée. L'Insee ne compte ni les biens durables (voiture, mobilier), ni les
+  objets de valeur, ni les droits à la retraite.</li>
+<li>Le calcul se fait sur votre serveur : rien n'est envoyé ailleurs.</li>
+</ul>
+<h2 id="votre-place-parmi-les-adultes-du-monde">Votre place parmi les adultes du monde<a class="headerlink" href="#votre-place-parmi-les-adultes-du-monde" title="Permanent link">&para;</a></h2>
+<p>La carte de droite fait la même comparaison à l'échelle du <strong>monde</strong> : « votre patrimoine net dépasse celui
+d'environ 83 % des adultes du monde », avec une échelle graduée aux seuils de tranche publiés.</p>
+<ul>
+<li>Référence : UBS, Global Wealth Report 2026, patrimoine net <strong>par adulte</strong> fin 2025, dans 56 pays qui
+  réunissent plus de 92 % du patrimoine mondial. Moins de 10 000 $ : 42,1 % des adultes ; moins de
+  100 000 $ : 83,2 % ; moins d'un million : 98,5 % ; moins de 5 millions : 99,8 %.</li>
+<li>Les seuils en dollars sont convertis en euros au cours de la BCE du 31 décembre 2025 (1,1750 $ pour 1 €) :
+  10 000 $ font 8 511 €, 100 000 $ font 85 106 €, un million fait 851 064 €.</li>
+<li>Le rapport ne publie que ces tranches : à l'intérieur de chacune, la place est estimée (en ligne droite
+  sous 10 000 $, selon le logarithme du patrimoine au-delà, chaque tranche couvrant un facteur 10).</li>
+<li>La comparaison porte sur des <strong>adultes</strong>, et non des ménages : si vous suivez le patrimoine d'un couple,
+  votre place est surestimée.</li>
+</ul>
+<h2 id="historique">Historique<a class="headerlink" href="#historique" title="Permanent link">&para;</a></h2>
+<p>Tout en bas de la page <strong>Patrimoine</strong> : évolution du patrimoine net et de chaque niveau, en graphique, sur la
+période choisie (12 mois, 2 ans, 5 ans ou tout), jusqu'au mois affiché, avec le tableau des valeurs mensuelles.
+Les boutons de période et de vue (<strong>Net total</strong> ou <strong>Par niveau</strong>) gardent le mois choisi et ramènent à
+l'historique. L'ancienne adresse <code>/historique</code> y mène aussi.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Retour en haut de la page
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Patrimeter, sous licence MIT
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.instant","navigation.tracking","navigation.tabs","navigation.sections","navigation.top","navigation.path","toc.follow","search.highlight","content.code.copy"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copié dans le presse-papier","clipboard.copy":"Copier dans le presse-papier","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 de plus sur cette page","search.result.more.other":"# de plus sur cette page","search.result.none":"Aucun document trouvé","search.result.one":"1 document trouvé","search.result.other":"# documents trouvés","search.result.placeholder":"Taper pour démarrer la recherche","search.result.term.missing":"Non trouvé","select.version":"Sélectionner la version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d31f0ffa.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2176 @@
+
+<!doctype html>
+<html lang="fr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Suivi mensuel du patrimoine net, affiché en pyramide">
+      
+      
+      
+        <link rel="canonical" href="https://kartnico.github.io/patrimeter/fr/utilisation/import-csv/">
+      
+      
+      
+        <link rel="prev" href="../donnees/">
+      
+      
+        <link rel="next" href="../api/">
+      
+      
+        
+          <link rel="alternate" href="/patrimeter/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/patrimeter/en/" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="zensical-0.1.0">
+    
+    
+      
+        <title>Import CSV - Patrimeter</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.4ab2de0c.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Aller au contenu
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href="../.." title="Patrimeter" class="md-header__button md-logo" aria-label="Patrimeter" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Patrimeter
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Import CSV
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Thème clair"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Thème clair" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun-moon" viewBox="0 0 24 24"><path d="M12 2v2M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715M16 12a4 4 0 0 0-4-4M19 5l-1.256 1.256M20 12h2"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-label="Thème sombre"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Thème sombre" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-label="Thème du système"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Thème du système" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Sélectionner la langue">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-languages" viewBox="0 0 24 24"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/patrimeter/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/patrimeter/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Recherche</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Recherche">
+  <button type="button" class="md-search__button">
+    Recherche
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/kartnico/patrimeter" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kartnico/patrimeter
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Onglets" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  Accueil
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../demarrage-rapide/" class="md-tabs__link">
+        
+  
+  Démarrage rapide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../premiere-connexion/" class="md-tabs__link">
+          
+  
+  Utilisation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../exploitation/installation/" class="md-tabs__link">
+          
+  
+  Installation et exploitation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CHANGELOG/" class="md-tabs__link">
+        
+  
+  Versions
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../SECURITY/" class="md-tabs__link">
+        
+  
+  Sécurité
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Patrimeter" class="md-nav__button md-logo" aria-label="Patrimeter" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    Patrimeter
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kartnico/patrimeter" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kartnico/patrimeter
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Accueil
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../demarrage-rapide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Démarrage rapide
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Utilisation
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Utilisation
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../premiere-connexion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Première connexion
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comptes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Comptes et crédits
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../saisie/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Saisie du mois
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tableau-de-bord/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Patrimoine et historique
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../biens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Biens immobiliers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../objectifs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Objectifs d'épargne
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../indicateurs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Indicateurs
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Défis et étoiles
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../budget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Budget du foyer
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../famille/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Compte famille
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../carbure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Carbure : le réel face au prévu
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../securite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mon compte
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../donnees/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export et import de vos données
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Import CSV
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Import CSV
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#en-bref" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        En bref
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemple" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Exemple
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#colonnes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Colonnes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enregistrer-le-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Enregistrer le fichier
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#biens-et-credits" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Biens et crédits
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#messages-derreur" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Messages d'erreur
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types-de-comptes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Types de comptes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API et assistants (MCP)
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Questions fréquentes
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../accessibilite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Accessibilité
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installation et exploitation
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Installation et exploitation
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installer sur Linux
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installer avec Docker
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/mise-a-jour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mettre à jour Patrimeter
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/reglages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Réglages
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/backup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Sauvegarde et restauration
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/supervision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Supervision
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export et import des données
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API REST et service MCP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Référence de l'API
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Chiffrement et gestion des clés
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exploitation/technologies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Technologies et licences
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Versions
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SECURITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Sécurité
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#en-bref" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        En bref
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemple" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Exemple
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#colonnes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Colonnes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enregistrer-le-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Enregistrer le fichier
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#biens-et-credits" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Biens et crédits
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#messages-derreur" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Messages d'erreur
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types-de-comptes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Types de comptes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  
+  <span class="md-ellipsis">
+    Accueil
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+    
+    
+    
+      <li class="md-path__item">
+        <a href="../premiere-connexion/" class="md-path__link">
+          
+  
+  <span class="md-ellipsis">
+    Utilisation
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="import-csv">Import CSV<a class="headerlink" href="#import-csv" title="Permanent link">&para;</a></h1>
+<p>Pour créer d'un coup vos comptes, crédits et biens immobiliers, sans les saisir un par un : un fichier CSV, écrit avec
+un tableur (LibreOffice Calc, Excel, Numbers…) ou à la main, une ligne par compte. Page <strong>Vos données</strong>, depuis Mon
+compte, section <strong>Créer des comptes depuis un fichier CSV</strong>.</p>
+<h2 id="en-bref">En bref<a class="headerlink" href="#en-bref" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Télécharger le modèle (CSV)</strong> : un fichier prêt à remplir, avec un livret, un bien et son crédit en exemple.</li>
+<li>Remplacez les exemples par vos comptes, une ligne chacun, et enregistrez au format CSV.</li>
+<li><strong>Créer les comptes</strong> avec ce fichier : vous arrivez sur la liste des comptes, qui les montre.</li>
+</ol>
+<p>Les comptes <strong>s'ajoutent</strong> à ceux qui existent déjà. <strong>Tout ou rien</strong> : au moindre refus, rien n'est créé, et le
+message indique la ligne en cause (la ligne 1 est celle des colonnes, comme dans le tableur). Fichier de 1 Mo et
+500 comptes au plus.</p>
+<h2 id="exemple">Exemple<a class="headerlink" href="#exemple" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>nom;type;ouverture;solde;mois;niveau;nature;part;bien;mode_credit;cloture
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Livret A;livret_a;2020-01-15;12345,67;;;;;;;
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Appartement Lyon;location_nue;2018-06-01;250000;;;;50;;;
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Crédit appartement;credit_immo_locatif;2018-06-01;180000;;;;;Appartement Lyon;prorata;
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Ancien PEL;pel_cel;2012-09-01;5000;2019-12;;;;;;2020-01-31
+</span></code></pre></div>
+<p>Seules les colonnes <strong>nom</strong>, <strong>type</strong> et <strong>ouverture</strong> sont obligatoires ; les autres peuvent manquer, dans
+n'importe quel ordre. Une case vide vaut « non renseigné ».</p>
+<h2 id="colonnes">Colonnes<a class="headerlink" href="#colonnes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>En anglais</th>
+<th>Obligatoire</th>
+<th>Contenu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nom</code></td>
+<td><code>name</code></td>
+<td>oui</td>
+<td>Nom du compte, 80 caractères au plus ; deux comptes du fichier ne peuvent pas porter le même nom (majuscules et accents mis à part)</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code>type</code></td>
+<td>oui</td>
+<td>Type de compte : son code (<code>livret_a</code>) ou son libellé (« Livret A », « Location nue »), en français ou en anglais ; <a href="#types-de-comptes">liste des types</a></td>
+</tr>
+<tr>
+<td><code>ouverture</code></td>
+<td><code>opened_on</code></td>
+<td>oui</td>
+<td>Date d'ouverture : <code>AAAA-MM-JJ</code> (2020-01-15) ou <code>JJ/MM/AAAA</code> (15/01/2020)</td>
+</tr>
+<tr>
+<td><code>solde</code></td>
+<td><code>balance</code></td>
+<td>non</td>
+<td>Solde en euros, au format de la langue de l'interface : <code>12345,67</code> ou <code>12 345,67</code> en français, <code>12,345.67</code> en anglais. Pour un crédit, le <strong>capital restant dû</strong>, positif. Pour un bien, sa <strong>valeur totale</strong>, même si vous n'en possédez qu'une part</td>
+</tr>
+<tr>
+<td><code>mois</code></td>
+<td><code>month</code></td>
+<td>non</td>
+<td>Mois du solde : <code>AAAA-MM</code> (2026-10) ou <code>MM/AAAA</code> (10/2026). Vide : le mois en cours (ou le mois d'ouverture, s'il est à venir)</td>
+</tr>
+<tr>
+<td><code>niveau</code></td>
+<td><code>level</code></td>
+<td>non</td>
+<td>Niveau de la pyramide, si ce n'est pas celui du type : <code>residence</code>, <code>precaution</code>, <code>fonds_euros</code>, <code>actions</code>, <code>immobilier</code> ou <code>exotique</code></td>
+</tr>
+<tr>
+<td><code>nature</code></td>
+<td><code>nature</code></td>
+<td>non</td>
+<td><code>actif</code> ou <code>passif</code> (<code>asset</code>, <code>liability</code>), si ce n'est pas celle du type</td>
+</tr>
+<tr>
+<td><code>part</code></td>
+<td><code>share</code></td>
+<td>non</td>
+<td>Pour un <strong>bien</strong> : votre part en pourcentage (<code>50</code>, <code>33,3333</code>), à partir du mois d'ouverture. Vide : 100 %</td>
+</tr>
+<tr>
+<td><code>bien</code></td>
+<td><code>property</code></td>
+<td>non</td>
+<td>Pour un <strong>crédit</strong> : le nom du bien qu'il finance, dans le fichier ou parmi vos biens déjà saisis</td>
+</tr>
+<tr>
+<td><code>mode_credit</code></td>
+<td><code>loan_mode</code></td>
+<td>non</td>
+<td>Pour un crédit lié à un bien : <code>prorata</code> (le montant est celui du crédit entier, compté selon votre part du bien) ou <code>own</code> (le montant est déjà votre part) ; vide : <code>prorata</code>. Voir <a href="../biens/#part-et-credits">biens immobiliers</a></td>
+</tr>
+<tr>
+<td><code>cloture</code></td>
+<td><code>closed_on</code></td>
+<td>non</td>
+<td>Date de clôture d'un compte fermé (<code>AAAA-MM-JJ</code> ou <code>JJ/MM/AAAA</code>) : il est créé puis archivé</td>
+</tr>
+</tbody>
+</table>
+<p>Les noms de colonnes acceptent les majuscules, les accents et les espaces (« Clôture », « Mode crédit »). Une colonne
+inconnue est refusée, pour qu'une faute de frappe ne passe pas inaperçue.</p>
+<p>Un seul solde par compte : l'historique des mois précédents se saisit ensuite, dans la <a href="../saisie/">saisie du mois</a>
+ou la fiche du compte.</p>
+<h2 id="enregistrer-le-fichier">Enregistrer le fichier<a class="headerlink" href="#enregistrer-le-fichier" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Séparateur</strong> : point-virgule (le choix d'un tableur en français), virgule ou tabulation ; Patrimeter reconnaît
+  celui de la ligne des colonnes. Une valeur qui contient le séparateur s'écrit entre guillemets (<code>"Livret, joint"</code>).</li>
+<li><strong>Encodage</strong> : UTF-8, avec ou sans BOM, ou Windows-1252 (le « CSV » d'Excel en français) ; les accents passent
+  dans les deux cas.</li>
+<li><strong>Dates et mois</strong> : un tableur transforme parfois <code>2026-10</code> en date (« oct.-26 ») ; mettez ces colonnes au format
+  <strong>Texte</strong> avant de les remplir, ou écrivez <code>10/2026</code>.</li>
+<li><strong>LibreOffice Calc</strong> : <em>Fichier &gt; Enregistrer sous</em>, type « Texte CSV », cochez « Éditer les paramètres du
+  filtre », jeu de caractères Unicode (UTF-8), séparateur <code>;</code>.</li>
+<li><strong>Excel</strong> : <em>Fichier &gt; Enregistrer sous</em>, type « CSV UTF-8 (délimité par des virgules) » ou « CSV (séparateur :
+  point-virgule) ».</li>
+</ul>
+<h2 id="biens-et-credits">Biens et crédits<a class="headerlink" href="#biens-et-credits" title="Permanent link">&para;</a></h2>
+<p>Un <strong>bien</strong> est un actif du niveau Résidence principale ou Immobilier (types marqués <strong>bien</strong> ci-dessous) : sa
+colonne <code>part</code> donne votre part. Un <strong>crédit</strong> (nature passif) se rattache à son bien par la colonne <code>bien</code>, qui
+reprend le nom du bien, que le bien vienne avant ou après lui dans le fichier, ou soit déjà saisi dans Patrimeter.
+Les biens et crédits ainsi créés apparaissent dans l'onglet <a href="../biens/">Biens immobiliers</a>, comme s'ils avaient été
+saisis par <strong>Nouveau bien</strong>.</p>
+<h2 id="messages-derreur">Messages d'erreur<a class="headerlink" href="#messages-derreur" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Que faire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Colonne « … » inconnue</td>
+<td>Corriger le nom de la colonne, ou la retirer</td>
+</tr>
+<tr>
+<td>Colonnes nom, type et ouverture obligatoires</td>
+<td>Ajouter la colonne manquante, ou remplir la case vide de cette ligne</td>
+</tr>
+<tr>
+<td>Type de compte « … » inconnu</td>
+<td>Reprendre un code ou un libellé de la <a href="#types-de-comptes">liste des types</a></td>
+</tr>
+<tr>
+<td>Nom « … » déjà utilisé à la ligne …</td>
+<td>Donner un nom distinct à chaque compte du fichier</td>
+</tr>
+<tr>
+<td>Date d'ouverture invalide, Mois du solde invalide</td>
+<td>Écrire la date <code>AAAA-MM-JJ</code> ou <code>JJ/MM/AAAA</code>, le mois <code>AAAA-MM</code> ou <code>MM/AAAA</code> ; mettre la colonne au format Texte dans le tableur</td>
+</tr>
+<tr>
+<td>Solde invalide</td>
+<td>Un montant en euros, deux décimales au plus, sans autre texte que <code>€</code></td>
+</tr>
+<tr>
+<td>Part réservée aux biens immobiliers</td>
+<td>Vider la colonne <code>part</code> pour un compte qui n'est pas un bien</td>
+</tr>
+<tr>
+<td>Bien « … » introuvable</td>
+<td>Écrire dans <code>bien</code> le nom exact du bien, tel que dans le fichier ou dans Patrimeter</td>
+</tr>
+<tr>
+<td>Plus de valeurs que de colonnes</td>
+<td>Vérifier le séparateur, et mettre entre guillemets une valeur qui le contient</td>
+</tr>
+</tbody>
+</table>
+<h2 id="types-de-comptes">Types de comptes<a class="headerlink" href="#types-de-comptes" title="Permanent link">&para;</a></h2>
+<p>Code à écrire dans la colonne <code>type</code> (le libellé, en français ou en anglais, convient aussi) ; le niveau et la nature
+sont ceux que prend le compte quand les colonnes <code>niveau</code> et <code>nature</code> sont vides.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Libellé</th>
+<th>Niveau</th>
+<th>Nature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>residence_principale</code></td>
+<td>Résidence principale (valeur du bien)</td>
+<td>Résidence principale (<code>residence</code>)</td>
+<td>actif, <strong>bien</strong></td>
+</tr>
+<tr>
+<td><code>credit_immo_rp</code></td>
+<td>Crédit immobilier résidence principale</td>
+<td>Résidence principale (<code>residence</code>)</td>
+<td>passif (crédit)</td>
+</tr>
+<tr>
+<td><code>compte_courant</code></td>
+<td>Compte courant</td>
+<td>Précaution (<code>precaution</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>livret_a</code></td>
+<td>Livret A</td>
+<td>Précaution (<code>precaution</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>ldds</code></td>
+<td>LDDS</td>
+<td>Précaution (<code>precaution</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>lep</code></td>
+<td>LEP</td>
+<td>Précaution (<code>precaution</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>livret_bancaire</code></td>
+<td>Livret bancaire / compte à terme</td>
+<td>Précaution (<code>precaution</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>pel_cel</code></td>
+<td>PEL / CEL</td>
+<td>Précaution (<code>precaution</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>credit_conso</code></td>
+<td>Crédit à la consommation</td>
+<td>Précaution (<code>precaution</code>)</td>
+<td>passif (crédit)</td>
+</tr>
+<tr>
+<td><code>autre_passif</code></td>
+<td>Autre passif</td>
+<td>Précaution (<code>precaution</code>)</td>
+<td>passif (crédit)</td>
+</tr>
+<tr>
+<td><code>fonds_euros</code></td>
+<td>Assurance-vie — fonds euros</td>
+<td>Fonds euros (<code>fonds_euros</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>av_uc</code></td>
+<td>Assurance-vie — unités de compte</td>
+<td>Actions (<code>actions</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>pea</code></td>
+<td>PEA / PEA-PME</td>
+<td>Actions (<code>actions</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>cto</code></td>
+<td>Compte-titres (CTO)</td>
+<td>Actions (<code>actions</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>per</code></td>
+<td>PER</td>
+<td>Actions (<code>actions</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>gestion_pilotee</code></td>
+<td>Gestion pilotée</td>
+<td>Actions (<code>actions</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>epargne_salariale</code></td>
+<td>Épargne salariale (PEE, PERCO)</td>
+<td>Actions (<code>actions</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>residence_secondaire</code></td>
+<td>Résidence secondaire</td>
+<td>Immobilier (<code>immobilier</code>)</td>
+<td>actif, <strong>bien</strong></td>
+</tr>
+<tr>
+<td><code>lmnp</code></td>
+<td>LMNP</td>
+<td>Immobilier (<code>immobilier</code>)</td>
+<td>actif, <strong>bien</strong></td>
+</tr>
+<tr>
+<td><code>location_nue</code></td>
+<td>Location nue</td>
+<td>Immobilier (<code>immobilier</code>)</td>
+<td>actif, <strong>bien</strong></td>
+</tr>
+<tr>
+<td><code>scpi</code></td>
+<td>SCPI</td>
+<td>Immobilier (<code>immobilier</code>)</td>
+<td>actif, <strong>bien</strong></td>
+</tr>
+<tr>
+<td><code>sci</code></td>
+<td>SCI</td>
+<td>Immobilier (<code>immobilier</code>)</td>
+<td>actif, <strong>bien</strong></td>
+</tr>
+<tr>
+<td><code>siic</code></td>
+<td>SIIC (foncières cotées)</td>
+<td>Immobilier (<code>immobilier</code>)</td>
+<td>actif, <strong>bien</strong></td>
+</tr>
+<tr>
+<td><code>credit_immo_rs</code></td>
+<td>Crédit immobilier résidence secondaire</td>
+<td>Immobilier (<code>immobilier</code>)</td>
+<td>passif (crédit)</td>
+</tr>
+<tr>
+<td><code>credit_immo_locatif</code></td>
+<td>Crédit immobilier locatif</td>
+<td>Immobilier (<code>immobilier</code>)</td>
+<td>passif (crédit)</td>
+</tr>
+<tr>
+<td><code>crowdfunding</code></td>
+<td>Crowdfunding</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>crypto</code></td>
+<td>Cryptomonnaies</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>gfi</code></td>
+<td>GFI / GFV</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>or</code></td>
+<td>Or</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>argent_metal</code></td>
+<td>Argent (métal)</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>autres_metaux</code></td>
+<td>Platine, palladium et autres métaux précieux</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>bijoux</code></td>
+<td>Bijoux</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>montres</code></td>
+<td>Montres</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>art_collection</code></td>
+<td>Œuvres d'art et objets de collection</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>vins</code></td>
+<td>Vins et spiritueux</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>voiture</code></td>
+<td>Voiture</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>moto</code></td>
+<td>Moto</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+<tr>
+<td><code>autre_actif</code></td>
+<td>Autre actif</td>
+<td>Exotique (<code>exotique</code>)</td>
+<td>actif</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Retour en haut de la page
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Patrimeter, sous licence MIT
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.instant","navigation.tracking","navigation.tabs","navigation.sections","navigation.top","navigation.path","toc.follow","search.highlight","content.code.copy"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copié dans le presse-papier","clipboard.copy":"Copier dans le presse-papier","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 de plus sur cette page","search.result.more.other":"# de plus sur cette page","search.result.none":"Aucun document trouvé","search.result.one":"1 document trouvé","search.result.other":"# documents trouvés","search.result.placeholder":"Taper pour démarrer la recherche","search.result.term.missing":"Non trouvé","select.version":"Sélectionner la version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d31f0ffa.min.js"></script>
+      
+    
+  </body>
+</html>

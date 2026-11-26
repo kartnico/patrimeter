@@ -1,0 +1,11 @@
+# Patrimeter — monthly test restore of the latest archive (docs/backup.md § 3).
+# To copy into /etc/systemd/system/patrimeter-restore-check.service.
+[Unit]
+Description=Restauration d'essai de la dernière sauvegarde de Patrimeter
+Documentation=file:/srv/patrimeter/docs/backup.md
+# Failure: email to ADMIN_EMAIL (docs/systemd/patrimeter-alert@.service).
+OnFailure=patrimeter-alert@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/patrimeter-restore --check-latest

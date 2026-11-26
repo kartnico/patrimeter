@@ -1,0 +1,11 @@
+# Patrimeter — database backup (docs/backup.md).
+# To copy into /etc/systemd/system/patrimeter-backup.service.
+[Unit]
+Description=Sauvegarde de la base Patrimeter
+Documentation=file:/srv/patrimeter/docs/backup.md
+# Failure: email to ADMIN_EMAIL (docs/systemd/patrimeter-alert@.service).
+OnFailure=patrimeter-alert@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/patrimeter-backup

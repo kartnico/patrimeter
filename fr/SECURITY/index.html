@@ -1,0 +1,1995 @@
+
+<!doctype html>
+<html lang="fr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Suivi mensuel du patrimoine net, affiché en pyramide">
+      
+      
+      
+        <link rel="canonical" href="https://kartnico.github.io/patrimeter/fr/SECURITY/">
+      
+      
+      
+        <link rel="prev" href="../CHANGELOG/">
+      
+      
+      
+        
+          <link rel="alternate" href="/patrimeter/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/patrimeter/en/" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../assets/favicon.svg">
+      <meta name="generator" content="zensical-0.1.0">
+    
+    
+      
+        <title>Sécurité - Patrimeter</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.4ab2de0c.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Aller au contenu
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href="./.." title="Patrimeter" class="md-header__button md-logo" aria-label="Patrimeter" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Patrimeter
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sécurité
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Thème clair"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Thème clair" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun-moon" viewBox="0 0 24 24"><path d="M12 2v2M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715M16 12a4 4 0 0 0-4-4M19 5l-1.256 1.256M20 12h2"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-label="Thème sombre"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Thème sombre" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-label="Thème du système"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Thème du système" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Sélectionner la langue">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-languages" viewBox="0 0 24 24"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/patrimeter/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/patrimeter/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Recherche</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Recherche">
+  <button type="button" class="md-search__button">
+    Recherche
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/kartnico/patrimeter" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kartnico/patrimeter
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Onglets" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./.." class="md-tabs__link">
+        
+  
+  Accueil
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../demarrage-rapide/" class="md-tabs__link">
+        
+  
+  Démarrage rapide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../utilisation/premiere-connexion/" class="md-tabs__link">
+          
+  
+  Utilisation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../exploitation/installation/" class="md-tabs__link">
+          
+  
+  Installation et exploitation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CHANGELOG/" class="md-tabs__link">
+        
+  
+  Versions
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="././" class="md-tabs__link">
+        
+  
+  Sécurité
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="./.." title="Patrimeter" class="md-nav__button md-logo" aria-label="Patrimeter" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 5v16M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/></svg>
+
+    </a>
+    Patrimeter
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kartnico/patrimeter" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kartnico/patrimeter
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Accueil
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demarrage-rapide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Démarrage rapide
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Utilisation
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Utilisation
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/premiere-connexion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Première connexion
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/comptes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Comptes et crédits
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/saisie/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Saisie du mois
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/tableau-de-bord/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Patrimoine et historique
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/biens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Biens immobiliers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/objectifs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Objectifs d'épargne
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/indicateurs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Indicateurs
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/defis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Défis et étoiles
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/budget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Budget du foyer
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/famille/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Compte famille
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/carbure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Carbure : le réel face au prévu
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/securite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mon compte
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/donnees/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export et import de vos données
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/import-csv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Import CSV
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API et assistants (MCP)
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Questions fréquentes
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilisation/accessibilite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Accessibilité
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installation et exploitation
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Installation et exploitation
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installer sur Linux
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Installer avec Docker
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/mise-a-jour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mettre à jour Patrimeter
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/reglages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Réglages
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/backup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Sauvegarde et restauration
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/supervision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Supervision
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Export et import des données
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API REST et service MCP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Référence de l'API
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Chiffrement et gestion des clés
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation/technologies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Technologies et licences
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CHANGELOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Versions
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Sécurité
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Sécurité
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#signaler-une-vulnerabilite" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Signaler une vulnérabilité
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#etat-actuel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        État actuel
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="État actuel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ce-quon-protege" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Ce qu'on protège
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hypotheses" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Hypothèses
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mesures-en-place" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Mesures en place
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#journal-des-connexions" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Journal des connexions
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limites-connues" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Limites connues
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#signaler-une-vulnerabilite" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Signaler une vulnérabilité
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#etat-actuel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        État actuel
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="État actuel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ce-quon-protege" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Ce qu'on protège
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hypotheses" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Hypothèses
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mesures-en-place" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Mesures en place
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#journal-des-connexions" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Journal des connexions
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limites-connues" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Limites connues
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+
+  
+  
+
+
+<h1 id="securite">Sécurité<a class="headerlink" href="#securite" title="Permanent link">&para;</a></h1>
+<h2 id="signaler-une-vulnerabilite">Signaler une vulnérabilité<a class="headerlink" href="#signaler-une-vulnerabilite" title="Permanent link">&para;</a></h2>
+<p>Signalez toute vulnérabilité par un <strong>signalement privé</strong> sur GitHub :
+<a href="https://github.com/kartnico/patrimeter/security/advisories/new">https://github.com/kartnico/patrimeter/security/advisories/new</a>.</p>
+<ul>
+<li><strong>Réponse</strong> sous 7 jours : accusé de réception, puis évaluation de la gravité.</li>
+<li><strong>Correctif</strong> publié dans une nouvelle version dès que possible, au plus tard sous 90 jours pour une faille
+  confirmée ; le CHANGELOG et la Release la mentionnent.</li>
+<li><strong>Divulgation coordonnée</strong> : merci de ne publier aucun détail avant la correction ; la personne qui a signalé la
+  faille est créditée si elle le souhaite.</li>
+</ul>
+<p>Seule la dernière version publiée reçoit des correctifs de sécurité.</p>
+<h2 id="etat-actuel">État actuel<a class="headerlink" href="#etat-actuel" title="Permanent link">&para;</a></h2>
+<p>Patrimeter est <strong>multi-utilisateurs</strong> : comptes cloisonnés, mot de passe et second facteur TOTP
+obligatoires, données patrimoniales chiffrées avec une clé par utilisateur
+(<a href="../exploitation/encryption/">docs/encryption.md</a>), passkeys et clés FIDO2.
+Parcours d'authentification : <a href="../exploitation/auth-flows/">docs/auth-flows.md</a>. Sauvegardes :
+<a href="../exploitation/backup/">docs/backup.md</a>.</p>
+<h3 id="ce-quon-protege">Ce qu'on protège<a class="headerlink" href="#ce-quon-protege" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Les données patrimoniales de chaque utilisateur : comptes, montants, historique, invisibles
+  et inaccessibles pour les autres utilisateurs.</li>
+<li>L'accès aux comptes : mot de passe, second facteur, sessions.</li>
+<li>La confidentialité des inscriptions : l'application ne révèle pas si une adresse a un compte.</li>
+</ul>
+<h3 id="hypotheses">Hypothèses<a class="headerlink" href="#hypotheses" title="Permanent link">&para;</a></h3>
+<ul>
+<li>L'administrateur du serveur est de confiance (voir les limites ci-dessous).</li>
+<li>HTTPS est obligatoire en production, sur le serveur ou sur un proxy inverse déclaré dans
+  <code>TRUSTED_PROXIES</code> : passkeys et cookie <code>__Host-</code> n'existent pas sans lui.</li>
+<li>Les dépendances viennent de sources reconnues (dépôt Surý, Packagist, <code>composer.lock</code> versionné).</li>
+</ul>
+<h2 id="mesures-en-place">Mesures en place<a class="headerlink" href="#mesures-en-place" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Menace</th>
+<th>Mesure</th>
+<th>Où</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accès aux données d'un autre utilisateur</td>
+<td>Propriétaire exigé par chaque méthode des dépôts et filtré dans chaque requête (test d'architecture) ; voter sur chaque compte lu ; SQL interdit hors des dépôts (règle PHPStan) ; clé étrangère composite <code>(account_id, user_id)</code> ; compte d'autrui introuvable (404, sans révéler son existence) ; robots de test sur toutes les routes</td>
+<td><code>AccountRepository</code>, <code>StatementRepository</code>, <code>OwnedResourceVoter</code>, <code>IsolationTest</code></td>
+</tr>
+<tr>
+<td>Devinette du mot de passe</td>
+<td>Argon2id (64 Mio, 4 passes) ; 12 caractères au moins, <code>PasswordStrength</code> de Symfony (entropie ≥ 80 bits) et <code>NotCompromisedPassword</code> (absent des fuites connues) ; limiteurs de symfony/rate-limiter : 5 échecs par IP sur 15 min, puis blocage ; par compte, 5 échecs puis un essai par minute, sans blocage pour qu'un tiers ne puisse pas bloquer l'utilisateur ; 100 échecs par heure au total ; compteurs dans la base, sans adresse e-mail en clair ; aucune vérification pendant un blocage</td>
+<td><code>AuthThrottle</code>, <code>config/packages/rate_limiter.yaml</code>, <code>PasswordRules</code></td>
+</tr>
+<tr>
+<td>Mot de passe compromis</td>
+<td>Second facteur TOTP obligatoire (RFC 6238, 6 chiffres, 30 s, tolérance ± 15 s) ; code déjà utilisé refusé (rejeu) ; 5 codes faux bloquent le compte 15 min ; aucune page accessible avant le code</td>
+<td>scheb/2fa-bundle, <code>AuthenticationSubscriber</code>, <code>EnrollmentRequiredSubscriber</code></td>
+</tr>
+<tr>
+<td>Téléphone perdu</td>
+<td>10 codes de secours à usage unique (≈ 50 bits chacun), affichés une seule fois, consommés de façon atomique ; rappel quand il en reste 3 ou moins ; réinitialisation par l'administrateur en dernier recours</td>
+<td><code>BackupCodes</code>, <code>app:user:reset-2fa</code></td>
+</tr>
+<tr>
+<td>Hameçonnage</td>
+<td>Passkeys et clés FIDO2 liées au domaine (<code>DEFAULT_URI</code>), défi à usage unique, compteur vérifié ; gestion sous confirmation d'identité</td>
+<td><code>WebAuthn</code>, <code>WebAuthnController</code></td>
+</tr>
+<tr>
+<td>Jeton d'API volé ou réutilisé</td>
+<td>Jeton de 256 bits dont seule l'empreinte est stockée ; destinataire vérifié (RFC 8707) ; portée de lecture par défaut ; accès d'une heure, rafraîchissement à usage unique et rejeu qui retire toute l'autorisation ; invalidé avec les sessions ; retrait depuis Mon compte ; e-mail d'alerte ; préfixe fixe <code>patrimeter_</code> et longueur fixe, pour qu'un détecteur de secrets repère un jeton publié par erreur (règle <code>patrimeter-api-token</code> de <code>.gitleaks.toml</code>)</td>
+<td><code>ApiTokens</code>, <code>ApiTokenHandler</code>, <code>.gitleaks.toml</code></td>
+</tr>
+<tr>
+<td>Abus d'un jeton d'API valide (boucle d'un client, jeton volé)</td>
+<td>Débit limité par jeton sur l'API et le MCP : 120 requêtes d'affilée, puis une par seconde ; au-delà, <code>429</code> avec <code>Retry-After</code></td>
+<td><code>ApiSubscriber</code>, <code>config/packages/rate_limiter.yaml</code></td>
+</tr>
+<tr>
+<td>Requête forgée vers l'intérieur par un document de métadonnées de client OAuth</td>
+<td><code>NoPrivateNetworkHttpClient</code> de Symfony (ni réseau local, ni boucle locale, y compris après résolution DNS), sans redirection, 64 Ko au plus, délai de 10 s ; document qui doit se désigner lui-même</td>
+<td><code>ClientMetadataDocuments</code></td>
+</tr>
+<tr>
+<td>Détournement du flux OAuth de l'API</td>
+<td>Inscription limitée, adresses de retour exactes (HTTPS ou boucle locale), PKCE S256 obligatoire, code à usage unique de 60 s, <code>state</code> et <code>iss</code> renvoyés, consentement explicite derrière la connexion complète</td>
+<td><code>OAuthServerController</code>, <code>ClientRedirect</code></td>
+</tr>
+<tr>
+<td>Requête depuis un autre site vers MCP</td>
+<td>Hôte vérifié (DNS rebinding) ; en-tête <code>Origin</code> refusé en <code>403</code>, avant même le pare-feu, s'il n'est ni le site ni une origine de <code>MCP_ALLOWED_ORIGINS</code> ; aucun cookie : jeton porteur uniquement</td>
+<td><code>config/packages/mcp.yaml</code>, <code>ApiSubscriber</code></td>
+</tr>
+<tr>
+<td>Vol d'une sauvegarde</td>
+<td>Données patrimoniales chiffrées dans l'archive ; archives réservées à root (<code>0600</code>, dossier <code>0700</code>) ; <code>AUTH_SECRET_KEY</code> hors de l'archive, à conserver à part ; copie hors du serveur chiffrée avec age pour des clés publiques seulement, jamais en clair. Restent lisibles : adresses e-mail, empreintes de mots de passe, journal des connexions et sessions ouvertes</td>
+<td><code>docs/backup/</code>, <code>docs/backup.md</code></td>
+</tr>
+<tr>
+<td>Fuite de la base, des sauvegardes ou des sessions</td>
+<td>Données chiffrées (XChaCha20-Poly1305) avec une clé par utilisateur, enveloppée par son mot de passe (Argon2id) et sa clé de récupération ; chiffré lié à sa ligne et à son propriétaire ; en session, clé enveloppée sous une clé qui ne vit que dans un cookie <code>HttpOnly</code></td>
+<td><code>Vault</code>, <code>DataKeys</code>, dépôts</td>
+</tr>
+<tr>
+<td>Fuite de la base</td>
+<td>Secrets TOTP chiffrés (XChaCha20-Poly1305) et codes de secours en HMAC-SHA256, avec des sous-clés de <code>AUTH_SECRET_KEY</code> (environnement uniquement) ; jetons envoyés par e-mail stockés sous forme d'empreinte</td>
+<td><code>AuthSecrets</code>, <code>OneTimeTokens</code></td>
+</tr>
+<tr>
+<td>Fuite de <code>AUTH_SECRET_KEY</code></td>
+<td>Rotation sans réinitialiser les utilisateurs : ancienne clé dans <code>AUTH_SECRET_KEY_PREVIOUS</code> le temps de rechiffrer les secrets TOTP (<code>app:auth-secrets:rotate</code>) et de faire régénérer les codes de secours (<code>docs/installation.md</code> <a href="../exploitation/installation/#changer-la-cle-auth_secret_key">§ 12.1</a>)</td>
+<td><code>AuthSecrets</code>, <code>AuthSecretsRotateCommand</code></td>
+</tr>
+<tr>
+<td>Fuite d'un export de données</td>
+<td>Fichier en clair, par nature : export après confirmation d'identité de moins de 5 minutes, avertissement à l'écran ; import tout ou rien, dans un compte vide, avec les validations de l'API</td>
+<td><code>DataTransferController</code>, <code>DataTransfer</code></td>
+</tr>
+<tr>
+<td>Énumération des comptes</td>
+<td>Même réponse et même coût (un hachage Argon2id) pour une adresse inconnue ou un mot de passe faux ; inscription d'une adresse existante : même page, e-mail d'information à son titulaire ; adresse non confirmée signalée seulement avec le bon mot de passe</td>
+<td><code>PasswordLoginAuthenticator</code>, <code>Registration</code></td>
+</tr>
+<tr>
+<td>Inscription au nom d'autrui</td>
+<td>Lien de confirmation (24 h, usage unique) <strong>et</strong> mot de passe de l'inscription exigés ; une nouvelle inscription d'une adresse non confirmée invalide les anciens liens ; limites par IP (10 par heure), toutes adresses confondues (30 par heure) et par compte (3 e-mails par heure)</td>
+<td><code>Registration</code>, <code>RegistrationController</code>, <code>AuthThrottle</code></td>
+</tr>
+<tr>
+<td>Création de comptes en masse, essais de mots de passe en rafale</td>
+<td>Inscriptions plafonnées par IP et au total ; échecs de connexion limités par IP, par compte et au total ; dans nginx, 30 envois de formulaire de connexion par minute et par adresse (429)</td>
+<td><code>AuthThrottle</code>, <code>docs/nginx/patrimeter-limits.conf</code></td>
+</tr>
+<tr>
+<td>Compte de démonstration détourné (stockage, envoi d'e-mails, accès durable)</td>
+<td><code>DEMO_MODE</code> : compte temporaire sans mot de passe ni adresse réelle, clé de données seulement en session ; limité au patrimoine, au budget et à l'export (ni réglages de sécurité, ni API, ni import, ni e-mail) ; 2 000 lignes, formulaires de 32 Kio, écritures limitées ; 50 comptes à la fois, 5 créations par IP et par heure, 60 au total ; supprimé à la déconnexion ou au bout de 2 heures</td>
+<td><code>DemoAccounts</code>, <code>DemoGuard</code></td>
+</tr>
+<tr>
+<td>Rappel par e-mail détourné</td>
+<td>Rappel mensuel au choix de l'utilisateur, sans montant ni statut (le serveur ne lit rien hors session), une fois par mois au plus, jamais pour un compte de démonstration ; lien de désabonnement à usage unique, seule son empreinte est gardée, page puis bouton (un analyseur de liens ne désabonne personne)</td>
+<td><code>EntryReminders</code>, <code>ReminderController</code></td>
+</tr>
+<tr>
+<td>Requêtes vers des adresses inconnues (sondes, exploits)</td>
+<td>nginx ne transmet à PHP que les adresses de l'application (liste blanche testée) et n'accepte PUT, DELETE et OPTIONS que pour l'API et le MCP ; le reste reçoit 404 ou 403 sans exécuter de code</td>
+<td><code>docs/nginx/patrimeter-app.conf</code>, <code>NginxAllowlistTest</code></td>
+</tr>
+<tr>
+<td>Liens empoisonnés (en-tête Host)</td>
+<td>Liens des e-mails construits depuis <code>DEFAULT_URI</code>, jamais depuis la requête</td>
+<td><code>PublicUrl</code></td>
+</tr>
+<tr>
+<td>Vol ou fixation de session</td>
+<td>Nouvel identifiant à la connexion, cookie <code>HttpOnly</code>, <code>SameSite=Strict</code>, <code>Secure</code> en HTTPS (préfixe <code>__Host-</code> en production) ; expiration après 30 min d'inactivité et 12 h au plus ; secret TOTP jamais écrit en session ; sessions fermées au changement de mot de passe ; sessions ouvertes listées (adresse IP, navigateur, dernière activité), à déconnecter une à une ou toutes ensemble, effet à la requête suivante</td>
+<td><code>framework.yaml</code>, <code>SessionIdleTimeoutSubscriber</code>, <code>User</code>, <code>UserSessions</code></td>
+</tr>
+<tr>
+<td>Navigateur de confiance détourné</td>
+<td>Case à cocher explicite, jamais par défaut ; cookie aléatoire <code>HttpOnly</code>, <code>SameSite=Strict</code>, <code>Secure</code> et préfixe <code>__Host-</code> en HTTPS, dont seule l'empreinte est stockée ; valable 30 jours, pour ce compte seul, et seulement avec les identifiants du moment (nouveau mot de passe ou sessions fermées : caduc) ; dispense du code, jamais du mot de passe ; listé et retiré depuis Mon compte ; connexion sans code notée au journal</td>
+<td><code>TrustedBrowsers</code>, <code>SecondFactorCondition</code></td>
+</tr>
+<tr>
+<td>Session volée utilisée pour prendre le compte</td>
+<td>Mot de passe actuel exigé pour le changer ; confirmation d'identité de moins de 5 minutes avant de changer d'application TOTP, de régénérer les codes ou de fermer les sessions ; e-mail d'alerte après chaque changement</td>
+<td><code>Reauthentication</code>, <code>SecurityController</code></td>
+</tr>
+<tr>
+<td>Requêtes intersites (CSRF)</td>
+<td>Jeton vérifié sur <strong>tous</strong> les POST avant tout contrôleur, régénéré à la connexion ; déconnexion et code TOTP en POST avec jeton</td>
+<td><code>CsrfProtectionSubscriber</code></td>
+</tr>
+<tr>
+<td>Injection de script (XSS)</td>
+<td>Échappement automatique de Twig ; CSP stricte sans <code>unsafe-inline</code> (aucun script ni style inline, QR code en SVG sans style) ; données JSON encodées sans caractère pouvant fermer une balise ; toute violation de la CSP signalée par le navigateur (<code>report-uri</code>, <code>report-to</code>) et journalisée dans <code>var/log/csp-*.log</code>, adresses sans requête et jetons masqués, débit limité par IP</td>
+<td><code>SecurityHeadersSubscriber</code>, <code>HistoryController</code>, <code>QrCodeSvg</code>, <code>CspReportController</code></td>
+</tr>
+<tr>
+<td>Injection SQL</td>
+<td>Requêtes préparées uniquement, SQL confiné à <code>src/Infrastructure/Persistence/</code> ; analyse de taint (Psalm) en CI</td>
+<td>dépôts</td>
+</tr>
+<tr>
+<td>Redirection ouverte</td>
+<td>Adresses de retour limitées aux chemins internes</td>
+<td><code>InternalPath</code>, <code>TwoFactorRedirects</code></td>
+</tr>
+<tr>
+<td>Intégration dans un cadre (clickjacking)</td>
+<td><code>frame-ancestors 'none'</code>, <code>X-Frame-Options: DENY</code></td>
+<td>en-têtes</td>
+</tr>
+<tr>
+<td>Fuites par le navigateur</td>
+<td><code>Referrer-Policy: no-referrer</code>, <code>Cache-Control: no-store</code>, <code>Permissions-Policy</code>, COOP/CORP</td>
+<td>en-têtes</td>
+</tr>
+<tr>
+<td>Interception (si HTTPS)</td>
+<td>HSTS d'un an</td>
+<td>en-têtes</td>
+</tr>
+<tr>
+<td>Exposition de fichiers</td>
+<td>Seul <code>public/</code> est servi ; fichiers cachés et scripts PHP autres que le contrôleur frontal refusés par nginx ; <code>open_basedir</code> et fonctions d'exécution désactivées dans php-fpm</td>
+<td><code>docs/nginx</code>, <code>docs/php-fpm</code></td>
+</tr>
+<tr>
+<td>Messages d'erreur trop bavards</td>
+<td>Pages d'erreur génériques en production, détails uniquement dans <code>var/log/prod.log</code> ; échec d'envoi d'e-mail journalisé sans le contenu du message</td>
+<td><code>templates/bundles/TwigBundle/Exception/</code>, <code>AccountMailer</code></td>
+</tr>
+<tr>
+<td>Secrets dans le dépôt</td>
+<td>Secrets uniquement dans <code>.env.local</code> (non versionné, 0640) ; clé de développement (nulle) refusée en production ; Gitleaks sur tout l'historique en CI</td>
+<td><code>.env.example</code>, <code>AuthSecrets</code>, CI</td>
+</tr>
+<tr>
+<td>Dépendances vulnérables</td>
+<td><code>composer audit</code> en CI ; <strong>pipeline de sécurité chaque lundi à 6 h</strong> (<code>composer audit</code>, <code>npm audit</code>, Trivy, Semgrep, Gitleaks, SAST et détection de secrets de GitLab, ZAP, Nuclei, et Nuclei sur l'instance déployée), même sans nouveau code, échec signalé par e-mail par GitLab ; <strong>Renovate chaque jour</strong> : merge requests de mise à jour (PHP, Node, images et outils de la CI, image du conteneur), versions publiées depuis 14 jours, une faille connue sans attendre ; pratiques du projet notées par <strong>OpenSSF Scorecard</strong> dans chaque pipeline de <code>main</code> ; images CI épinglées par empreinte ; Chart.js copié avec empreinte vérifiée</td>
+<td>CI (<code>docs/ci.md</code>), <code>assets/vendor/chart.js/README.md</code></td>
+</tr>
+<tr>
+<td>Modification du code hors revue</td>
+<td>Branche <code>main</code> protégée : aucun push direct ni forcé, fusion par merge request seulement</td>
+<td>réglages du projet GitLab</td>
+</tr>
+</tbody>
+</table>
+<h2 id="journal-des-connexions">Journal des connexions<a class="headerlink" href="#journal-des-connexions" title="Permanent link">&para;</a></h2>
+<p>Chaque utilisateur voit, sur sa page Mon compte, ses 30 derniers événements (180 jours conservés) :
+connexions, mots de passe et codes faux, codes de secours utilisés, confirmations d'identité,
+changements de mot de passe, d'application ou de codes, fermeture des autres sessions. Seuls le
+type, la réussite, l'adresse IP, le navigateur et la date sont enregistrés, jamais un secret.</p>
+<h2 id="limites-connues">Limites connues<a class="headerlink" href="#limites-connues" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Administrateur actif</strong> : le chiffrement protège contre un accès passif (base, sauvegardes,
+  sessions, journaux). Un administrateur qui modifie le code peut capturer un mot de passe à la
+  connexion suivante ; aucune application web n'y échappe.</li>
+<li><strong>Métadonnées visibles de l'administrateur</strong> : adresses e-mail, nombre de comptes, de relevés et de quotes-parts,
+  mois saisis, nombre de catégories et de postes du budget et mois où ses montants ont été enregistrés, nombre de
+  membres d'un compte famille, nombre d'objectifs d'épargne, ordre des catégories et des postes du budget, jour du
+  rappel mensuel choisi, présence d'un lien avec Carbure, dates techniques, journal des connexions, sessions
+  ouvertes et navigateurs de confiance (adresse IP, navigateur, dates). La commande <code>app:user:list</code> en montre une partie
+  (adresses, dates, nombre de comptes, dernière connexion), sans rien déchiffrer.</li>
+<li><strong>Carbure</strong> : l'adresse de l'instance vient de l'utilisateur. Patrimeter n'appelle que <code>…/api/mcp</code>, en POST, sans
+  redirection, avec délai et taille bornés, ne renvoie jamais la réponse, et limite les appels par utilisateur ;
+  <code>CARBURE_ALLOWED_HOSTS</code> restreint les hôtes sur une instance ouverte au public.</li>
+<li><strong>Mot de passe perdu sans clé de récupération</strong> : les données sont définitivement perdues.</li>
+<li><strong>Mode démonstration</strong> : désactivé par défaut ; activé (<code>DEMO_MODE=true</code>), il laisse quiconque atteint la page de
+  connexion créer un compte temporaire. Ne l'activez que sur une instance consacrée à la démonstration
+  (<a href="../exploitation/reglages/">réglages</a>).</li>
+<li><strong>Mots de passe divulgués</strong> : la vérification interroge l'API de Have I Been Pwned (5 premiers caractères de
+  l'empreinte SHA-1 seulement). Serveur sans accès sortant ou service injoignable : elle est sautée, et seule
+  l'entropie est contrôlée.</li>
+<li><strong>Sans HTTPS</strong>, le mot de passe, le code et le cookie de session circulent en clair sur le
+  réseau. Derrière un proxy inverse, le dernier tronçon jusqu'au serveur reste en HTTP : à réserver
+  à un réseau de confiance, et à limiter à l'adresse du proxy (<code>allow</code> du vhost).</li>
+<li><strong>Jeton d'API</strong> : qui le détient lit les données en clair jusqu'à son expiration ou son retrait. Un client MCP
+  transmet ce qu'il lit à son fournisseur.</li>
+<li><strong>Bibliothèques expérimentales</strong> : <code>symfony/mcp-bundle</code> et <code>mcp/sdk</code> ne garantissent pas encore leur
+  compatibilité entre versions ; le service MCP est vérifié en CI à chaque mise à jour.</li>
+<li><strong>Alertes par e-mail</strong> : le message d'une erreur critique part à <code>ADMIN_EMAIL</code>. Il ne contient ni secret
+  ni donnée patrimoniale (journaux filtrés, données chiffrées), mais peut citer une adresse IP ou un chemin.</li>
+<li><strong>Restauration d'une sauvegarde</strong> : les mots de passe, TOTP et clés de récupération reviennent à leur
+  état d'alors, et ce qui a été supprimé depuis réapparaît (<a href="../exploitation/backup/">docs/backup.md</a>).</li>
+<li><strong>Limitation par adresse IP</strong> : derrière un proxy inverse, <code>TRUSTED_PROXIES</code> et <code>X-Forwarded-For</code>
+  sont indispensables, sinon toutes les tentatives semblent venir du proxy et partagent le même
+  compteur.</li>
+<li><strong>Blocage global</strong> : 100 échecs en une heure, toutes adresses confondues, bloquent toutes les
+  connexions jusqu'à ce que les plus anciens sortent de cette heure glissante ; c'est volontaire
+  (attaque répartie), au prix d'un déni de service possible.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Retour en haut de la page
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Patrimeter, sous licence MIT
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["navigation.instant","navigation.tracking","navigation.tabs","navigation.sections","navigation.top","navigation.path","toc.follow","search.highlight","content.code.copy"],"redirect":null,"search":"../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copié dans le presse-papier","clipboard.copy":"Copier dans le presse-papier","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 de plus sur cette page","search.result.more.other":"# de plus sur cette page","search.result.none":"Aucun document trouvé","search.result.one":"1 document trouvé","search.result.other":"# documents trouvés","search.result.placeholder":"Taper pour démarrer la recherche","search.result.term.missing":"Non trouvé","select.version":"Sélectionner la version"},"version":null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d31f0ffa.min.js"></script>
+      
+    
+  </body>
+</html>

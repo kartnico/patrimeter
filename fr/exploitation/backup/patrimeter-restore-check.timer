@@ -1,0 +1,13 @@
+# Patrimeter — monthly test restore (docs/backup.md § 3).
+# To copy into /etc/systemd/system/patrimeter-restore-check.timer.
+[Unit]
+Description=Restauration d'essai mensuelle de la sauvegarde de Patrimeter
+
+[Timer]
+# The 1st of each month, after the night's backup (03:15).
+OnCalendar=*-*-01 04:30:00
+# Server off at that time: the test runs at the next start.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

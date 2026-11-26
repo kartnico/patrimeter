@@ -1,0 +1,23 @@
+# Patrimeter — scheduled tasks (Symfony Scheduler): docs/installation.md, § 9.
+# To copy into /etc/systemd/system/patrimeter-scheduler.service.
+[Unit]
+Description=Tâches planifiées de Patrimeter
+Documentation=file:/srv/patrimeter/docs/installation.md
+After=network.target
+# Restarted endlessly, the service would never fail and the alert would not leave: after 5 starts in 10 minutes
+# (failures, the normal stop only happening once per hour), it stops and warns.
+StartLimitIntervalSec=600
+StartLimitBurst=5
+OnFailure=patrimeter-alert@%n.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/patrimeter
+# Stops every hour to free the memory; systemd starts it again at once.
+ExecStart=/usr/bin/php /srv/patrimeter/bin/console messenger:consume scheduler_maintenance --time-limit=3600 --memory-limit=128M --no-interaction
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
