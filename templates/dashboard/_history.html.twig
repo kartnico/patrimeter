@@ -1,0 +1,70 @@
+{#-
+    History of the net worth at the bottom of the wealth page: period and view (links that keep the month and come
+    back to this section), change over the period, Chart.js chart (history.js) and monthly values.
+-#}
+{% set history_first = series|first %}
+{% set history_last = series|last %}
+{% set history_delta = history_last.net - history_first.net %}
+<section class="history" id="historique" aria-labelledby="history-title">
+<div class="tab-head">
+    <h2 id="history-title">{{ 'Historique'|trans }}</h2>
+</div>
+<div class="history-controls">
+    <nav class="segmented" aria-label="{{ 'Période'|trans }}">
+        {% for key, definition in periods %}
+        <a href="{{ path('app_dashboard', {mois: month.toString, periode: key, vue: mode, _fragment: 'historique'}) }}"{% if key ~ '' == period %} aria-current="true"{% endif %}>{{ definition[0]|trans }}</a>
+        {% endfor %}
+    </nav>
+    <nav class="segmented" aria-label="{{ 'Vue'|trans }}">
+        {% for key, label in modes %}
+        <a href="{{ path('app_dashboard', {mois: month.toString, periode: period, vue: key, _fragment: 'historique'}) }}"{% if key == mode %} aria-current="true"{% endif %}>{{ label|trans }}</a>
+        {% endfor %}
+    </nav>
+</div>
+
+<section class="card summary history-summary" aria-label="{{ 'Évolution sur la période'|trans }}">
+    <div class="summary-main">
+        <p class="summary-label">{{ 'Évolution depuis %month%'|trans({'%month%': history_first.month|month_label}) }}</p>
+        <p class="summary-total num {{ history_delta|sign_class }}">{{ history_delta|money(true) }}</p>
+        <p class="summary-variation muted">
+            {{ 'de %from% à %to%'|trans({'%from%': '<span class="num">' ~ history_first.net|money ~ '</span>', '%to%': '<span class="num">' ~ history_last.net|money ~ '</span>'})|raw }}
+            {% if history_first.net > 0 %}
+            ({{ (history_delta > 0 ? '+' : '') ~ (history_delta * 100 / history_first.net)|percent(1) }})
+            {% endif %}
+        </p>
+    </div>
+</section>
+
+<section class="card">
+    <h3 class="visually-hidden">{{ 'Graphique de l\'évolution'|trans }}</h3>
+    <div class="chart-box">
+        <canvas id="history-chart" role="img" aria-label="{{ 'Graphique de l\'évolution du patrimoine net, détail dans le tableau ci-dessous'|trans }}"></canvas>
+    </div>
+    <noscript><p class="muted">{{ 'Le graphique nécessite JavaScript ; les valeurs sont dans le tableau ci-dessous.'|trans }}</p></noscript>
+</section>
+
+<details class="card history-table">
+    <summary><h3 id="history-values-title">{{ 'Valeurs mensuelles'|trans }}</h3></summary>
+    {#- Area that scrolls horizontally: reachable with the keyboard (arrows), announced by the section title. -#}
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="history-values-title">
+    <table class="table">
+        <thead>
+            <tr><th scope="col">{{ 'Mois'|trans }}</th><th scope="col" class="num">{{ 'Net'|trans }}</th><th scope="col" class="num">{{ 'Variation'|trans }}</th></tr>
+        </thead>
+        <tbody>
+        {% for i in (series|length - 1)..0 %}
+            {% set history_row = series[i] %}
+            {% set history_row_change = i > 0 ? history_row.net - series[i - 1].net : null %}
+            <tr>
+                <th scope="row">{{ history_row.month|month_label|capitalize }}</th>
+                <td class="num">{{ history_row.net|money }}</td>
+                <td class="num{{ history_row_change is null ? '' : ' ' ~ history_row_change|sign_class }}">{{ history_row_change is null ? '—' : history_row_change|money(true) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</details>
+
+<script type="application/json" id="history-data">{{ chart_json|raw }}</script>
+</section>

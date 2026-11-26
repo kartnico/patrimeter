@@ -1,0 +1,29 @@
+{#- Change of the net worth over 3, 6 and 12 months up to the month shown, compared with the period before (Trend). -#}
+<section class="card trends-card" aria-labelledby="trends-title">
+    <h2 id="trends-title">{{ 'Tendances du patrimoine'|trans }}</h2>
+    <table class="ledger trends">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Sur'|trans }}</th>
+                <th scope="col" class="num">{{ 'Évolution'|trans }}</th>
+                <th scope="col" class="num">{{ 'Période précédente'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trend in trends %}
+            <tr>
+                <th scope="row">{{ '%count% mois|%count% mois'|trans({'%count%': trend.months}) }}</th>
+                <td class="num">
+                    {%- if trend.value is null -%}<span class="muted">—</span>
+                    {%- else -%}
+                    <span class="{{ trend.value|sign_class }}">{{ trend.value|money(true) }}</span>
+                    <span class="ledger-sub">{{ 'soit %amount% par mois'|trans({'%amount%': trend.perMonth|money(true)}) }}</span>
+                    {%- endif -%}
+                </td>
+                <td class="num">{% if trend.previous is null %}<span class="muted">—</span>{% else %}<span class="{{ trend.previous|sign_class }}">{{ trend.previous|money(true) }}</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="muted small">{{ 'Évolution du patrimoine net jusqu\'au mois affiché, comparée à celle de la même durée juste avant.'|trans }}</p>
+</section>

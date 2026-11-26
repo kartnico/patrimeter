@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Carbure'|trans }}{% endblock %}
+
+{% block body %}
+{{ include('_account_tabs.html.twig') }}
+<div class="tab-head">
+    <h2>{{ 'Carbure'|trans }}</h2>
+    <a class="btn btn-small" href="{{ path('app_budget') }}">{{ 'Voir le budget'|trans }}</a>
+</div>
+<p class="sheet-lead">{{ 'Carbure suit vos opérations bancaires, catégorisées. Relié à votre instance, Patrimeter lit les dépenses réelles de chaque mois et les compare au budget prévu.'|trans }}
+    <a href="https://github.com/ltoinel/Carbure" rel="noopener noreferrer external">github.com/ltoinel/Carbure</a></p>
+
+{% if errors is not empty %}
+<p class="flash flash-error" role="alert">{{ 'Certains champs sont invalides. Corrigez les champs signalés.'|trans }}</p>
+{% endif %}
+
+<section class="sheet" aria-labelledby="carbure-link-title">
+    <h2 id="carbure-link-title">{{ 'Votre instance'|trans }}</h2>
+    {% if link %}
+    <p>{{ 'Reliée à %url% avec le jeton %hint%.'|trans({'%url%': link.url, '%hint%': link.tokenHint}) }}</p>
+    {% endif %}
+    <form method="post" action="{{ path('app_budget_carbure_save') }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="field">
+            <label for="carbure-url">{{ 'Adresse de votre instance Carbure'|trans }}</label>
+            <input type="url" id="carbure-url" name="url" value="{{ url }}" required autocomplete="url" placeholder="https://carbure.maison.lan"
+                   aria-describedby="carbure-url-hint{% if errors.url is defined %} err-url{% endif %}"{% if errors.url is defined %} aria-invalid="true"{% endif %}>
+            <p class="hint" id="carbure-url-hint">{{ 'L\'adresse de l\'instance, ou celle de son service MCP (…/api/mcp) : les deux conviennent.'|trans }}</p>
+            {% if errors.url is defined %}<p class="field-error" id="err-url">{{ errors.url|trans }}</p>{% endif %}
+        </div>
+        <div class="field">
+            <label for="carbure-token">{{ 'Jeton d\'API de Carbure'|trans }}</label>
+            <input type="password" id="carbure-token" name="token" autocomplete="off" spellcheck="false" aria-describedby="carbure-token-hint
+                   {%- if errors.token is defined %} err-token{% endif %}"{% if errors.token is defined %} aria-invalid="true"{% endif %}>
+            <p class="hint" id="carbure-token-hint">{{ 'Dans Carbure : Réglages, Jetons d\'API, puis Créer (une durée limitée est préférable). Le serveur MCP de Carbure doit être activé par son administrateur. Laissez vide pour garder le jeton enregistré.'|trans }}</p>
+            {% if errors.token is defined %}<p class="field-error" id="err-token">{{ errors.token|trans }}</p>{% endif %}
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">{{ link ? 'Enregistrer et relire les catégories'|trans : 'Relier Carbure'|trans }}</button>
+        </div>
+    </form>
+</section>
+
+{% if link %}
+<section class="sheet" aria-labelledby="carbure-mapping-title">
+    <h2 id="carbure-mapping-title">{{ 'Correspondance des catégories'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Chaque catégorie de dépenses de Carbure (premier niveau, sous-catégories comprises) compte pour une catégorie du budget, ou est ignorée. Celles de même nom sont rapprochées d\'office.'|trans }}</p>
+    {% if link.categories is empty %}
+    <p class="muted">{{ 'Aucune catégorie de dépenses lue dans Carbure.'|trans }}</p>
+    {% elseif categories is empty %}
+    <p class="muted">{{ 'Créez d\'abord votre budget, puis revenez rapprocher les catégories.'|trans }} <a href="{{ path('app_budget') }}">{{ 'Budget'|trans }}</a></p>
+    {% else %}
+    <form method="post" action="{{ path('app_budget_carbure_mapping') }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <table class="ledger carbure-mapping">
+            <thead><tr><th scope="col">{{ 'Catégorie de Carbure'|trans }}</th><th scope="col">{{ 'Catégorie du budget'|trans }}</th></tr></thead>
+            <tbody>
+            {% for carbure_id, carbure_name in link.categories %}
+                <tr>
+                    <th scope="row"><label for="mapping-{{ carbure_id }}">{{ carbure_name }}</label></th>
+                    <td>
+                        <select id="mapping-{{ carbure_id }}" name="mapping[{{ carbure_id }}]">
+                            <option value=""{{ link.mapping[carbure_id] is not defined ? ' selected' }}>{{ '— sans correspondance —'|trans }}</option>
+                            <option value="0"{{ (link.mapping[carbure_id] ?? null) == 0 and link.mapping[carbure_id] is defined ? ' selected' }}>{{ 'ignorée'|trans }}</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}"{{ (link.mapping[carbure_id] ?? null) == category.id ? ' selected' }}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">{{ 'Enregistrer la correspondance'|trans }}</button>
+        </div>
+    </form>
+    {% endif %}
+</section>
+
+<section class="sheet danger-zone" aria-labelledby="carbure-delete-title">
+    <h2 id="carbure-delete-title">{{ 'Supprimer le lien'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_carbure_delete') }}" data-confirm="{{ 'Supprimer le lien avec Carbure ? Le jeton et la correspondance des catégories sont effacés de Patrimeter.'|trans }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <p class="hint">{{ 'Le jeton reste valable dans Carbure : révoquez-le aussi là-bas.'|trans }}</p>
+        <button type="submit" class="btn btn-danger btn-small">{{ 'Supprimer le lien'|trans }}</button>
+    </form>
+</section>
+{% endif %}
+{% endblock %}

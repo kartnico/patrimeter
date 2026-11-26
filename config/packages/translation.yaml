@@ -1,0 +1,8 @@
+# Interface in French (source language: the translation keys are the French texts) and in English
+# (translations/*.en.yaml). Language: remembered choice (cookie, Patrimeter\Http\LocalePreference), otherwise the
+# browser's (Accept-Language), otherwise French.
+framework:
+    set_locale_from_accept_language: true
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        fallbacks: [fr]

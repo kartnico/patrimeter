@@ -1,0 +1,12 @@
+doctrine_migrations:
+    migrations_paths:
+        # Namespace distinct from Patrimeter\: the migrations are never autoloaded.
+        'DoctrineMigrations': '%kernel.project_dir%/migrations'
+    enable_profiler: false
+    # A migration (or a batch of migrations) applies entirely or not at all.
+    transactional: true
+    all_or_nothing: true
+    services:
+        # Migrations in explicit SQL only: no automatic schema comparison
+        # (dangerous under SQLite, see the class).
+        'Doctrine\Migrations\Provider\SchemaDiffProvider': 'Patrimeter\Infrastructure\Persistence\SqlOnlySchemaDiffProvider'

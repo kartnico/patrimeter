@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Confirmer votre adresse'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card login-card">
+    <h1>{{ 'Confirmer votre adresse'|trans }}</h1>
+    {% if error %}
+    <p class="flash flash-error" role="alert">{{ error|trans }}</p>
+    {% endif %}
+    <form method="post" action="{{ path('app_register_confirm_submit', {token: token}) }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <label for="password">{{ 'Mot de passe choisi à l\'inscription'|trans }}</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required autofocus aria-describedby="confirm-hint">
+        <p class="hint" id="confirm-hint">{{ 'Cette étape garantit que c\'est bien vous qui avez demandé l\'inscription.'|trans }}</p>
+        <button type="submit" class="btn btn-primary btn-block">{{ 'Confirmer'|trans }}</button>
+    </form>
+</section>
+{% endblock %}

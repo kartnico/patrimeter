@@ -1,0 +1,25 @@
+{{ 'Bonjour,'|trans }}
+
+{{ 'Les soldes de %month% ne sont pas encore saisis dans Patrimeter. Quelques minutes suffisent :'|trans({'%month%': month}) }}
+{{ entry_url }}
+{% if streak %}
+
+{# Challenges on: the entry streak and the next star, from the months entered only (never an amount). #}
+{% if streak.months > 0 -%}
+{{ 'Série de saisies : %count% mois de suite.|Série de saisies : %count% mois de suite.'|trans({'%count%': streak.months}) }}
+{% endif -%}
+{% if streak.newStar -%}
+{{ 'En saisissant %month%, votre série passe à %count% mois : une nouvelle étoile du défi « Série de saisies ».|En saisissant %month%, votre série passe à %count% mois : une nouvelle étoile du défi « Série de saisies ».'|trans({'%month%': month, '%count%': streak.afterEntry}) }}
+{% elseif streak.nextStarAt -%}
+{{ 'En saisissant %month%, votre série passe à %count% mois ; prochaine étoile à %next% mois de suite.|En saisissant %month%, votre série passe à %count% mois ; prochaine étoile à %next% mois de suite.'|trans({'%month%': month, '%count%': streak.afterEntry, '%next%': streak.nextStarAt}) }}
+{% else -%}
+{{ 'En saisissant %month%, votre série passe à %count% mois.|En saisissant %month%, votre série passe à %count% mois.'|trans({'%month%': month, '%count%': streak.afterEntry}) }}
+{% endif -%}
+{{ 'Repères indicatifs, à adapter à votre situation : ce n\'est pas un conseil en investissement.'|trans }}
+{% endif %}
+
+{{ 'Vous recevez ce rappel parce que vous l\'avez demandé (Mon compte > Profil). Pour ne plus le recevoir :'|trans }}
+{{ unsubscribe_url }}
+
+-- 
+Patrimeter

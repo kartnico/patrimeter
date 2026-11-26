@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{#- Challenges and stars: level, saver profile (stage and style), challenges in progress and completed, settings. -#}
+{% block title %}{{ 'Défis'|trans }}{% endblock %}
+
+{% block body %}
+{%- set saver_level = game.level -%}
+{%- set saver_stage = game.stage -%}
+{%- set saver_streak = game.streak -%}
+<div class="page-head">
+    <h1>{{ 'Défis'|trans }}</h1>
+    <p class="star-total"><span aria-hidden="true">★</span> {{ '%count% étoile sur %total%|%count% étoiles sur %total%'|trans({'%count%': game.totalStars, '%total%': game.maxStars}) }}</p>
+</div>
+<p class="page-intro">{{ 'Des étoiles pour de bonnes habitudes : saisir vos soldes, tenir votre budget, garder une épargne de précaution, avancer vers vos objectifs. Jamais pour un rendement ni pour plus de risque. Une étoile gagnée ne se perd jamais.'|trans }}</p>
+<p class="muted small">{{ 'Chaque défi donne jusqu\'à trois étoiles (cinq pour « Premiers pas », deux pour « Compte protégé ») : sa carte montre ses paliers, du premier en bas au dernier en haut, et ce qu\'il reste à faire pour la prochaine étoile.'|trans }}</p>
+
+<div class="game-grid">
+    <section class="card game-level" aria-labelledby="game-level-title">
+        <h2 id="game-level-title">{{ 'Niveau %number% sur %total% · %name%'|trans({'%number%': saver_level.number, '%total%': 6, '%name%': saver_level.name|trans}) }}</h2>
+        <progress class="game-bar game-bar-stars" max="100" value="{{ saver_level.percent }}" aria-label="{{ 'Vers le niveau suivant'|trans }}">{{ saver_level.percent }} %</progress>
+        {#- The six levels, from the first at the bottom to the last at the top, with the stars each one needs. -#}
+        <ol class="level-ladder">
+            {% for step in levels %}
+            <li class="{{ step.number <= saver_level.number ? 'is-reached' }}{{ step.number == saver_level.number ? ' is-current' }}">
+                <span class="stage-mark" aria-hidden="true">{{ step.number <= saver_level.number ? '✓' : '' }}</span>
+                <span><strong>{{ 'Niveau %number% : %name%'|trans({'%number%': step.number, '%name%': step.name|trans}) }}</strong>
+                    <span class="muted small">· {{ 'dès %count% étoile|dès %count% étoiles'|trans({'%count%': step.from}) }}</span>
+                    {%- if step.number == saver_level.number %} <span class="pill">{{ 'vous êtes ici'|trans }}</span>
+                    {%- elseif step.number == saver_level.number + 1 %} <span class="pill">{{ 'encore %count% étoile|encore %count% étoiles'|trans({'%count%': saver_level.missing}) }}</span>{% endif %}</span>
+            </li>
+            {% endfor %}
+        </ol>
+        <h3>{{ 'Série de saisies'|trans }}</h3>
+        <p><strong>{{ 'Mois de suite : %count%'|trans({'%count%': saver_streak.length}) }}</strong></p>
+        <p class="muted small">{{ saver_streak.jokerLeftIn(game.facts.month.year)
+            ? 'Joker de %year% disponible : un mois oublié sera pardonné.'|trans({'%year%': game.facts.month.year})
+            : 'Joker de %year% utilisé : le prochain mois oublié arrêtera la série.'|trans({'%year%': game.facts.month.year}) }}</p>
+    </section>
+
+    <section class="card game-profile" aria-labelledby="game-profile-title">
+        <h2 id="game-profile-title">{{ 'Mon profil d\'épargnant'|trans }}</h2>
+        <p>{{ 'Stade :'|trans }} <strong>{{ saver_stage ? saver_stage.label|trans : 'pas encore de stade'|trans }}</strong> <span class="muted small">· {{ 'calculé chaque mois à partir de vos données'|trans }}</span></p>
+        <ol class="stage-ladder">
+            {% for stage in stages %}
+            <li class="{{ game.reaches(stage) ? 'is-reached' }}{{ stage == saver_stage ? ' is-current' }}">
+                <span class="stage-mark" aria-hidden="true">{{ game.reaches(stage) ? '✓' : '' }}</span>
+                <span><strong>{{ stage.label|trans }}</strong>
+                    {%- if stage == saver_stage %} <span class="pill">{{ 'vous êtes ici'|trans }}</span>{% elseif game.reaches(stage) %}<span class="visually-hidden"> ({{ 'atteint'|trans }})</span>{% endif %}
+                    <br><span class="muted small">{{ stage.requirement|trans }}</span></span>
+            </li>
+            {% endfor %}
+        </ol>
+        <p>{{ 'Style :'|trans }} <strong>{{ game.style ? game.style.label|trans : 'aucun'|trans }}</strong>
+            · <a href="{{ path('app_security', {_fragment: 'game-title'}) }}">{{ 'Changer dans Mon profil'|trans }}</a></p>
+    </section>
+</div>
+
+{%- set in_progress = game.inProgress -%}
+{%- set completed = game.completed -%}
+<section aria-labelledby="challenges-progress">
+    <h2 id="challenges-progress">{{ 'En cours'|trans }}</h2>
+    {% if in_progress is empty %}
+    <p class="muted">{{ 'Tous les défis sont réussis.'|trans }}</p>
+    {% else %}
+    <ul class="challenge-list">
+        {% for result in in_progress %}{{ include('challenges/_challenge.html.twig', {result: result, stars: game.stars(result.challenge), savings_rates: savings_rates, savings_rate_target: game.facts.savingsRateTarget}, with_context = false) }}{% endfor %}
+    </ul>
+    {% endif %}
+</section>
+{% if completed is not empty %}
+<section aria-labelledby="challenges-completed">
+    <h2 id="challenges-completed">{{ 'Réussis'|trans }}</h2>
+    <ul class="challenge-list">
+        {% for result in completed %}{{ include('challenges/_challenge.html.twig', {result: result, stars: game.stars(result.challenge), savings_rates: savings_rates, savings_rate_target: game.facts.savingsRateTarget}, with_context = false) }}{% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+<p class="notice">{{ 'Repères indicatifs, à adapter à votre situation : ce n\'est pas un conseil en investissement.'|trans }}</p>
+
+<section class="card game-settings" aria-labelledby="game-settings-title">
+    <h2 id="game-settings-title">{{ 'Réglages des défis'|trans }}</h2>
+    <form method="post" action="{{ path('app_challenges_settings') }}" class="actions">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <input type="hidden" name="_return" value="{{ path('app_challenges') }}">
+        {% if game.firstStepsHidden %}
+        <button type="submit" name="action" value="show_first_steps" class="btn btn-small">{{ 'Afficher la carte « Premiers pas » du tableau de bord'|trans }}</button>
+        {% endif %}
+        <button type="submit" name="action" value="disable" class="btn btn-small">{{ 'Désactiver les défis et les étoiles'|trans }}</button>
+    </form>
+    <p class="muted small">{{ 'Désactivés, ils disparaissent de la navigation et du tableau de bord ; vos étoiles sont gardées. Vous les réactivez depuis cette page ou depuis Mon profil.'|trans }}</p>
+</section>
+{% endblock %}

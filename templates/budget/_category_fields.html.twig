@@ -1,0 +1,23 @@
+{#-
+    Group and budget of a category (creation, change). Variables: household, group (value entered), adult ("" for
+    the shared budget, otherwise the adult's number), errors.
+-#}
+<div class="field">
+    <label for="category-group">{{ 'Famille (règle 50/30/20)'|trans }}</label>
+    <select id="category-group" name="group"{% if errors.group is defined %} aria-invalid="true" aria-describedby="err-group"{% endif %}>
+        {% for budget_group in budget_groups() %}
+        <option value="{{ budget_group.value }}"{{ budget_group.value == group ? ' selected' }}>{{ budget_group.label|trans }} ({{ budget_group.target }}&nbsp;%)</option>
+        {% endfor %}
+    </select>
+    {% if errors.group is defined %}<p class="field-error" id="err-group">{{ errors.group|trans }}</p>{% endif %}
+</div>
+<div class="field">
+    <label for="category-adult">{{ 'Payée par'|trans }}</label>
+    <select id="category-adult" name="adult"{% if errors.adult is defined %} aria-invalid="true" aria-describedby="err-adult"{% endif %}>
+        <option value=""{{ adult == '' ? ' selected' }}>{{ 'le compte commun'|trans }}</option>
+        {% for adult_id in household.adultIds %}
+        <option value="{{ adult_id }}"{{ adult == adult_id ~ '' ? ' selected' }}>{{ '%name%, sur ce qui lui reste'|trans({'%name%': household.adultName(adult_id)}) }}</option>
+        {% endfor %}
+    </select>
+    {% if errors.adult is defined %}<p class="field-error" id="err-adult">{{ errors.adult|trans }}</p>{% endif %}
+</div>

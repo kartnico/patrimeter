@@ -1,0 +1,89 @@
+# Attempt limiting (Patrimeter\Security\Throttle\AuthThrottle), on symfony/rate-limiter.
+# Counters in the cache.security pool (cache_items table): shared by the php-fpm processes and kept by
+# cache:clear.
+framework:
+    rate_limiter:
+        # Password, code or token failures, per IP address.
+        auth_ip:
+            policy: sliding_window
+            limit: 5
+            interval: '15 minutes'
+            cache_pool: cache.security
+        # Failures per account: 5 in a row, then one attempt per minute; never a lockout.
+        auth_account:
+            policy: token_bucket
+            limit: 5
+            rate: { interval: '1 minute', amount: 1 }
+            cache_pool: cache.security
+        # Failures from all addresses together (distributed attack): blocks all sign-ins.
+        auth_global:
+            policy: sliding_window
+            limit: 100
+            interval: '1 hour'
+            cache_pool: cache.security
+        # Wrong codes (app, backup, security key) per user.
+        auth_code:
+            policy: sliding_window
+            limit: 5
+            interval: '15 minutes'
+            cache_pool: cache.security
+        registration:
+            policy: fixed_window
+            limit: 10
+            interval: '1 hour'
+            cache_pool: cache.security
+        # Registrations from all addresses together: a script that changes its IP address cannot create
+        # accounts in bulk (AuthThrottle::registrationRetryAfter).
+        registration_global:
+            policy: sliding_window
+            limit: 30
+            interval: '1 hour'
+            cache_pool: cache.security
+        password_reset:
+            policy: fixed_window
+            limit: 10
+            interval: '1 hour'
+            cache_pool: cache.security
+        # Requests of the API and MCP, per token: 120 in a row, then one per second continuously
+        # (Patrimeter\Security\Api\ApiSubscriber). Beyond: 429 and Retry-After.
+        api_token:
+            policy: token_bucket
+            limit: 120
+            rate: { interval: '1 second', amount: 1 }
+            cache_pool: cache.security
+        # CSP violation reports, per IP address: the log cannot be flooded.
+        csp_report:
+            policy: fixed_window
+            limit: 20
+            interval: '1 minute'
+            cache_pool: cache.security
+        # Emails sent per account (confirmation, forgotten password).
+        account_email:
+            policy: fixed_window
+            limit: 3
+            interval: '1 hour'
+            cache_pool: cache.security
+        # Demonstration accounts created per IP address, and from all addresses together (Patrimeter\Application\Demo\DemoAccounts).
+        demo_start:
+            policy: fixed_window
+            limit: 5
+            interval: '1 hour'
+            cache_pool: cache.security
+        demo_start_global:
+            policy: sliding_window
+            limit: 60
+            interval: '1 hour'
+            cache_pool: cache.security
+        # Writes of a demonstration account (Patrimeter\Security\DemoGuard): 60 in a row, then one every 5 seconds.
+        demo_write:
+            policy: token_bucket
+            limit: 60
+            rate: { interval: '5 seconds', amount: 1 }
+            cache_pool: cache.security
+        # Calls to each user's Carbure instance (Patrimeter\Application\Carbure\CarbureBudget): 30 in a row, then
+        # one every 10 seconds; no address can be probed in bursts from the server.
+        carbure:
+            policy: token_bucket
+            limit: 30
+            rate: { interval: '10 seconds', amount: 1 }
+            cache_pool: cache.security

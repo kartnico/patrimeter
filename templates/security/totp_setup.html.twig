@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Application d\'authentification'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card setup-card">
+    <h1>{{ 'Application d\'authentification'|trans }}</h1>
+    {% if first_setup %}
+    <p>{{ 'Dernière étape : à chaque connexion, Patrimeter vous demandera, en plus du mot de passe, un code à 6 chiffres généré par une application de votre téléphone (Aegis, FreeOTP, Google Authenticator, Microsoft Authenticator, 2FAS, Bitwarden…).'|trans }}</p>
+    {% else %}
+    <p>{{ 'Configurez votre nouvelle application. L\'ancienne reste valable jusqu\'à la validation du code ci-dessous.'|trans }}</p>
+    {% endif %}
+    {% if error %}
+    <p class="flash flash-error" role="alert">{{ error|trans }}</p>
+    {% endif %}
+
+    <ol class="setup-steps">
+        <li>
+            <h2>{{ 'Ajoutez le compte dans l\'application'|trans }}</h2>
+            <p>{{ 'Scannez ce QR code :'|trans }}</p>
+            {{ qr_code(provisioning_uri, 'QR code à scanner avec l\'application d\'authentification'|trans) }}
+            <p>{{ 'ou saisissez cette clé à la main (type « basé sur le temps ») :'|trans }}</p>
+            <p class="secret-key"><code>{{ secret }}</code></p>
+        </li>
+        <li>
+            <h2>{{ 'Saisissez le code affiché'|trans }}</h2>
+            <form method="post" action="{{ path('app_totp_enable') }}" class="form">
+                <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+                <label for="code">{{ 'Code à 6 chiffres'|trans }}</label>
+                <input type="text" id="code" name="code" inputmode="numeric" autocomplete="one-time-code"
+                       pattern="[0-9 ]{6,7}" maxlength="7" required>
+                <button type="submit" class="btn btn-primary btn-block">{{ 'Activer'|trans }}</button>
+            </form>
+        </li>
+    </ol>
+    {% if not first_setup %}
+    <p><a href="{{ path('app_security_signin') }}">{{ 'Annuler'|trans }}</a></p>
+    {% endif %}
+</section>
+{% endblock %}

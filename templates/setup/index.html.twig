@@ -1,0 +1,55 @@
+{#- Installation wizard: the configuration checked, then the first account of the instance. Variables: checks (label,
+    ok, detail), email, errors (messages by field), min_length. -#}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Installation'|trans }}{% endblock %}
+
+{% block body %}
+{% import '_form_macros.html.twig' as f %}
+<section class="card login-card">
+    <h1>{{ 'Installation'|trans }}</h1>
+    <p>{{ 'Bienvenue : cette instance de Patrimeter n\'a pas encore de compte. Vérifiez sa configuration, puis créez le premier compte, le vôtre.'|trans }}</p>
+
+    <h2 id="setup-checks-title">{{ 'Configuration'|trans }}</h2>
+    <ul class="first-steps-list" aria-labelledby="setup-checks-title">
+        {% for check in checks %}
+        <li class="{{ check.ok ? 'is-done' : 'is-todo' }}">
+            <span class="step-mark" aria-hidden="true">{{ check.ok ? '✓' : '!' }}</span>
+            <span><strong>{{ check.label|trans }}</strong><span class="visually-hidden"> ({{ check.ok ? 'correct'|trans : 'à corriger'|trans }})</span><br>
+                {{ check.detail|trans }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    <p class="hint">{{ 'Ces réglages se trouvent dans .env.local (installation sur Linux) ou dans patrimeter.env (Docker) ; ils prennent effet au redémarrage du service.'|trans }}</p>
+
+    <h2>{{ 'Premier compte'|trans }}</h2>
+    <form method="post" action="{{ path('app_setup_submit') }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+
+        <div class="field">
+            <label for="email">{{ 'Adresse e-mail'|trans }}</label>
+            <input type="email" id="email" name="email" value="{{ email }}" autocomplete="email" maxlength="254" required
+                   {{- f.described(errors, 'email', null) }}>
+            {{ f.error(errors, 'email') }}
+        </div>
+
+        <div class="field">
+            <label for="password">{{ 'Mot de passe'|trans }}</label>
+            <input type="password" id="password" name="password" autocomplete="new-password" minlength="{{ min_length }}" required
+                   {{- f.described(errors, 'password', 'password-meter') }}>
+            {{ f.error(errors, 'password') }}
+            {{ include('_password_meter.html.twig', {input_id: 'password', confirm_id: 'password_confirmation', email_input_id: 'email', min_length: min_length}) }}
+        </div>
+
+        <div class="field">
+            <label for="password_confirmation">{{ 'Confirmation du mot de passe'|trans }}</label>
+            <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" required
+                   {{- f.described(errors, 'password_confirmation', null) }}>
+            {{ f.error(errors, 'password_confirmation') }}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">{{ 'Créer le premier compte'|trans }}</button>
+    </form>
+    <p class="hint">{{ 'Vous configurerez ensuite une application d\'authentification (TOTP), obligatoire. Les comptes suivants viennent de l\'inscription ou de la commande app:user:create ; cette page disparaît dès le premier compte créé.'|trans }}</p>
+</section>
+{% endblock %}

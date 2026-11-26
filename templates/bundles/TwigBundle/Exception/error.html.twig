@@ -1,0 +1,20 @@
+{#- Generic error page (production): never a technical detail. -#}
+{% extends 'base.html.twig' %}
+
+{% set messages = {
+    400: 'Le formulaire a expiré ou est invalide. Rechargez la page et réessayez.'|trans,
+    403: 'Accès refusé.'|trans,
+    404: 'Page introuvable.'|trans,
+    405: 'Méthode non autorisée.'|trans,
+    429: 'Trop de requêtes. Réessayez dans quelques instants.'|trans,
+} %}
+
+{% block title %}{{ 'Erreur'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card">
+    <h1>{{ 'Erreur %code%'|trans({'%code%': status_code}) }}</h1>
+    <p>{{ messages[status_code] ?? 'Une erreur interne est survenue.'|trans }}</p>
+    <p><a href="{{ path('app_dashboard') }}">{{ 'Retour au patrimoine'|trans }}</a></p>
+</section>
+{% endblock %}

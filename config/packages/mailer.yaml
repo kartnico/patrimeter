@@ -1,0 +1,5 @@
+framework:
+    mailer:
+        # Built from SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and SMTP_ENCRYPTION
+        # (Patrimeter\Infrastructure\Mail\SmtpDsnEnvVarProcessor); SMTP_HOST empty: no sending.
+        dsn: '%env(smtp_dsn:SMTP_HOST)%'

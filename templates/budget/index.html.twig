@@ -1,0 +1,441 @@
+{% extends 'base.html.twig' %}
+
+{%- set overview = view.overview -%}
+{%- set household = view.household -%}
+
+{% block title %}{{ 'Budget %of_month%'|trans({'%of_month%': month|month_of}) }}{% endblock %}
+
+{% block body %}
+{#- Head and empty state laid out as the savings goals page. -#}
+<div class="page-head">
+    <h1>{{ 'Budget'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+    <nav class="month-nav" aria-label="{{ 'Changer de mois'|trans }}">
+        <a class="btn btn-small" href="{{ path('app_budget', {mois: previous.toString}) }}" aria-label="{{ 'Mois précédent : %month%'|trans({'%month%': previous|month_label}) }}">‹</a>
+        {{ include('_month_picker.html.twig', {picker: month_picker(month, last_month, view.firstMonth, path('app_budget'), current_month)}) }}
+        {% if next %}
+        <a class="btn btn-small" href="{{ path('app_budget', {mois: next.toString}) }}" aria-label="{{ 'Mois suivant : %month%'|trans({'%month%': next|month_label}) }}">›</a>
+        {% endif %}
+    </nav>
+    {% if not read_only %}
+    <a class="btn btn-small" href="{{ path('app_budget_household') }}">{{ 'Configurer foyer fiscal et catégories'|trans }}</a>
+    {% endif %}
+</div>
+{{ include('_perimeter.html.twig') }}
+
+{% if overview is null %}
+<div class="card empty-state">
+    <p>{{ 'Aucun budget en %month%.'|trans({'%month%': month|month_label}) }}</p>
+    {% if view.firstMonth %}
+    <p class="muted">{{ 'Votre budget commence en %month%.'|trans({'%month%': view.firstMonth|month_label}) }}
+        <a href="{{ path('app_budget', {mois: view.firstMonth.toString}) }}">{{ 'Voir ce mois-là'|trans }}</a></p>
+    {% elseif read_only %}
+    <p class="muted">{{ 'Aucun budget importé : il vient avec le fichier d\'export d\'un membre, une fois créé dans son propre compte.'|trans }}</p>
+    {% endif %}
+    {% if not read_only %}
+    <a class="btn btn-primary" href="{{ path('app_budget_entry', {mois: month.toString}) }}">+ {{ 'Saisir le budget %of_month%'|trans({'%of_month%': month|month_of}) }}</a>
+    {% endif %}
+</div>
+{% else %}
+
+<div class="budget-status">
+    <p>
+        {% if view.isCarried %}
+        <span class="status status-carried"><span class="status-dot" aria-hidden="true"></span><span class="badge badge-carried">{{ 'reporté'|trans }}<span class="status-source"> · {{ view.budget.month|month_short }}</span></span></span>
+        {{ 'Montants du budget %of_month%, reportés jusqu\'à ce qu\'ils changent.'|trans({'%of_month%': view.budget.month|month_of}) }}
+        {% else %}
+        <span class="status status-entered"><span class="status-dot" aria-hidden="true"></span>{{ 'saisi ce mois-ci'|trans }}</span>
+        {% endif %}
+    </p>
+    {% if read_only %}
+    <p class="muted small">{{ 'Budget importé, en lecture seule : chacun le modifie dans son propre compte.'|trans }}</p>
+    {% else %}
+    <div class="actions">
+        <a class="btn btn-primary btn-small" href="{{ path('app_budget_entry', {mois: month.toString}) }}">{{ 'Modifier le budget %of_month%'|trans({'%of_month%': month|month_of}) }}</a>
+    </div>
+    {% endif %}
+</div>
+
+{#- Summary, like Finary's: savings rate, incomes, spending, savings, remaining money. -#}
+<section class="card budget-summary" aria-labelledby="budget-summary-title">
+    <h2 id="budget-summary-title" class="visually-hidden">{{ 'Synthèse'|trans }}</h2>
+    <p class="budget-headline">
+        {{ 'Taux d\'épargne : %rate%'|trans({'%rate%': '<strong>' ~ overview.savingsRate|percent ~ '</strong>'})|raw }}
+        <span class="muted">{{ '(possible : %possible%, cible : 20 %)'|trans({'%possible%': overview.possibleSavingsRate|percent}) }}</span>
+    </p>
+    <dl class="summary-figures budget-figures">
+        <div><dt>{{ 'Revenus du foyer'|trans }}</dt><dd class="num">{{ overview.income|money }}</dd></div>
+        <div><dt>{{ 'Dépenses'|trans }}</dt><dd class="num">{{ overview.expenses|money }}</dd></div>
+        <div><dt>{{ 'Épargne'|trans }}</dt><dd class="num">{{ overview.savings|money }}</dd></div>
+        <div><dt>{{ overview.available < 0 ? 'Dépassement'|trans : 'Disponible'|trans }}</dt><dd class="num {{ overview.available < 0 ? 'negative' }}">{{ overview.available|money }}</dd></div>
+    </dl>
+    {% if view.netWorth and view.netWorth.hasData %}
+    <p class="budget-networth">{{ 'Patrimoine net %of_month% :'|trans({'%of_month%': month|month_of}) }}
+        <a href="{{ path('app_dashboard', {mois: month.toString}) }}"><strong class="num">{{ view.netWorth.net|money }}</strong></a></p>
+    {% endif %}
+</section>
+
+{#- Flow of the incomes to the groups and the categories; the chart scrolls on a phone. -#}
+{% if overview.income > 0 or overview.spending > 0 %}
+<section class="sheet budget-flows" aria-labelledby="budget-flows-title">
+    <h2 id="budget-flows-title">{{ 'Flux du budget'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Des revenus aux catégories, en passant par les besoins, les envies et l\'épargne ; leur part des revenus est comparée à la cible 50/30/20.'|trans }}</p>
+    <div class="sankey-scroll" tabindex="0" role="region" aria-label="{{ 'Flux du budget, défilement horizontal'|trans }}">
+        {{ budget_sankey(overview) }}
+    </div>
+</section>
+{% endif %}
+
+<section class="sheet" aria-labelledby="budget-rule-title">
+    <h2 id="budget-rule-title">{{ 'Règle 50/30/20'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Repère courant : 50 % des revenus pour les besoins, 30 % pour les envies, 20 % pour l\'épargne. Le trait marque la cible.'|trans }}</p>
+    <table class="ledger budget-rule">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Famille'|trans }}</th>
+                <th scope="col" class="budget-rule-share">{{ 'Part des revenus'|trans }}</th>
+                <th scope="col" class="num budget-rule-target">{{ 'Cible'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for group in budget_groups() %}
+            {%- set group_cents = overview.groupTotal(group) -%}
+            {%- set group_share = overview.shareOfIncome(group_cents) -%}
+            <tr class="is-{{ group.value }}">
+                <th scope="row"><span class="group-dot" aria-hidden="true"></span>{{ group.label|trans }}<span class="ledger-sub num">{{ group_cents|money }}</span></th>
+                <td class="budget-rule-share">
+                    <span class="num">{{ group_share|percent }}</span>
+                    {% if group_share is not null %}
+                    <svg class="rule-bar" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+                        <rect class="rule-track" x="0" y="0" width="100" height="10"/>
+                        <rect class="rule-fill" x="0" y="0" width="{{ min(100, max(0, group_share))|round(1) }}" height="10"/>
+                        <line class="rule-target" x1="{{ group.target }}" y1="-1" x2="{{ group.target }}" y2="11"/>
+                    </svg>
+                    {% endif %}
+                </td>
+                <td class="num">{{ group.target }}&nbsp;%</td>
+            </tr>
+        {% endfor %}
+            <tr class="is-available">
+                <th scope="row"><span class="group-dot" aria-hidden="true"></span>{{ overview.available < 0 ? 'Dépassement'|trans : 'Disponible'|trans }}<span class="ledger-sub num {{ overview.available < 0 ? 'negative' }}">{{ overview.available|money }}</span></th>
+                <td class="budget-rule-share"><span class="num">{{ overview.shareOfIncome(overview.available)|percent }}</span></td>
+                <td class="num">—</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+{#- Average spending and savings over 3, 6 and 12 months, when at least one period is known. -#}
+{% if trends and trends.expenses|filter(t => t.value is not null) is not empty %}
+{{ include('budget/_trends.html.twig') }}
+{% endif %}
+
+{#- Actual spending read from Carbure (if the user has linked it), against each category's planned amount. -#}
+{% if carbure %}
+{% import '_advice.html.twig' as carbure_ui %}
+<section class="sheet budget-actuals" aria-labelledby="budget-actuals-title">
+    <h2 id="budget-actuals-title">{{ 'Prévu et réel'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Dépenses réelles %of_month% lues dans Carbure, face au budget prévu de chaque catégorie rapprochée.'|trans({'%of_month%': month|month_of}) }}
+        <a href="{{ path('app_budget_carbure') }}">{{ 'Réglages Carbure'|trans }}</a></p>
+    {% if carbure.error %}
+    <p class="advice is-warning">{{ carbure_ui.tag('warning') }} {{ carbure.error|trans }}</p>
+    {% elseif carbure.comparison.rows is empty %}
+    <p class="advice is-info">{{ carbure_ui.tag('info') }} {{ 'Aucune catégorie de Carbure n\'est rapprochée d\'une catégorie du budget.'|trans }}</p>
+    {% else %}
+    {%- set actual_scale = max(1, max(carbure.comparison.rows|map(r => max(r.planned, r.actual)))) -%}
+    <div class="table-scroll">
+    <table class="ledger budget-actuals-table">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Catégorie'|trans }}</th>
+                <th scope="col" class="num">{{ 'Prévu'|trans }}</th>
+                <th scope="col" class="num">{{ 'Réel'|trans }}</th>
+                <th scope="col" class="num">{{ 'Écart'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in carbure.comparison.rows %}
+            {%- set row_gap = row.actual - row.planned -%}
+            <tr class="is-{{ row.category.group.value }}">
+                <th scope="row">
+                    <span class="ledger-name"><span class="group-dot" aria-hidden="true"></span>{{ row.category.name }}</span>
+                    <svg class="actual-bars" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true">
+                        <rect class="bar-planned-group" x="0" y="1" width="{{ (row.planned * 100 / actual_scale)|round(1) }}" height="5"/>
+                        <rect class="bar-actual{{ row_gap > 0 ? ' is-over' }}" x="0" y="8" width="{{ (row.actual * 100 / actual_scale)|round(1) }}" height="5"/>
+                    </svg>
+                </th>
+                <td class="num">{{ row.planned|money }}</td>
+                <td class="num">{{ row.actual|money }}</td>
+                <td class="num {{ row_gap > 0 ? 'negative' : (row_gap < 0 ? 'positive') }}">{{ row_gap|money(true) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            {%- set total_gap = carbure.comparison.actual - carbure.comparison.planned -%}
+            <tr>
+                <th scope="row">{{ 'Total rapproché'|trans }}</th>
+                <td class="num">{{ carbure.comparison.planned|money }}</td>
+                <td class="num">{{ carbure.comparison.actual|money }}</td>
+                <td class="num {{ total_gap > 0 ? 'negative' : (total_gap < 0 ? 'positive') }}">{{ total_gap|money(true) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    </div>
+    <p class="muted small">{{ 'Écart : réel moins prévu ; positif, la dépense dépasse le budget. Barre du haut : prévu ; du bas : réel.'|trans }}</p>
+    {% endif %}
+    {% if carbure.actuals and carbure.actuals.unmatched is not empty %}
+    <p class="advice is-info">{{ carbure_ui.tag('info') }}
+        {{ '%amount% dépensés dans des catégories de Carbure sans correspondance : %names%.'|trans({'%amount%': carbure.actuals.unmatchedTotal|money, '%names%': carbure.actuals.unmatched|map(u => u.name)|join(', ')}) }}
+        <a href="{{ path('app_budget_carbure') }}">{{ 'Rapprocher les catégories'|trans }}</a></p>
+    {% endif %}
+</section>
+{% endif %}
+
+{#- Family: each member entered their share of what is shared, there is no joint account to split. -#}
+{% if not read_only or overview.jointTotal > 0 %}
+<section class="sheet" aria-labelledby="budget-joint-title">
+    <h2 id="budget-joint-title">{{ 'Compte commun'|trans }}</h2>
+    <p class="sheet-lead">
+        {%- if household.isCouple -%}
+        {{ view.budget.splitRule.value == 'fixed'
+            ? 'À verser ce mois-ci : le total du budget commun, partagé selon la part fixée.'|trans
+            : 'À verser ce mois-ci : le total du budget commun, partagé au prorata des revenus.'|trans }}
+        {%- else -%}
+        {{ 'À verser ce mois-ci : le total du budget commun.'|trans }}
+        {%- endif -%}
+    </p>
+    <table class="ledger">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Adulte'|trans }}</th>
+                <th scope="col" class="num">{{ 'Part'|trans }}</th>
+                <th scope="col" class="num ledger-amount">{{ 'Versement'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for adult_id in household.adultIds %}
+            <tr>
+                <th scope="row">{{ household.adultName(adult_id) }}</th>
+                <td class="num">{{ ((adult_id == 1 ? overview.firstAdultShare : 1000000 - overview.firstAdultShare) / 10000)|percent }}</td>
+                <td class="num">{{ overview.jointParts[adult_id]|money }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row" colspan="2">{{ 'Total à verser'|trans }}</th>
+                <td class="num">{{ overview.jointTotal|money }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</section>
+{% endif %}
+
+<section class="sheet" aria-labelledby="budget-adults-title">
+    <h2 id="budget-adults-title">{{ household.isCouple ? 'Ce qui reste à chacun'|trans : 'Ce qui vous reste'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Revenus, moins le versement au compte commun, moins les dépenses et l\'épargne propres.'|trans }}</p>
+    <table class="ledger budget-adults">
+        <thead>
+            <tr>
+                <th scope="col"><span class="visually-hidden">{{ 'Montant'|trans }}</span></th>
+                {% for adult_id in household.adultIds %}
+                <th scope="col" class="num">{{ household.adultName(adult_id) }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">{{ 'Revenus'|trans }}</th>
+                {% for adult_id in household.adultIds %}<td class="num">{{ view.budget.income(adult_id)|money }}</td>{% endfor %}
+            </tr>
+            {% if not read_only or overview.jointTotal > 0 %}
+            <tr>
+                <th scope="row">{{ 'Compte commun'|trans }}</th>
+                {% for adult_id in household.adultIds %}<td class="num">{{ (0 - overview.jointParts[adult_id])|money }}</td>{% endfor %}
+            </tr>
+            {% endif %}
+            <tr>
+                <th scope="row">{{ 'Dépenses et épargne propres'|trans }}</th>
+                {% for adult_id in household.adultIds %}<td class="num">{{ (0 - overview.personalTotals[adult_id])|money }}</td>{% endfor %}
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row">{{ 'Reste'|trans }}</th>
+                {% for adult_id in household.adultIds %}
+                {%- set adult_rest = overview.remainder(adult_id) -%}
+                <td class="num {{ adult_rest < 0 ? 'negative' }}">{{ adult_rest|money }}</td>
+                {% endfor %}
+            </tr>
+        </tfoot>
+    </table>
+</section>
+
+{#- Detail: shared budget, then each adult's own budget. -#}
+{% for scope in [null]|merge(household.adultIds) %}
+{%- set scope_categories = overview.categoriesOf(scope) -%}
+{% if scope_categories is not empty %}
+<details class="sheet budget-detail">
+    <summary><h2>{{ scope is null ? 'Budget commun'|trans : 'Budget propre à %name%'|trans({'%name%': household.adultName(scope)}) }}</h2>
+        <span class="num muted">{{ (scope is null ? overview.jointTotal : overview.personalTotals[scope])|money }}</span></summary>
+    {% for category in scope_categories %}
+    <table class="ledger budget-lines is-{{ category.group.value }}">
+        <caption><span class="group-dot" aria-hidden="true"></span>{{ category.name }} <span class="muted">· {{ category.group.label|trans }}</span></caption>
+        <tbody>
+        {% for budget_line in overview.lines(category.id) %}
+            <tr>
+                <th scope="row">
+                    <span class="ledger-name">{{ budget_line.name }}</span>
+                    {% if budget_line.childId is not null and household.hasChild(budget_line.childId) %}<span class="ledger-sub">{{ 'pour %name%'|trans({'%name%': household.childName(budget_line.childId)}) }}</span>{% endif %}
+                    {% if budget_line.accountId is not null and view.accounts[budget_line.accountId] is defined %}<span class="ledger-sub">{{ 'vers %account%'|trans({'%account%': view.accounts[budget_line.accountId].name}) }}</span>{% endif %}
+                </th>
+                <td class="num ledger-amount">{{ view.budget.amount(budget_line.id)|money }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="2" class="muted">{{ 'Aucun poste.'|trans }}</td></tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr><th scope="row">{{ 'Total'|trans }}</th><td class="num">{{ overview.categoryTotal(category.id)|money }}</td></tr>
+        </tfoot>
+    </table>
+    {% endfor %}
+</details>
+{% endif %}
+{% endfor %}
+
+{#- Cost of the children: only once a child is entered and a budget line is attached to one of them. -#}
+{% if overview.hasChildLines %}
+<section class="sheet" aria-labelledby="budget-children-title">
+    <h2 id="budget-children-title">{{ 'Coût des enfants'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Total des postes rattachés à chaque enfant, dans le budget commun comme dans celui de chaque adulte.'|trans }}</p>
+    <table class="ledger">
+        <thead><tr><th scope="col">{{ 'Enfant'|trans }}</th><th scope="col" class="num ledger-amount">{{ 'Par mois'|trans }}</th></tr></thead>
+        <tbody>
+        {% for child_id, child_name in household.children %}
+            <tr><th scope="row">{{ child_name }}</th><td class="num">{{ overview.childCosts[child_id]|money }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+
+{#- Comparison with the net worth of the same month: key figures, emergency savings gauge, savings payments. -#}
+{% import '_advice.html.twig' as advice_ui %}
+<section class="sheet budget-wealth" aria-labelledby="budget-wealth-title">
+    <h2 id="budget-wealth-title">{{ 'Avec le patrimoine'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Le budget %of_month% face au patrimoine du même mois.'|trans({'%of_month%': month|month_of}) }}</p>
+    <dl class="wealth-tiles">
+        <div class="wealth-tile">
+            <dt>{{ 'Patrimoine net'|trans }}</dt>
+            <dd>
+                {% if view.netWorth and view.netWorth.hasData %}
+                <a class="wealth-tile-value num" href="{{ path('app_dashboard', {mois: month.toString}) }}">{{ view.netWorth.net|money }}</a>
+                {% if view.netWorthChange is not null %}
+                <span class="wealth-tile-sub num {{ view.netWorthChange|sign_class }}">{{ '%change% sur le mois'|trans({'%change%': view.netWorthChange|money(true)}) }}</span>
+                {% endif %}
+                {% else %}
+                <span class="wealth-tile-value">—</span>
+                <span class="wealth-tile-sub">{{ 'aucun solde ce mois-ci'|trans }}</span>
+                {% endif %}
+            </dd>
+        </div>
+        <div class="wealth-tile level-precaution">
+            <dt><span class="level-dot" aria-hidden="true"></span>{{ 'Épargne de précaution'|trans }}</dt>
+            <dd>
+                <span class="wealth-tile-value num">{{ view.precaution.amount|money }}</span>
+                {% if view.precaution.months is not null %}
+                <span class="wealth-tile-sub">{{ '%months% de dépenses'|trans({'%months%': view.precaution.months|months_count}) }}</span>
+                {% endif %}
+            </dd>
+        </div>
+        <div class="wealth-tile">
+            <dt>{{ 'Dépenses du mois'|trans }}</dt>
+            <dd>
+                <span class="wealth-tile-value num">{{ overview.expenses|money }}</span>
+                <span class="wealth-tile-sub">{{ 'besoins et envies, épargne non comprise'|trans }}</span>
+            </dd>
+        </div>
+    </dl>
+
+    <div class="wealth-grid">
+        <div class="wealth-block">
+            <h3>{{ 'Épargne de précaution'|trans }}</h3>
+            {{ include('_precaution.html.twig', {coverage: view.precaution, budgeted: true, month: month, editable: not read_only, figures: false}) }}
+        </div>
+
+        <div class="wealth-block">
+            <h3>{{ 'Versements d\'épargne'|trans }}</h3>
+            {% if view.savings is empty %}
+            <p class="advice is-info">{{ advice_ui.tag('info') }}
+                {{ 'Rattachez un poste d\'épargne à son compte : son versement prévu sera comparé à l\'évolution du solde du compte.'|trans }}
+                {% if not read_only %}<a href="{{ path('app_budget_household') }}">{{ 'Foyer fiscal et catégories'|trans }}</a>{% endif %}</p>
+            {% else %}
+            <p class="sheet-lead">{{ 'Versement prévu face à l\'évolution du solde du compte %of_month% : intérêts, plus-values et retraits compris.'|trans({'%of_month%': month|month_of}) }}</p>
+            {%- set savings_scale = view.savingsScale -%}
+            <ul class="savings-list">
+                {% for track in view.savings %}
+                {%- set track_status = track.status.value -%}
+                <li class="savings-item is-{{ track_status }}">
+                    <p class="savings-head">
+                        <span class="savings-name">{{ track.line.name }}</span>
+                        {% if track.account.id > 0 %}
+                        <a class="savings-account" href="{{ path('app_account_edit', {id: track.account.id}) }}">{{ track.account.name }}</a>
+                        {% else %}
+                        <span class="savings-account">{{ track.account.name }}</span>
+                        {% endif %}
+                    </p>
+                    {% if savings_scale > 0 %}
+                    <svg class="savings-bars" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
+                        <rect class="bar-track" x="0" y="1" width="100" height="8"/>
+                        <rect class="bar-planned" x="0" y="1" width="{{ (track.planned * 100 / savings_scale)|round(1) }}" height="8"/>
+                        {% if track.change is not null %}
+                        <rect class="bar-track" x="0" y="11" width="100" height="8"/>
+                        <rect class="bar-change is-{{ track_status }}" x="0" y="11" width="{{ (track.change|abs * 100 / savings_scale)|round(1) }}" height="8"/>
+                        {% endif %}
+                    </svg>
+                    {% endif %}
+                    <dl class="savings-figures">
+                        <div><dt><span class="savings-key is-planned" aria-hidden="true"></span>{{ 'Prévu'|trans }}</dt> <dd class="num">{{ track.planned|money }}</dd></div>
+                        <div><dt><span class="savings-key is-{{ track_status }}" aria-hidden="true"></span>{{ 'Évolution du solde'|trans }}</dt>
+                            <dd class="num">
+                                {%- if track.change is null and read_only -%}
+                                {{ 'relevé à saisir'|trans }}
+                                {%- elseif track.change is null -%}
+                                <a href="{{ path('app_entry', {mois: month.toString}) }}">{{ 'relevé à saisir'|trans }}</a>
+                                {%- else -%}
+                                <span class="{{ track.change|sign_class }}">{{ track.change|money(true) }}</span>
+                                {%- endif -%}
+                            </dd></div>
+                    </dl>
+                    <p class="savings-status">
+                        {%- if track_status == 'reached' -%}
+                        {{ advice_ui.tag('ok') }} {{ 'Versement atteint.'|trans }}
+                        {%- elseif track_status == 'below' -%}
+                        {{ advice_ui.tag('warning') }} {{ '%gap% de moins que prévu.'|trans({'%gap%': (0 - track.difference)|money}) }}
+                        {%- elseif track_status == 'decrease' -%}
+                        {{ advice_ui.tag('alert') }} {{ 'Solde en baisse ce mois-ci.'|trans }}
+                        {%- else -%}
+                        {{ advice_ui.tag('info') }} {{ 'Relevé du mois pas encore saisi.'|trans }}
+                        {%- endif -%}
+                    </p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% if not view.isCarried and not read_only %}
+<section class="sheet danger-zone" aria-labelledby="budget-delete-title">
+    <h2 id="budget-delete-title">{{ 'Montants de ce mois'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_month_delete', {month: month.toString}) }}"
+          data-confirm="{{ 'Supprimer les montants %of_month% ? Ceux d\'un mois antérieur s\'appliqueront de nouveau.'|trans({'%of_month%': month|month_of}) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <p class="hint">{{ 'Les montants enregistrés pour ce mois valent pour les mois suivants. Les supprimer rétablit ceux d\'un mois antérieur, s\'il y en a.'|trans }}</p>
+        <button type="submit" class="btn btn-danger btn-small">{{ 'Supprimer les montants %of_month%'|trans({'%of_month%': month|month_of}) }}</button>
+    </form>
+</section>
+{% endif %}
+{% endif %}
+{% endblock %}

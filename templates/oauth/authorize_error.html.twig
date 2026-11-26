@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Autorisation impossible'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card login-card">
+    <h1>{{ 'Autorisation impossible'|trans }}</h1>
+    <p class="flash flash-error" role="alert">{{ 'Cette application n\'est pas reconnue, ou son adresse de retour ne correspond pas à son inscription.'|trans }}</p>
+    <p class="login-alt"><a href="{{ path('app_dashboard') }}">{{ 'Retour à l\'accueil'|trans }}</a></p>
+</section>
+{% endblock %}

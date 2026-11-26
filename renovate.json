@@ -1,0 +1,283 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "description": "Renovate (job renovate, every day, docs/ci.md): PHP libraries and their dependencies, Node tools, images and tools of the CI, base image of the container. Versions published for at least 14 days; one merge request per group, major versions apart, human review except for explicitly allowed formatter and linter patches after a green pipeline. Full image, no GitHub token: release notes are not fetched.",
+    "extends": [
+        "config:recommended"
+    ],
+    "timezone": "Europe/Paris",
+    "labels": [
+        "dependencies"
+    ],
+    "semanticCommits": "enabled",
+    "semanticCommitType": "build",
+    "semanticCommitScope": "deps",
+    "minimumReleaseAge": "14 days",
+    "minimumReleaseAgeBehaviour": "timestamp-optional",
+    "internalChecksFilter": "strict",
+    "prConcurrentLimit": 4,
+    "prHourlyLimit": 2,
+    "rebaseWhen": "conflicted",
+    "osvVulnerabilityAlerts": true,
+    "automerge": false,
+    "automergeType": "pr",
+    "platformAutomerge": true,
+    "fetchChangeLogs": "off",
+    "dependencyDashboard": {
+        "enabled": false
+    },
+    "ignoreDeps": [
+        "registry.example.org/kartzone/patrimeter"
+    ],
+    "lockFileMaintenance": {
+        "enabled": true,
+        "schedule": [
+            "at any time"
+        ]
+    },
+    "postUpgradeTasks": {
+        "commands": [
+            "sh ci/renovate-post-upgrade.sh"
+        ],
+        "fileFilters": [
+            ".gitlab-ci.yml",
+            "ci/*.sh",
+            "THIRD-PARTY-LICENSES.md"
+        ],
+        "executionMode": "branch"
+    },
+    "customManagers": [
+        {
+            "customType": "regex",
+            "description": "Versions annotated in .gitlab-ci.yml: # renovate: datasource=… depName=… [extractVersion=…]",
+            "managerFilePatterns": [
+                "/^\\.gitlab-ci\\.yml$/"
+            ],
+            "matchStrings": [
+                "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: extractVersion=(?<extractVersion>\\S+))?\\n\\s+[A-Z0-9_]+: \"(?<currentValue>[^\"]+)\""
+            ]
+        },
+        {
+            "customType": "regex",
+            "description": "Images pinned by tag and digest: variables *_IMAGE of .gitlab-ci.yml, ARG of the Dockerfiles",
+            "managerFilePatterns": [
+                "/^\\.gitlab-ci\\.yml$/",
+                "/^docker/Dockerfile$/"
+            ],
+            "matchStrings": [
+                "[A-Z_]+_IMAGE[:=] ?\"?(?<depName>[a-z0-9.-]+(?:/[a-z0-9._-]+)+):(?<currentValue>[A-Za-z0-9._-]+)@(?<currentDigest>sha256:[a-f0-9]{64})"
+            ],
+            "datasourceTemplate": "docker"
+        },
+        {
+            "customType": "regex",
+            "description": "Images pinned by digest only (latest): the W3C validator",
+            "managerFilePatterns": [
+                "/^\\.gitlab-ci\\.yml$/"
+            ],
+            "matchStrings": [
+                "VNU_IMAGE: \"(?<depName>ghcr\\.io/validator/validator)@(?<currentDigest>sha256:[a-f0-9]{64})\""
+            ],
+            "currentValueTemplate": "latest",
+            "datasourceTemplate": "docker",
+            "autoReplaceStringTemplate": "VNU_IMAGE: \"{{{depName}}}@{{{newDigest}}}\""
+        },
+        {
+            "customType": "regex",
+            "description": "Composer, installed by ci/install-composer.sh (checksum: ci/renovate-post-upgrade.sh)",
+            "managerFilePatterns": [
+                "/^ci/install-composer\\.sh$/"
+            ],
+            "matchStrings": [
+                "\\nversion=(?<currentValue>\\S+)\\n"
+            ],
+            "depNameTemplate": "composer/composer",
+            "datasourceTemplate": "packagist"
+        },
+        {
+            "customType": "regex",
+            "description": "k6, installed by ci/install-k6.sh (checksum: ci/renovate-post-upgrade.sh)",
+            "managerFilePatterns": [
+                "/^ci/install-k6\\.sh$/"
+            ],
+            "matchStrings": [
+                "\\nversion=(?<currentValue>\\S+)\\n"
+            ],
+            "depNameTemplate": "grafana/k6",
+            "datasourceTemplate": "docker"
+        },
+        {
+            "customType": "regex",
+            "description": "Nuclei, installed by ci/install-nuclei.sh (checksum: ci/renovate-post-upgrade.sh)",
+            "managerFilePatterns": [
+                "/^ci/install-nuclei\\.sh$/"
+            ],
+            "matchStrings": [
+                "\\nversion=(?<currentValue>\\S+)\\n"
+            ],
+            "depNameTemplate": "projectdiscovery/nuclei",
+            "datasourceTemplate": "docker",
+            "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
+        },
+        {
+            "customType": "regex",
+            "description": "SonarScanner CLI, installed by ci/install-sonar-scanner.sh (checksum: ci/renovate-post-upgrade.sh)",
+            "managerFilePatterns": [
+                "/^ci/install-sonar-scanner\\.sh$/"
+            ],
+            "matchStrings": [
+                "\\nversion=(?<currentValue>\\S+)\\n"
+            ],
+            "depNameTemplate": "SonarSource/sonar-scanner-cli",
+            "datasourceTemplate": "github-releases"
+        }
+    ],
+    "packageRules": [
+        {
+            "description": "Commit messages of the project (Conventional Commits): build(deps): …",
+            "matchPackageNames": [
+                "*"
+            ],
+            "semanticCommitType": "build",
+            "semanticCommitScope": "deps"
+        },
+        {
+            "description": "PHP: only within the constraints of composer.json (platform PHP 8.3, Symfony 7.4 LTS): the lock file follows; a new major version stays a decision by hand",
+            "matchManagers": [
+                "composer"
+            ],
+            "rangeStrategy": "in-range-only",
+            "groupName": "PHP dependencies"
+        },
+        {
+            "description": "Supported PHP versions (composer.json, 8.3 to 8.5) are decided by hand; their lookup would need a GitHub token",
+            "matchManagers": [
+                "composer"
+            ],
+            "matchDepNames": [
+                "php"
+            ],
+            "enabled": false
+        },
+        {
+            "description": "doctrine/doctrine-bundle 3 requires PHP 8.4: held at 2.x while PHP 8.3 is supported (until 4.0.0, ROADMAP)",
+            "matchDepNames": [
+                "doctrine/doctrine-bundle"
+            ],
+            "allowedVersions": "<3"
+        },
+        {
+            "description": "endroid/qr-code 6.1 requires PHP 8.4 and 6.2 PHP 8.5: held at 6.0 while PHP 8.3 is supported (until 4.0.0, ROADMAP)",
+            "matchDepNames": [
+                "endroid/qr-code"
+            ],
+            "allowedVersions": "<6.1"
+        },
+        {
+            "description": "Node tools (tests, lint; never in production)",
+            "matchManagers": [
+                "npm"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch"
+            ],
+            "groupName": "Node tools"
+        },
+        {
+            "description": "Automerge only allowlisted patch updates to development-only lint and formatting tools",
+            "matchManagers": ["npm"],
+            "matchDepTypes": ["devDependencies"],
+            "matchPackageNames": ["prettier", "stylelint", "markdownlint-cli2"],
+            "matchUpdateTypes": ["patch"],
+            "groupName": "Low-risk lint patches",
+            "automerge": true
+        },
+        {
+            "description": "Images and tools of the CI",
+            "matchManagers": [
+                "custom.regex"
+            ],
+            "matchFileNames": [
+                ".gitlab-ci.yml",
+                "ci/**"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch",
+                "digest"
+            ],
+            "groupName": "CI images and tools"
+        },
+        {
+            "description": "Debian base image of the container and of the CI, updated together (the tag of the CI image follows)",
+            "matchDepNames": [
+                "public.ecr.aws/docker/library/debian"
+            ],
+            "groupName": "Debian base image"
+        },
+        {
+            "description": "Node image of the CI: public.ecr.aws lists only part of its tags (lookup without result), so its versions are looked up on Docker Hub, whose manifests are the same (same digests); the file keeps public.ecr.aws",
+            "matchDepNames": [
+                "public.ecr.aws/docker/library/node"
+            ],
+            "overridePackageName": "node"
+        },
+        {
+            "description": "Python 3.15: no wheel of ruamel.yaml.clib yet, Semgrep cannot be installed without a compiler (pipeline 927): held at 3.14",
+            "matchDepNames": [
+                "public.ecr.aws/docker/library/python"
+            ],
+            "allowedVersions": "<3.15"
+        },
+        {
+            "description": "OpenSSF Scorecard 5.7 answers 404 on the self-hosted GitLab with the same token (pipeline 927): held at 5.6",
+            "matchDepNames": [
+                "ghcr.io/ossf/scorecard"
+            ],
+            "allowedVersions": "<5.7"
+        },
+        {
+            "description": "Buildah 1.46 mounts the build context with fuse-overlayfs, which fails on the runner (no privileged mode, pipeline 883): held at 1.43 until the container-image job is adapted (ROADMAP)",
+            "matchDepNames": [
+                "quay.io/buildah/stable"
+            ],
+            "allowedVersions": "<1.44"
+        },
+        {
+            "description": "Managers that would find nothing useful here, or another pinning than ours",
+            "matchManagers": [
+                "dockerfile",
+                "docker-compose",
+                "gitlabci",
+                "gitlabci-include"
+            ],
+            "enabled": false
+        },
+        {
+            "description": "Stable tracks Composer dependencies only; the release gate checks production advisories against the last tag.",
+            "matchBaseBranches": [
+                "stable"
+            ],
+            "matchManagers": [
+                "!composer"
+            ],
+            "enabled": false
+        },
+        {
+            "description": "Do not propose dev-only dependencies separately on stable.",
+            "matchBaseBranches": [
+                "stable"
+            ],
+            "matchManagers": [
+                "composer"
+            ],
+            "matchDepTypes": [
+                "require-dev"
+            ],
+            "enabled": false
+        }
+    ],
+    "vulnerabilityAlerts": {
+        "minimumReleaseAge": "0 days"
+    }
+}

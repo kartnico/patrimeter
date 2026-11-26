@@ -1,0 +1,14 @@
+# Prettier only formats JavaScript (assets/js, root of the documentation, tests, Node configurations): PHP, Twig, CSS
+# and YAML have their own tools (PHP-CS-Fixer, lint:twig, Stylelint, lint:yaml).
+*
+!*/
+!assets/js/**/*.js
+!documentation/racine/*.js
+!tests/**/*.mjs
+!tests/**/*.js
+!*.mjs
+assets/vendor/
+node_modules/
+vendor/
+var/
+public/

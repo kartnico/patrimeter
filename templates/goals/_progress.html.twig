@@ -1,0 +1,53 @@
+{#-
+    Where a savings goal stands (Patrimeter\Domain\Goal\GoalProgress): key figures as tiles, then the effort needed
+    compared with the pace of the last months, in words. Variable: progress.
+-#}
+{%- set goal_status = progress.status.value -%}
+{%- set goal_active = goal_status != 'reached' and not progress.overdue -%}
+<dl class="goal-stats">
+    <div class="goal-stat">
+        <dt>{{ 'Montant actuel'|trans }}</dt>
+        <dd class="num">{{ progress.value|money }}</dd>
+    </div>
+    <div class="goal-stat">
+        <dt>{{ 'Cible'|trans }}</dt>
+        <dd class="num">{{ progress.goal.targetCents|money }} <span class="goal-stat-note">{{ 'objectif %month%'|trans({'%month%': progress.goal.targetMonth|month_short}) }}</span></dd>
+    </div>
+    {% if goal_active %}
+    <div class="goal-stat">
+        <dt>{{ 'Effort nécessaire'|trans }}</dt>
+        <dd class="num">{{ '%amount% / mois'|trans({'%amount%': progress.required|money}) }}</dd>
+    </div>
+    <div class="goal-stat">
+        <dt>{{ 'Rythme constaté'|trans }}</dt>
+        <dd class="num">{{ progress.pace is null ? 'à mesurer'|trans : '%amount% / mois'|trans({'%amount%': progress.pace|money}) }}</dd>
+    </div>
+    {% endif %}
+</dl>
+<p class="goal-advice">
+    {%- if goal_status == 'reached' -%}
+    {{ 'Objectif atteint : bravo !'|trans }}
+    {%- elseif progress.overdue -%}
+    {{ 'L\'échéance est passée : il manque encore %missing%. Repoussez le mois cible ou ajustez le montant.'|trans({'%missing%': progress.required|money}) }}
+    {%- else -%}
+    {{ 'Il faut mettre de côté %required% par mois jusqu\'en %month%.'|trans({'%required%': progress.required|money, '%month%': progress.goal.targetMonth|month_label}) }}
+    {% if progress.pace is null -%}
+    {{ 'Le rythme se mesurera à partir du mois prochain.'|trans }}
+    {%- else -%}
+    {{ 'Rythme constaté : %pace% par mois (moyenne du dernier mois).|Rythme constaté : %pace% par mois (moyenne des %count% derniers mois).'|trans({'%pace%': progress.pace|money, '%count%': progress.paceMonths}) }}
+    {% if progress.shortfall > 0 %}{{ 'Il manque %shortfall% par mois.'|trans({'%shortfall%': progress.shortfall|money}) }} {% endif %}
+    {%- if progress.planned is not null -%}
+    {{ progress.plannedShortfall > 0
+        ? 'Votre budget prévoit %planned% par mois vers ces comptes : il en faudrait %required%.'|trans({'%planned%': progress.planned|money, '%required%': progress.required|money})
+        : 'Votre budget prévoit %planned% par mois vers ces comptes : de quoi tenir l\'objectif, si ces versements sont faits.'|trans({'%planned%': progress.planned|money}) }}
+    {% endif -%}
+    {%- if progress.projectedMonth is null -%}
+    {{ 'À ce rythme, l\'objectif ne sera pas atteint.'|trans }}
+    {%- elseif progress.delayMonths > 0 -%}
+    {{ 'À ce rythme, objectif atteint en %month%, %count% mois après la date prévue.|À ce rythme, objectif atteint en %month%, %count% mois après la date prévue.'|trans({'%month%': progress.projectedMonth|month_label, '%count%': progress.delayMonths}) }}
+    {%- else -%}
+    {{ 'À ce rythme, objectif atteint en %month%.'|trans({'%month%': progress.projectedMonth|month_label}) }}
+    {%- endif -%}
+    {%- endif -%}
+    {%- endif -%}
+</p>

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Vos données'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ 'Vos données'|trans }}</h1>
+</div>
+
+<section class="card">
+    <h2>{{ 'Exporter'|trans }}</h2>
+    <p>{{ 'Un fichier JSON contient tous vos comptes et crédits, leurs relevés, les parts de vos biens et les liens entre biens et crédits. Il permet de les retrouver sur une autre instance de Patrimeter.'|trans }}</p>
+    <p>{{ '<strong>Ce fichier n\'est pas chiffré</strong> : gardez-le en lieu sûr et supprimez-le après usage.'|trans|raw }}</p>
+    {% if reauthenticated %}
+    <form method="post" action="{{ path('app_data_export') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <p class="actions"><button type="submit" class="btn btn-primary">{{ 'Télécharger mes données'|trans }}</button></p>
+    </form>
+    {% else %}
+    {{ include('security/_reauthenticate.html.twig', {
+        return_path: path('app_data'),
+        password_label: 'Pour exporter vos données, confirmez votre mot de passe'|trans,
+    }) }}
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>{{ 'Compte famille'|trans }}</h2>
+    <p>{{ 'Pour réunir vos données avec celles de votre conjoint, exportez ce fichier chaque mois : le compte famille l\'importe pour vous, dans « Membres de la famille ».'|trans }}</p>
+    <p><a href="{{ path('app_family') }}">{{ 'Membres de la famille'|trans }}</a> <span class="muted small">{{ '(depuis le compte famille)'|trans }}</span></p>
+</section>
+
+<section class="card" id="csv">
+    <h2>{{ 'Créer des comptes depuis un fichier CSV'|trans }}</h2>
+    <p>{{ 'Pour saisir d\'un coup vos comptes, crédits et biens immobiliers : une ligne par compte, avec son nom, son type, sa date d\'ouverture et, si vous le souhaitez, son solde, la part d\'un bien ou le bien d\'un crédit. Les comptes s\'ajoutent à ceux qui existent ; au moindre refus, rien n\'est importé.'|trans }}</p>
+    <p>{{ 'Partez du modèle : il contient les colonnes et trois exemples (un livret, un bien et son crédit) à remplacer par vos comptes.'|trans }}</p>
+    <p class="actions"><a class="btn" href="{{ path('app_data_csv_model') }}" download>{{ 'Télécharger le modèle (CSV)'|trans }}</a></p>
+    {% if documentation_url() is not null %}<p><a href="{{ documentation_url('utilisation/import-csv/') }}" rel="help">{{ 'Format du fichier et codes des types'|trans }}</a></p>{% endif %}
+    <form method="post" action="{{ path('app_data_import_csv') }}" enctype="multipart/form-data" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <label for="fichier_csv">{{ 'Fichier CSV (1 Mo au plus, 500 comptes)'|trans }}</label>
+        <input type="file" id="fichier_csv" name="fichier_csv" accept="text/csv,.csv,text/plain,.txt" required>
+        <p class="actions"><button type="submit" class="btn">{{ 'Créer les comptes'|trans }}</button></p>
+    </form>
+</section>
+
+<section class="card">
+    <h2>{{ 'Importer'|trans }}</h2>
+    <p>{{ 'Reprend un fichier exporté par Patrimeter, depuis cette instance ou une autre. L\'import se fait dans un compte encore vide, en une seule fois : au moindre refus, rien n\'est importé.'|trans }}</p>
+    <form method="post" action="{{ path('app_data_import') }}" enctype="multipart/form-data" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <label for="fichier">{{ 'Fichier d\'export (JSON, 2 Mo au plus)'|trans }}</label>
+        <input type="file" id="fichier" name="fichier" accept="application/json,.json" required>
+        <p class="actions"><button type="submit" class="btn">{{ 'Importer'|trans }}</button></p>
+    </form>
+</section>
+{% endblock %}

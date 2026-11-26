@@ -1,0 +1,6 @@
+# Gitleaks false positives, checked one by one (fingerprint: commit:file:rule:line).
+# Dummy password of a functional test.
+16e5cbb040aedeb865aec768d9180f85b00eeec5:tests/Functional/WebAuthnTest.php:generic-api-key:56
+# KEY_BYTES constant: key size from libsodium, not a key (then the same, typed).
+9c8c03fb87708942d5c0ed040dd7ce8ad7769350:src/Infrastructure/Crypto/Aead.php:generic-api-key:14
+855dbf698cd06268331470705b2902f34bcb43e4:src/Infrastructure/Crypto/Aead.php:generic-api-key:14

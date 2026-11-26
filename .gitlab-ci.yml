@@ -1,0 +1,1218 @@
+# Patrimeter — continuous integration (documentation: docs/ci.md).
+#
+# A pipeline on every push, on all branches, and on every merge request (without duplicates).
+# Branches and merge requests: quick checks (lint, analysis, tests, coverage, W3C, Gitleaks).
+# Full pipeline (flows, deployment, security, load, archive): on main, on a tag, on a schedule, or started by hand
+# with FULL_PIPELINE=1.
+# Daily (schedule, SECURITY_SCAN=1): security scans, image of the latest version rebuilt and published again.
+# Every day (schedule, RENOVATE=1): Renovate, merge requests updating the dependencies (renovate.json, docs/ci.md).
+# All the jobs are blocking, except the one of the next PHP version. PHP is installed from Ondřej Surý's repository
+# on Debian 13, as in production (ci/install-php.sh). Images pinned by digest, outside Docker Hub; the project's image
+# in its registry; no privileged mode.
+
+workflow:
+  rules:
+    - if: $FULL_PIPELINE == "1"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+stages:
+  - prepare
+  - lint
+  - static-analysis
+  - test
+  - e2e
+  - security
+  - performance
+  - report
+  - release
+
+variables:
+  # A network cut during the clone must not bring the pipeline down. HTTP/1.1: on 09/11/2026, HTTP/2 streams from
+  # the runner to GitLab were cut a few KB before the end (curl 92, CANCEL).
+  GET_SOURCES_ATTEMPTS: "3"
+  GIT_CONFIG_COUNT: "1"
+  GIT_CONFIG_KEY_0: http.version
+  GIT_CONFIG_VALUE_0: HTTP/1.1
+  RUNNER_MIN_FREE_GB: "5"
+  DEBIAN_IMAGE: "public.ecr.aws/docker/library/debian:13-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2"
+  # Recommended versions of the project: those of the published container image and of the checked installation
+  # ("deployment" job).
+  RECOMMENDED_DEBIAN_IMAGE: "public.ecr.aws/docker/library/debian:13-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2"
+  RECOMMENDED_PHP_VERSION: "8.5"
+  # Node 24 (LTS) on Debian 13: PHP is also installed on it from the Surý repository.
+  NODE_IMAGE: "public.ecr.aws/docker/library/node:24-trixie-slim@sha256:af02d57b57719b9657a45199a79264a9437940cd55b3c7b3fc99615654f124a0"
+  PYTHON_IMAGE: "public.ecr.aws/docker/library/python:3.14-slim-trixie@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f"
+  VNU_IMAGE: "ghcr.io/validator/validator@sha256:f10441aee7dcea043d2153b0a8bbce13dafeafc8a3680b69b88b83ba5b9880f5"
+  GITLEAKS_IMAGE: "ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f"
+  MAILPIT_IMAGE: "ghcr.io/axllent/mailpit:v1.34.0@sha256:23a2ef85bc50853ab3093645d1d64679afd8887e89da5e48a88940c172591a4e"
+  # Trivy: never the compromised versions 0.69.4 to 0.69.6.
+  TRIVY_IMAGE: "ghcr.io/aquasecurity/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb"
+  ZAP_IMAGE: "ghcr.io/zaproxy/zaproxy:2.17.0@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af"
+  # Analyse of docker/Dockerfile (job « hadolint ») and validation of docker/compose.yaml (job « compose-config »).
+  HADOLINT_IMAGE: "ghcr.io/hadolint/hadolint:v2.15.1-debian@sha256:9a3944b7fddcb947d1ffd90829ac1a6e5c30479223358f249d8b96c7d0019e27"
+  # renovate: datasource=docker depName=docker/compose-bin
+  COMPOSE_VERSION: "v5.7.0"
+  COMPOSE_SHA256: "7758048ad38e580f22559603312874fec8bb638d021a9e64182385fc17cc12a2"
+  # CI image of the PHP jobs (ci/php/Dockerfile, job "ci-php-image"): PHP 8.3 to 8.5 from Surý and Composer already
+  # installed. Its tag is the start of the SHA-256 of what builds it (CiPhpImageTest computes it): any change gives a
+  # new image, built by the first pipeline that needs it.
+  CI_PHP_IMAGE: "$CI_REGISTRY_IMAGE/ci-php:40f8efe749d7"
+  # Container image built on every full pipeline, tested (smoke test, Trivy) before any publication.
+  CI_IMAGE: "$CI_REGISTRY_IMAGE:ci-$CI_PIPELINE_ID"
+  # Building the container image without a daemon nor privileged mode ("container-image" job).
+  BUILDAH_IMAGE: "quay.io/buildah/stable:v1.43.5-immutable@sha256:7c2b605262748ace2c5c57c5550942d0adad57aec82ede3070927722306c0ffb"
+  # renovate: datasource=pypi depName=semgrep
+  SEMGREP_VERSION: "1.184.0"
+  # OpenSSF Scorecard (scorecard job): release pinned by its version and the SHA-256 of its Linux archive.
+  # renovate: datasource=docker depName=ghcr.io/ossf/scorecard extractVersion=^v(?<version>.+)$
+  SCORECARD_VERSION: "5.6.0"
+  SCORECARD_SHA256: "19bde07129450cb65a95c6e3b9f34e034341579e6f0e241546ec3ae6efb2dd9a"
+  # Deployed instance scanned by Nuclei on the security schedule and on demand (job "nuclei-production", docs/ci.md); empty: no scan.
+  PRODUCTION_URL: "https://patrimeter.example.org"
+  # Renovate (job "renovate", daily schedule with RENOVATE=1, renovate.json): pinned image.
+  RENOVATE_IMAGE: "ghcr.io/renovatebot/renovate:44.259.0-full@sha256:8774f5857b486db6b986031ccb0cd8cf9d10882dbec42c6db4a5fee9bead3c27"
+  # Generator of the user documentation (documentation/, published by GitHub Pages).
+  # renovate: datasource=pypi depName=zensical
+  ZENSICAL_VERSION: "0.1.0"
+  # PHP version of the tools (style, analysis, coverage); the tests cover 8.3 to 8.5.
+  PHP_VERSION: "8.4"
+  COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.cache/composer"
+  npm_config_cache: "$CI_PROJECT_DIR/.cache/npm"
+  COVERAGE_THRESHOLDS: "src=80 src/Domain=95 src/Security=95 src/Infrastructure/Crypto=95"
+  # GitLab templates: no dependency nor test analysis.
+  SAST_EXCLUDED_PATHS: "node_modules, vendor, var, tests, assets/vendor"
+
+default:
+  interruptible: true
+
+# Jobs of the full pipeline only (see the header).
+.full-pipeline:
+  rules:
+    - !reference [.not-renovate, rules]
+    - if: $CI_COMMIT_BRANCH == "stable"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $FULL_PIPELINE == "1"
+
+# Same, even after a previous job failed (reports).
+.full-pipeline-always:
+  rules:
+    - !reference [.not-renovate, rules]
+    - if: $CI_COMMIT_BRANCH == "stable"
+      when: always
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
+    - if: $CI_COMMIT_TAG
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: always
+    - if: $FULL_PIPELINE == "1"
+      when: always
+
+# Pipeline of a tag (vX.Y.Z): the commit already passed the full pipeline of main (docs/developpement.md, § 5). Only
+# what publishes the version runs: the container image and its scans, the security scans and their gate, the archive
+# and the publication. The jobs that tests, analysis or measures would only repeat exclude themselves through this rule.
+.not-tag:
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+
+# All public destinations are opt-in and available only from protected release refs.
+.public-tag:
+  rules:
+    - !reference [.not-renovate, rules]
+    - if: $PUBLIC_RELEASE_ENABLED == "1" && $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_TAG =~ /^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/
+
+# Daily security pipeline (schedule with SECURITY_SCAN=1, docs/ci.md): only the security scans and the gate run;
+# the other jobs exclude themselves through this rule.
+.not-security-scan:
+  rules:
+    - !reference [.not-renovate, rules]
+    - if: $SECURITY_SCAN == "1"
+      when: never
+
+# Daily Renovate pipeline (schedule with RENOVATE=1, docs/ci.md): only the "renovate" job runs; every other job
+# excludes itself through this rule (directly, or through .full-pipeline, .full-pipeline-always, .not-security-scan),
+# checked by RenovatePipelineTest.
+.not-renovate:
+  rules:
+    - if: $RENOVATE == "1"
+      when: never
+
+# Container image: full pipeline, any change to what builds it, and on the security schedule (latest version rebuilt with the
+# packages of the day, then published again by "container-publish").
+.container-rules:
+  rules:
+    - if: $SECURITY_SCAN == "1"
+    - !reference [.not-security-scan, rules]
+    - !reference [.full-pipeline, rules]
+    - changes: [.dockerignore, docker/**/*, ci/install-php.sh, docs/nginx/**/*, docs/php-fpm/**/*]
+
+# The scans without dependencies wait for the space check of the "composer" job, without its artifact.
+.after-disk-check:
+  needs: &after-disk-check
+    - job: composer
+      artifacts: false
+
+# Debian 13 + PHP from the Surý repository (CI image: already installed, install-php.sh only selects the version);
+# Composer dependencies provided by the "composer" job.
+.php:
+  image: $CI_PHP_IMAGE
+  needs: [composer]
+  cache:
+    key: apt-php$PHP_VERSION-trixie
+    paths: [.cache/apt]
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION"
+
+# ---------------------------------------------------------------- prepare
+
+# CI image of the PHP jobs, built by Buildah (vfs storage, chroot isolation, no privileged mode) and pushed into the
+# project's registry, only when its tag is not there yet; on the security schedule, rebuilt with the packages of the day.
+ci-php-image:
+  stage: prepare
+  image: $BUILDAH_IMAGE
+  needs: []
+  variables:
+    STORAGE_DRIVER: vfs
+    BUILDAH_ISOLATION: chroot
+    BUILDAH_FORMAT: docker
+  script:
+    - printf '%s' "$CI_REGISTRY_PASSWORD" | buildah login --username "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    # Is the tag already in the registry? "buildah manifest inspect" only reads manifest lists, never a single image:
+    # adding the image to a local list reads its manifest and configuration only, without the layers.
+    - |
+      if [ "${SECURITY_SCAN:-0}" != 1 ] && buildah manifest create ci-php-check > /dev/null \
+          && buildah manifest add ci-php-check "docker://$CI_PHP_IMAGE"; then
+        echo "Image CI déjà publiée : $CI_PHP_IMAGE"
+        exit 0
+      fi
+    - buildah build --layers=false --build-arg "DEBIAN_IMAGE=$DEBIAN_IMAGE" --file ci/php/Dockerfile --tag ci-php .
+    - buildah push ci-php "docker://$CI_PHP_IMAGE"
+
+# Renovate (pinned image, renovate.json): merge requests updating the PHP libraries and their dependencies, the Node
+# tools, the images and tools of the CI and the base image of the container. Only in the daily schedule (RENOVATE=1);
+# every other job excludes itself there (.not-renovate). Token: DEPENDENCY_BOT_TOKEN (api, write_repository);
+# "-full" image: Node, PHP and Composer already installed (RENOVATE_BINARY_SOURCE global), so that the lock files are
+# updated without downloading any tool from GitHub, whose anonymous limit broke them (MR 98); no GitHub token. The checksums of the tools downloaded by
+# the CI and the tag of the CI image are recomputed after each update (ci/renovate-post-upgrade.sh).
+renovate:
+  stage: prepare
+  image:
+    name: $RENOVATE_IMAGE
+    entrypoint: [""]
+  needs: []
+  rules:
+    - if: $RENOVATE == "1"
+  timeout: 1h
+  variables:
+    RENOVATE_PLATFORM: gitlab
+    RENOVATE_ENDPOINT: $CI_API_V4_URL
+    RENOVATE_REPOSITORIES: $CI_PROJECT_PATH
+    RENOVATE_TOKEN: $DEPENDENCY_BOT_TOKEN
+    RENOVATE_ONBOARDING: "false"
+    RENOVATE_REQUIRE_CONFIG: required
+    RENOVATE_BINARY_SOURCE: global
+    RENOVATE_ALLOWED_COMMANDS: '["^sh ci/renovate-post-upgrade\\.sh$"]'
+    LOG_LEVEL: info
+  script:
+    - |
+      if [ "${STABLE_RELEASE_ENABLED:-0}" = 1 ]; then export RENOVATE_BASE_BRANCH_PATTERNS='["$default","stable"]'; fi
+      renovate
+
+composer:
+  stage: prepare
+  extends: .php
+  needs: [ci-php-image]
+  cache:
+    - key: apt-php$PHP_VERSION-trixie
+      paths: [.cache/apt]
+    - key:
+        files: [composer.lock]
+      paths: [.cache/composer]
+  before_script:
+    # Before any write: a full disk shows up here, not an hour later.
+    - sh ci/check-runner-disk.sh "$RUNNER_MIN_FREE_GB"
+    # curl extension: parallel downloads of the Composer packages.
+    - sh ci/install-php.sh "$PHP_VERSION" unzip "php$PHP_VERSION-curl"
+    - sh ci/install-composer.sh
+  script:
+    - composer validate --strict
+    - composer install --no-interaction --no-progress --prefer-dist --no-scripts --optimize-autoloader
+  artifacts:
+    paths: [vendor/]
+    # Optional PHPStan binaries (56 MB, all platforms): useless here, the extension is not loaded.
+    exclude: [vendor/phpstan/phpstan/turbo-ext/**/*]
+    expire_in: 3 hours
+
+npm:
+  rules:
+    - !reference [.public-tag, rules]
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  stage: prepare
+  image: $NODE_IMAGE
+  needs: []
+  cache:
+    key:
+      files: [package-lock.json]
+    paths: [.cache/npm]
+  script:
+    - npm ci --no-audit --no-fund
+  artifacts:
+    paths: [node_modules/]
+    expire_in: 3 hours
+
+# ---------------------------------------------------------------- lint
+
+# Syntax on the oldest and the most recent supported versions.
+php-lint:
+  stage: lint
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  extends: .php
+  needs: [ci-php-image]
+  parallel:
+    matrix:
+      - PHP_VERSION: ["8.3", "8.4", "8.5"]
+  script:
+    - find bin/console config migrations public src tests tools -name '*.php' -o -name console | xargs -n1 php -l > /dev/null
+
+# On the oldest supported version, as PHP-CS-Fixer recommends.
+coding-style:
+  stage: lint
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  extends: .php
+  variables:
+    PHP_VERSION: "8.3"
+  script:
+    - vendor/bin/php-cs-fixer fix --dry-run --format=gitlab > gl-code-quality-cs.json || true
+    - vendor/bin/php-cs-fixer check --diff
+  artifacts:
+    when: always
+    reports:
+      codequality: gl-code-quality-cs.json
+
+symfony-lint:
+  stage: lint
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  extends: .php
+  script:
+    - php bin/console lint:twig templates
+    - php bin/console lint:yaml config translations docs/openapi.yaml docs/openapi.en.yaml --parse-tags
+    - php bin/console lint:container
+    # Migrations on a new database: all run, none unknown to the database (rollback: MigrationTest; the initial
+    # schema refuses its own, it would erase everything).
+    - export DATABASE_URL="sqlite:///$CI_PROJECT_DIR/var/lint-migrations.sqlite"
+    - php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+    - php bin/console doctrine:migrations:up-to-date --fail-on-unregistered
+    # Deprecations reported when compiling the container (signatures to change for Symfony 8…).
+    - sh tools/container-deprecations.sh
+
+# JavaScript and CSS: ESLint ("flat" configuration, eslint.config.mjs), Prettier (.prettierrc.json), Stylelint
+# (.stylelintrc.json).
+js-css-lint:
+  stage: lint
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  image: $NODE_IMAGE
+  needs: [npm]
+  script:
+    - npx eslint .
+    - npx prettier --check .
+    - npx stylelint "assets/**/*.css"
+    # Markdown of the repository and of the documentation site (.markdownlint-cli2.jsonc).
+    - npx markdownlint-cli2
+
+# Dockerfile: hadolint, at the strictest threshold (.hadolint.yaml: any remark, even of style, makes it fail).
+hadolint:
+  stage: lint
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  image: $HADOLINT_IMAGE
+  needs: []
+  script:
+    - hadolint docker/Dockerfile
+    - hadolint ci/php/Dockerfile
+
+# compose.yaml validated without a daemon: docker compose (official binary, checksum verified) reads and resolves it.
+compose-config:
+  stage: lint
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  image: $BUILDAH_IMAGE
+  needs: []
+  script:
+    - curl -fsSL -o /usr/local/bin/docker-compose "https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-linux-x86_64"
+    - echo "$COMPOSE_SHA256  /usr/local/bin/docker-compose" | sha256sum -c -
+    - chmod +x /usr/local/bin/docker-compose
+    - cp docker/patrimeter.env.example docker/patrimeter.env
+    - PATRIMETER_IMAGE=patrimeter:ci docker-compose -f docker/compose.yaml config --quiet
+    - PATRIMETER_IMAGE=patrimeter:ci PATRIMETER_PORT=127.0.0.1:8080 docker-compose -f docker/compose.yaml config --quiet
+
+# ---------------------------------------------------------------- static-analysis
+
+phpstan:
+  stage: static-analysis
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  extends: .php
+  script:
+    - php bin/console cache:warmup --env=test --quiet
+    - vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=gitlab > gl-code-quality-phpstan.json || { vendor/bin/phpstan analyse --memory-limit=1G --no-progress; exit 1; }
+  artifacts:
+    when: always
+    reports:
+      codequality: gl-code-quality-phpstan.json
+
+# A single process, and on failure a detailed rerun: in parallel mode, Psalm stopped on the runner without any
+# message.
+# Under "timeout", output into a file shown afterwards: run directly in the runner's stream, Psalm ended up killed
+# without any message (exit 137). Psalm ignores PHP's memory_limit: its limit goes through --memory-limit.
+psalm:
+  stage: static-analysis
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  extends: .php
+  script:
+    - >-
+      status=0;
+      timeout 300 php -d display_errors=stderr vendor/bin/psalm --taint-analysis --no-progress --threads=1 --memory-limit=1500M --report=psalm.sarif > psalm.log 2>&1 || status=$?;
+      cat psalm.log;
+      test "$status" -eq 0
+  artifacts:
+    when: always
+    paths: [psalm.sarif, psalm.log]
+
+# ---------------------------------------------------------------- test
+
+# PHPUnit on each supported PHP version; 8.4 runs in the coverage job.
+phpunit:
+  stage: test
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  extends: .php
+  parallel:
+    matrix:
+      - PHP_VERSION: ["8.3", "8.5"]
+  script:
+    - vendor/bin/phpunit --log-junit junit.xml
+  artifacts:
+    when: always
+    reports:
+      junit: junit.xml
+
+# Next PHP version: a failure warns, without blocking (not supported by the project yet).
+# Only the deprecations of the project's code count: those of the dependencies wait for their updates.
+phpunit-next:
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - !reference [.full-pipeline, rules]
+  extends: phpunit
+  parallel:
+    matrix:
+      - PHP_VERSION: ["8.6"]
+  allow_failure: true
+  script:
+    - sed 's/<source /<source ignoreIndirectDeprecations="true" /' phpunit.dist.xml > phpunit.xml
+    - vendor/bin/phpunit --log-junit junit.xml
+
+coverage:
+  stage: test
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  extends: .php
+  # The full suites on PHP 8.4 (the "phpunit" job runs them on 8.3 and 8.5): every supported version is tested.
+  variables:
+    PHP_VERSION: "8.4"
+    HTML_SNAPSHOT_DIR: "$CI_PROJECT_DIR/var/html-snapshots"
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION" "php$PHP_VERSION-pcov"
+  script:
+    - vendor/bin/phpunit --log-junit junit.xml --coverage-clover var/coverage/clover.xml --coverage-cobertura var/coverage/cobertura.xml --coverage-text --colors=never
+    - php tools/coverage-check.php var/coverage/clover.xml $COVERAGE_THRESHOLDS
+  coverage: '/^\s*Lines:\s*\d+\.\d+\%/'
+  artifacts:
+    when: always
+    paths: [var/coverage/, var/html-snapshots/]
+    reports:
+      junit: junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: var/coverage/cobertura.xml
+
+# SonarQube analysis (sonar-project.properties): bugs, vulnerabilities, code smells, duplication and the PHP coverage of
+# the "coverage" job, against the quality gate of the server (the job fails when the gate fails). SonarQube Community
+# keeps a single branch: the analysis runs on main and in the full pipelines (or on a branch, by hand, with
+# SONARQUBE=1), never in a merge request, whose code would replace that of main. Server and token: CI variables
+# SONAR_HOST_URL and SONAR_TOKEN.
+sonarqube:
+  stage: test
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - !reference [.full-pipeline, rules]
+    - if: $SONARQUBE == "1"
+  extends: .php
+  needs:
+    - job: coverage
+  variables:
+    # The scanner's cache in the project, kept between pipelines; whole history, for the "new code" of each line.
+    SONAR_USER_HOME: "$CI_PROJECT_DIR/.sonar"
+    GIT_DEPTH: "0"
+  cache:
+    key: sonar
+    paths: [.sonar/cache]
+  script:
+    - sh ci/install-sonar-scanner.sh
+    - sonar-scanner -Dsonar.host.url="$SONAR_HOST_URL" -Dsonar.projectVersion="$(cat VERSION)"
+
+# Browser JavaScript: Vitest unit tests in a simulated DOM (tests/js, vitest.config.mjs).
+vitest:
+  stage: test
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  image: $NODE_IMAGE
+  needs: [npm]
+  script:
+    - npx vitest run
+  artifacts:
+    when: always
+    reports:
+      junit: reports/js-junit.xml
+
+# Mutation tests of the business code and of the encryption (infection.json5): every mutant of src/Domain and of
+# src/Infrastructure/Crypto must be killed by the tests.
+infection:
+  stage: test
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - !reference [.full-pipeline, rules]
+  extends: .php
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION" "php$PHP_VERSION-pcov"
+  script:
+    - vendor/bin/infection --no-progress --no-interaction --threads=4 --logger-gitlab=reports/infection-codequality.json
+  artifacts:
+    when: always
+    paths: [var/infection/]
+    reports:
+      codequality: reports/infection-codequality.json
+
+# Nu Html Checker: HTML of the pages rendered by the tests (sign-in and errors included) and CSS.
+w3c:
+  stage: test
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  image: $VNU_IMAGE
+  needs: [coverage]
+  script:
+    - vnu --version
+    - vnu --skip-non-html var/html-snapshots/*.html
+    - vnu --css assets/styles/app.css
+
+
+# User documentation, in French and English (documentation/build.sh): built on every pipeline, in strict mode
+# (broken link or anchor refused); published by the "pages" job, on main, with the screenshots.
+documentation:
+  stage: test
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - when: on_success
+  image: $PYTHON_IMAGE
+  needs: *after-disk-check
+  script:
+    - pip install --quiet --no-cache-dir "zensical==$ZENSICAL_VERSION"
+    - sh documentation/build.sh
+  # The site built, to read on a branch before it reaches GitHub Pages (Browse > documentation/site/fr/index.html).
+  artifacts:
+    expose_as: Documentation
+    expire_in: 1 week
+    paths: [documentation/site/]
+# ---------------------------------------------------------------- e2e
+
+# Flows in Chromium (WebAuthn virtual authenticator with PRF), application in production mode, Mailpit for the
+# emails.
+playwright:
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - !reference [.full-pipeline, rules]
+  stage: e2e
+  image: $NODE_IMAGE
+  needs: [composer, npm]
+  services:
+    - name: $MAILPIT_IMAGE
+      alias: mailpit
+  variables:
+    SMTP_HOST: mailpit
+    MAILPIT_API: "http://mailpit:8025"
+    PLAYWRIGHT_BROWSERS_PATH: "$CI_PROJECT_DIR/.cache/ms-playwright"
+  cache:
+    - key: apt-php$PHP_VERSION-e2e-trixie
+      paths: [.cache/apt]
+    - key:
+        files: [package-lock.json]
+      paths: [.cache/ms-playwright]
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION" "php$PHP_VERSION-opcache"
+    - npx playwright install --with-deps chromium
+  script:
+    - npx playwright test
+  after_script:
+    - mkdir -p reports
+    - cp test-results/junit.xml reports/e2e-junit.xml || true
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths: [reports/, playwright-report/, test-results/]
+    reports:
+      junit: test-results/junit.xml
+
+# Actually installs the application by running docs/installation.md, mise-a-jour.md and backup.md on a new Debian
+# (recommended version): nginx and php-fpm from the repository, reverse proxy and TLS, backup, restore (docs/ci.md).
+deployment:
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - !reference [.full-pipeline, rules]
+  stage: e2e
+  # Installation checked on the recommended Debian and PHP versions.
+  image: $RECOMMENDED_DEBIAN_IMAGE
+  needs: *after-disk-check
+  variables:
+    PHP_VERSION: $RECOMMENDED_PHP_VERSION
+  services:
+    - name: $MAILPIT_IMAGE
+      alias: mailpit
+  cache:
+    - key: apt-deployment-recommended
+      paths: [.cache/apt]
+    - key:
+        files: [composer.lock]
+      paths: [.cache/composer]
+  script:
+    - sh ci/check-deployment.sh
+  after_script:
+    # Logs of this throwaway installation, without any secret but its test data.
+    - mkdir -p reports/deployment
+    - cp -r /var/log/nginx /srv/patrimeter/var/log reports/deployment/ || true
+  artifacts:
+    when: on_failure
+    expire_in: 2 weeks
+    paths: [reports/deployment/]
+
+
+# Screenshots of the documentation, taken on the real application (playwright.captures.config.mjs).
+captures:
+  rules:
+    - !reference [.public-tag, rules]
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - !reference [.full-pipeline, rules]
+  stage: e2e
+  image: $NODE_IMAGE
+  needs: [composer, npm]
+  variables:
+    PLAYWRIGHT_BROWSERS_PATH: "$CI_PROJECT_DIR/.cache/ms-playwright"
+  cache:
+    - key: apt-php$PHP_VERSION-e2e-trixie
+      paths: [.cache/apt]
+    - key:
+        files: [package-lock.json]
+      paths: [.cache/ms-playwright]
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION" "php$PHP_VERSION-opcache"
+    - npx playwright install --with-deps chromium
+  script:
+    - npx playwright test --config playwright.captures.config.mjs
+  artifacts:
+    expire_in: 1 week
+    paths: [documentation/fr/captures/, documentation/en/captures/]
+# ---------------------------------------------------------------- security
+
+composer-audit:
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.full-pipeline, rules]
+  stage: security
+  extends: .php
+  needs: *after-disk-check
+  # The audit queries packagist.org: a passing network cut must not block the pipeline.
+  retry:
+    max: 2
+    when: script_failure
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION" "php$PHP_VERSION-curl"
+    - sh ci/install-composer.sh
+  script:
+    - composer audit --no-interaction --locked --abandoned=report
+
+gitleaks:
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-renovate, rules]
+    - when: on_success
+  stage: security
+  image:
+    name: $GITLEAKS_IMAGE
+    entrypoint: [""]
+  needs: *after-disk-check
+  variables:
+    GIT_DEPTH: "0"
+  script:
+    - gitleaks git --redact --verbose --report-format sarif --report-path gitleaks.sarif .
+  artifacts:
+    when: always
+    paths: [gitleaks.sarif]
+
+# The following tools report without blocking: the gate (report stage) decides, according to the severity and the
+# justified exclusions. A broken tool leaves no report, and blocks.
+npm-audit:
+  rules: !reference [.full-pipeline, rules]
+  stage: security
+  image: $NODE_IMAGE
+  needs: *after-disk-check
+  script:
+    - mkdir -p reports
+    - npm audit --json > reports/npm-audit.json || test "$?" -eq 1
+  artifacts:
+    when: always
+    paths: [reports/]
+
+semgrep:
+  rules: !reference [.full-pipeline, rules]
+  stage: security
+  image: $PYTHON_IMAGE
+  needs: *after-disk-check
+  script:
+    - pip install --quiet --root-user-action=ignore "semgrep==$SEMGREP_VERSION"
+    - mkdir -p reports
+    - semgrep scan --metrics=off --config p/php --config p/owasp-top-ten --config p/security-audit --json --output reports/semgrep.json src templates assets/js public config migrations
+  artifacts:
+    when: always
+    paths: [reports/]
+
+# CVEs and licenses (MIT compatible) of the Composer and npm dependencies.
+trivy:
+  rules: !reference [.full-pipeline, rules]
+  stage: security
+  image:
+    name: $TRIVY_IMAGE
+    entrypoint: [""]
+  needs: *after-disk-check
+  cache:
+    key: trivy
+    paths: [.cache/trivy]
+  script:
+    - mkdir -p reports
+    - trivy fs --scanners vuln,license --format json --output reports/trivy.json --cache-dir .cache/trivy --skip-dirs .cache .
+  artifacts:
+    when: always
+    paths: [reports/]
+
+# Trivy on the built image (Debian and PHP packages included), fixed ones only: a flaw without a fix does not block a
+# version. The report goes through the security gate, like the repository's.
+trivy-image:
+  extends: .container-rules
+  stage: security
+  image:
+    name: $TRIVY_IMAGE
+    entrypoint: [""]
+  needs:
+    - job: container-image
+      artifacts: false
+  variables:
+    TRIVY_USERNAME: $CI_REGISTRY_USER
+    TRIVY_PASSWORD: $CI_REGISTRY_PASSWORD
+  cache:
+    key: trivy
+    paths: [.cache/trivy]
+  script:
+    - mkdir -p reports
+    - trivy image --scanners vuln --ignore-unfixed --format json --output reports/trivy-image.json --cache-dir .cache/trivy "$CI_IMAGE"
+    - trivy convert --format table reports/trivy-image.json
+  artifacts:
+    when: always
+    paths: [reports/]
+
+# GitLab templates: reports also as artifacts, to pass them to the gate.
+# OpenSSF Scorecard of the project (ci/scorecard.py): on main and on the security schedule, with the read-only token
+# SCORECARD_TOKEN (docs/ci.md). Its badge.svg is the README badge (latest artifact of main), so the job runs in every
+# pipeline of main. Informative: it never blocks, and without a token the badge says "not measured".
+scorecard:
+  stage: security
+  image: $PYTHON_IMAGE
+  needs: *after-disk-check
+  rules:
+    - !reference [.not-renovate, rules]
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  allow_failure: true
+  script:
+    - python3 -I ci/scorecard.py
+  artifacts:
+    when: always
+    expire_in: 1 year
+    paths: [scorecard/]
+
+# Rules replaced: those of the templates remove them from merge request pipelines, unrelated to ours; k6 and the
+# gate depend on them, and GitLab would refuse a pipeline that waits for them in vain.
+semgrep-sast:
+  stage: security
+  needs: *after-disk-check
+  allow_failure: false
+  rules: !reference [.full-pipeline, rules]
+  artifacts:
+    paths: [gl-sast-report.json]
+    reports:
+      sast: gl-sast-report.json
+
+secret_detection:
+  stage: security
+  needs: *after-disk-check
+  allow_failure: false
+  rules: !reference [.full-pipeline, rules]
+  artifacts:
+    paths: [gl-secret-detection-report.json]
+    reports:
+      secret_detection: gl-secret-detection-report.json
+
+# ZAP baseline (passive scan, without submitting forms) on an authenticated session.
+zap:
+  rules: !reference [.full-pipeline, rules]
+  stage: security
+  image:
+    name: $ZAP_IMAGE
+    docker:
+      user: root
+  needs: [composer]
+  cache:
+    key: apt-php$PHP_VERSION-zap-trixie
+    paths: [.cache/apt]
+  variables:
+    SEED_USERS: "1"
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION" "php$PHP_VERSION-opcache"
+  script:
+    - sh ci/run-zap.sh
+  artifacts:
+    when: always
+    paths: [reports/]
+
+# Nuclei (ProjectDiscovery, pinned release, ci/install-nuclei.sh): the HTTP templates of the day against the
+# application started in the job, like ZAP; its report feeds the security gate (high or critical: blocking).
+nuclei:
+  rules: !reference [.full-pipeline, rules]
+  stage: security
+  extends: .php
+  needs: [composer]
+  variables:
+    SEED_USERS: "1"
+    APP_PORT: "8765"
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION" "php$PHP_VERSION-opcache"
+    - sh ci/install-nuclei.sh
+  script:
+    - sh ci/start-app.sh --background
+    - sh ci/run-nuclei.sh "http://localhost:$APP_PORT" reports/nuclei.jsonl
+  after_script:
+    - kill "$(cat var/e2e/server.pid)" 2>/dev/null || true
+  artifacts:
+    when: always
+    paths: [reports/]
+
+# Same scan of the deployed instance (PRODUCTION_URL), without account and slowly (10 requests per second): on the security schedule
+# and when a pipeline is run with PRODUCTION_SCAN=1. A high or critical finding fails the job, so the email of the
+# failed pipeline warns; it never blocks a release (absent from the pipelines of main and of the tags).
+nuclei-production:
+  stage: security
+  extends: .php
+  needs: []
+  rules:
+    - if: $PRODUCTION_URL == null || $PRODUCTION_URL == ""
+      when: never
+    - if: $SECURITY_SCAN == "1"
+    - if: $PRODUCTION_SCAN == "1"
+  before_script:
+    - sh ci/install-nuclei.sh
+  script:
+    - sh ci/run-nuclei.sh "$PRODUCTION_URL" reports/nuclei-production.jsonl 10 high,critical
+  artifacts:
+    when: always
+    expire_in: 90 days
+    paths: [reports/]
+
+# ---------------------------------------------------------------- performance
+
+# Last and alone on the runner: the measurement must not depend on the disk used by the other jobs.
+k6:
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-security-scan, rules]
+    - !reference [.full-pipeline, rules]
+  stage: performance
+  # Never two measurements at the same time, whatever the pipelines: they would slow each other down.
+  resource_group: performance
+  extends: .php
+  needs:
+    - composer
+    - job: phpunit
+      artifacts: false
+    - job: w3c
+      artifacts: false
+    - job: sonarqube
+      artifacts: false
+      optional: true
+    - job: playwright
+      artifacts: false
+    - job: captures
+      artifacts: false
+    - job: deployment
+      artifacts: false
+    - job: zap
+      artifacts: false
+    - job: trivy
+      artifacts: false
+    - job: semgrep
+      artifacts: false
+    - job: semgrep-sast
+      artifacts: false
+    - job: secret_detection
+      artifacts: false
+    # The other jobs of the test, e2e and security stages (PerformancePipelineTest): optional, as some of them only
+    # run on main or by their own rules. Nuclei scanning the application at the same time made k6 fail on main.
+    - job: coverage
+      artifacts: false
+      optional: true
+    - job: vitest
+      artifacts: false
+      optional: true
+    - job: infection
+      artifacts: false
+      optional: true
+    - job: documentation
+      artifacts: false
+      optional: true
+    - job: container-smoke
+      artifacts: false
+      optional: true
+    - job: composer-audit
+      artifacts: false
+      optional: true
+    - job: gitleaks
+      artifacts: false
+      optional: true
+    - job: npm-audit
+      artifacts: false
+      optional: true
+    - job: trivy-image
+      artifacts: false
+      optional: true
+    - job: scorecard
+      artifacts: false
+      optional: true
+    - job: nuclei
+      artifacts: false
+      optional: true
+  variables:
+    SEED_USERS: "20"
+    SEED_YEARS: "10"
+    # 8 PHP processes: with 4, those the runner's disk blocks keep all the requests waiting.
+    PHP_CLI_SERVER_WORKERS: "8"
+    # OPcache as in production (php-fpm pool of docs/installation.md): off by default for the built-in server.
+    PHP: "php -d opcache.enable_cli=1 -d opcache.validate_timestamps=0"
+  before_script:
+    - sh ci/install-php.sh "$PHP_VERSION" "php$PHP_VERSION-opcache"
+    - sh ci/install-k6.sh
+  script:
+    - mkdir -p reports
+    - php tests/perf/argon-cost.php reports/argon-cost.json
+    # The measure is the application's, not the runner's slow disk: database, sessions and cache in memory.
+    - cp -a var /dev/shm/var && rm -rf var && ln -s /dev/shm/var var
+    - sh ci/start-app.sh --background
+    - k6 run --summary-export reports/k6-summary.json tests/perf/load.js
+  after_script:
+    # Logs of the test server (dummy data): cause of the failed requests, if any.
+    - mkdir -p reports/k6-logs
+    - cp -r var/e2e/server.log var/log reports/k6-logs/ || true
+  artifacts:
+    when: always
+    expire_in: 90 days
+    paths: [reports/]
+
+# ---------------------------------------------------------------- report
+
+# Blocks on any High or Critical vulnerability not excluded (security/exclusions.json).
+security-gate:
+  stage: report
+  extends: .php
+  rules: !reference [.full-pipeline-always, rules]
+  needs:
+    - job: npm-audit
+    - job: semgrep
+    - job: trivy
+    - job: zap
+    - job: nuclei
+    - job: semgrep-sast
+    - job: secret_detection
+    - job: trivy-image
+      optional: true
+    # After k6, so as not to use the disk during the measurement.
+    - job: k6
+      artifacts: false
+      optional: true
+  script:
+    - mkdir -p reports
+    - >-
+      php tools/security-gate.php security/exclusions.json reports/security-summary.md
+      npm-audit=reports/npm-audit.json trivy=reports/trivy.json semgrep=reports/semgrep.json zap=reports/zap.json
+      nuclei=reports/nuclei.jsonl
+      gitlab=gl-sast-report.json gitlab=gl-secret-detection-report.json
+      $(test -f reports/trivy-image.json && echo trivy=reports/trivy-image.json)
+  artifacts:
+    when: always
+    paths: [reports/security-summary.md]
+
+pipeline-report:
+  stage: report
+  extends: .php
+  rules: !reference [.full-pipeline-always, rules]
+  needs:
+    - job: playwright
+      optional: true
+    - job: k6
+      optional: true
+    - job: security-gate
+  script:
+    - mkdir -p reports
+    - php tools/pipeline-report.php reports reports/pipeline-report.md
+  artifacts:
+    when: always
+    expire_in: 90 days
+    paths: [reports/pipeline-report.md]
+
+# ---------------------------------------------------------------- release
+
+# Archive ready to install: code, dependencies without the development tools, compiled assets. The server then needs
+# neither Composer nor Packagist (docs/installation.md, § 10).
+release:
+  stage: release
+  extends: .php
+  rules:
+    - !reference [.not-renovate, rules]
+    - if: $CI_COMMIT_BRANCH == "stable"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+    - if: $FULL_PIPELINE == "1"
+  needs:
+    - job: pipeline-report
+      artifacts: false
+  variables:
+    APP_ENV: prod
+  before_script:
+    # git: the archive only takes the versioned files (git archive).
+    - sh ci/install-php.sh "$PHP_VERSION" unzip git "php$PHP_VERSION-curl"
+    - sh ci/install-composer.sh
+  script:
+    # Archive named after the tag (patrimeter-v2.0.0) or, on main, after the commit.
+    - sh ci/build-release.sh "patrimeter-${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
+  artifacts:
+    name: "patrimeter-$CI_COMMIT_REF_NAME"
+    paths: [release/]
+    expire_in: 90 days
+
+# Container image (docker/Dockerfile, docs/docker.md) built by Buildah, without a daemon nor privileged mode: vfs
+# storage, chroot isolation. The build checks itself (full start on a throwaway database). The image is pushed into
+# the project's registry as ci-<commit> (CI_IMAGE), for the smoke test and Trivy; for a vX.Y.Z tag, also as vX.Y.Z and
+# latest. docker-archive archive as an artifact, to load with docker load or podman load.
+# ("image" is a reserved word of GitLab CI: hence the job's name.)
+container-image:
+  stage: static-analysis
+  extends: .container-rules
+  image: $BUILDAH_IMAGE
+  needs: *after-disk-check
+  script:
+    - sh tests/deployment/public-tree.sh
+    - version="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
+    - dockerfile=docker/Dockerfile
+    # Daily: the code of the latest published version, not main's. Up to 2.14.0, its Dockerfile is at the root.
+    - |
+      if [ "${SECURITY_SCAN:-0}" = 1 ]; then
+        command -v git > /dev/null || dnf install -y -q git-core
+        version="$(git tag --list 'v*' --sort=-v:refname | grep -E '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$' | head -n 1)"
+        test -n "$version"
+        git -c advice.detachedHead=false checkout --quiet "$version"
+        [ -f "$dockerfile" ] || dockerfile=Dockerfile
+      fi
+    - |
+      if [ "${PUBLIC_RELEASE_ENABLED:-0}" = 1 ] && { [ -n "${CI_COMMIT_TAG:-}" ] || [ "${SECURITY_SCAN:-0}" = 1 ]; }; then
+        test "$version" = "v$(cat VERSION)"
+        test -n "${GITHUB_REPOSITORY:?}"
+      fi
+    - command -v git >/dev/null || dnf install -y -q git-core
+    - context=$(mktemp -d) && git archive --format=tar HEAD -o "$context/source.tar" && mkdir "$context/tree" && tar -xf "$context/source.tar" -C "$context/tree"
+    - if [ -f "$context/tree/ci/prepare-public-tree.sh" ]; then sh "$context/tree/ci/prepare-public-tree.sh" "$context/tree"; fi
+    - mkdir -p image && echo "IMAGE_VERSION=$version" > image/build.env
+    - >-
+      buildah build --layers=false --build-arg "PATRIMETER_RELEASE=$version"
+      --build-arg "DEBIAN_IMAGE=$RECOMMENDED_DEBIAN_IMAGE" --build-arg "PHP_VERSION=$RECOMMENDED_PHP_VERSION"
+      --file "$context/tree/$dockerfile" --tag "patrimeter:$version" "$context/tree"
+    - buildah push "patrimeter:$version" "docker-archive:image/patrimeter-$version.tar:patrimeter:$version"
+    - gzip -6 "image/patrimeter-$version.tar"
+    - (cd image && sha256sum "patrimeter-$version.tar.gz" > "patrimeter-$version.tar.gz.sha256")
+    - printf '%s' "$CI_REGISTRY_PASSWORD" | buildah login --username "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - buildah push "patrimeter:$version" "docker://$CI_IMAGE"
+    # Under the commit, on request only; a version is only published after the checks ("container-publish").
+    - |
+      if [ "${REGISTRY_PUSH:-0}" = 1 ] && [ -z "${CI_COMMIT_TAG:-}" ]; then
+        buildah push "patrimeter:$version" "docker://$CI_REGISTRY_IMAGE:$version"
+      fi
+  variables:
+    STORAGE_DRIVER: vfs
+    BUILDAH_ISOLATION: chroot
+    BUILDAH_FORMAT: docker
+    # All the tags: on the security schedule, the latest version is rebuilt.
+    GIT_DEPTH: "0"
+  artifacts:
+    name: "patrimeter-image-$CI_COMMIT_REF_NAME"
+    paths: [image/]
+    expire_in: 2 weeks
+    reports:
+      dotenv: image/build.env
+
+# Smoke test: the image really starts (GitLab service, "web" entry point: migrations, nginx, php-fpm), serves the
+# sign-in page with its security headers, and answers the monitoring. Throwaway secrets, specific to the job.
+container-smoke:
+  stage: test
+  extends: .container-rules
+  image: $BUILDAH_IMAGE
+  needs:
+    - job: container-image
+      artifacts: false
+  services:
+    - name: $CI_IMAGE
+      alias: patrimeter
+      command: ["web"]
+  variables:
+    APP_SECRET: "smoke-test-only-0000000000000000000000000000000000000000000000000000"
+    AUTH_SECRET_KEY: "MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA="
+    DEFAULT_URI: "http://patrimeter:8080"
+    # The job's variables reach the service: a foreign PHP_VERSION must not prevent php-fpm from starting
+    # (regression of 11/11/2026: "php-fpm8.4: command not found" in the PHP 8.5 image).
+    PHP_VERSION: "inexistante"
+  script:
+    - sh ci/container-smoke.sh http://patrimeter:8080
+
+# Only promote the pipeline-specific image that passed both the smoke test and the image scan.
+container-publish:
+  stage: release
+  rules:
+    - !reference [.public-tag, rules]
+    - if: $PUBLIC_RELEASE_ENABLED == "1" && $CI_COMMIT_REF_PROTECTED == "true" && $CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $SECURITY_SCAN == "1"
+  environment: public/dockerhub
+  resource_group: public-dockerhub
+  interruptible: false
+  image: $BUILDAH_IMAGE
+  needs:
+    - job: container-image
+      artifacts: true
+    - job: container-smoke
+      artifacts: false
+    - job: captures
+      optional: true
+      artifacts: false
+    - job: security-gate
+      artifacts: false
+    - job: trivy-image
+      artifacts: false
+  variables:
+    STORAGE_DRIVER: vfs
+    BUILDAH_ISOLATION: chroot
+    BUILDAH_FORMAT: docker
+  script:
+    - command -v git >/dev/null || dnf install -y -q git-core
+    - sh ci/publish-image.sh
+
+github-publish:
+  stage: release
+  rules: !reference [.public-tag, rules]
+  resource_group: public-github
+  environment: public/github
+  interruptible: false
+  image: $PYTHON_IMAGE
+  needs:
+    - captures
+    - job: release
+      artifacts: false
+    - job: container-publish
+      artifacts: false
+  before_script:
+    - command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git)
+    - pip install --quiet --no-cache-dir "zensical==$ZENSICAL_VERSION"
+  script:
+    - sh ci/publish-github.sh
+
+stable-patch:
+  stage: release
+  image: $CI_PHP_IMAGE
+  interruptible: false
+  resource_group: stable-patch
+  environment: private/stable
+  # Wait for every previous stage (not just successful reports) before writing to the protected ref.
+  dependencies: []
+  rules:
+    - !reference [.not-tag, rules]
+    - !reference [.not-renovate, rules]
+    - if: $STABLE_RELEASE_ENABLED == "1" && $CI_COMMIT_REF_PROTECTED == "true" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "stable"
+  variables:
+    GIT_DEPTH: "0"
+  before_script:
+    - command -v python3 >/dev/null || (apt-get update -qq && apt-get install -y -qq python3)
+  script:
+    - |
+      set -eu
+      : "${STABLE_RELEASE_TOKEN:?}"
+      auth=$(mktemp)
+      trap 'rm -f "$auth"' EXIT
+      printf '%s\n' '#!/bin/sh' 'case "$1" in *Username*) echo oauth2;; *) printf "%s\n" "$STABLE_RELEASE_TOKEN";; esac' > "$auth"
+      chmod 700 "$auth"
+      GIT_ASKPASS="$auth" GIT_TERMINAL_PROMPT=0 python3 ci/stable-patch.py

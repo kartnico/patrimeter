@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{#- Welcome: the pyramid built level by level, from the base. Each level leads to its common account types. -#}
+{% block title %}{{ 'Construire ma pyramide'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ 'Construire ma pyramide'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+</div>
+<p class="page-intro">{{ 'Choisissez un niveau, en commençant par la base, et indiquez ce que vous y avez aujourd\'hui. Des montants approximatifs suffisent : vous les préciserez lors de la saisie du mois.'|trans }}</p>
+
+<div class="welcome-grid">
+    <section class="card pyramid-card" aria-label="{{ 'Pyramide du patrimoine'|trans }}">
+        {{ pyramid(snapshot) }}
+        <p class="pyramid-count"><strong>{{ '%count% niveau sur 6 rempli|%count% niveaux sur 6 remplis'|trans({'%count%': filled}) }}</strong></p>
+    </section>
+    <section class="card" aria-labelledby="welcome-levels">
+        <h2 id="welcome-levels">{{ 'Les six niveaux, de la base au sommet'|trans }}</h2>
+        <ol class="welcome-levels">
+            {% for line in levels %}
+            <li class="level-{{ line.level.value }}{{ line.count > 0 ? ' is-filled' }}">
+                <span class="level-name"><span class="level-dot" aria-hidden="true"></span>{{ line.level.label|trans({}, 'levels') }}</span>
+                {% if line.count > 0 %}
+                <span class="num">{{ line.net|money }}</span>
+                <a class="btn btn-small" href="{{ path('app_welcome_level', {level: line.level.value}) }}">{{ 'Compléter'|trans }}<span class="visually-hidden"> {{ line.level.label|trans({}, 'levels') }}</span></a>
+                {% else %}
+                <span class="muted small">{{ 'à remplir'|trans }}</span>
+                <a class="btn btn-small btn-primary" href="{{ path('app_welcome_level', {level: line.level.value}) }}">{{ 'Remplir'|trans }}<span class="visually-hidden"> {{ line.level.label|trans({}, 'levels') }}</span></a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ol>
+        <p class="muted small">{{ 'Un niveau sans rien ? Passez-le. Un bien immobilier avec votre part et ses crédits rattachés se crée depuis Biens immobiliers.'|trans }}</p>
+    </section>
+</div>
+<div class="actions actions-center">
+    <a class="btn btn-primary" href="{{ path('app_dashboard') }}">{{ 'Voir mon tableau de bord'|trans }}</a>
+    <a class="btn" href="{{ path('app_welcome_express') }}">{{ 'Tout saisir sur une page'|trans }}</a>
+</div>
+{% endblock %}

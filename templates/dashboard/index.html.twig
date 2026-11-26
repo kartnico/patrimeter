@@ -1,0 +1,298 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Patrimoine'|trans }}{% endblock %}
+
+{% block scripts %}
+{% if series is not empty %}
+<script src="{{ asset('vendor/chart.js/chart.umd.min.js') }}" defer></script>
+<script src="{{ asset('js/history.js') }}" defer></script>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ 'Patrimoine'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+    {#- No account yet: no change of month, the first accounts are created in the current one. -#}
+    {% if has_accounts %}
+    <nav class="month-nav" aria-label="{{ 'Changer de mois'|trans }}">
+        <a class="btn btn-small" href="{{ path('app_dashboard', {mois: prev_month.toString}) }}" aria-label="{{ 'Mois précédent : %month%'|trans({'%month%': prev_month|month_label}) }}">‹</a>
+        {{ include('_month_picker.html.twig', {picker: month_picker(month, last_month, data_first_month, path('app_dashboard'), current_month)}) }}
+        {% if next_month %}
+        <a class="btn btn-small" href="{{ path('app_dashboard', {mois: next_month.toString}) }}" aria-label="{{ 'Mois suivant : %month%'|trans({'%month%': next_month|month_label}) }}">›</a>
+        {% endif %}
+        {% if snapshot.hasData %}
+        <a class="btn btn-small" href="{{ path('app_report', {mois: month.toString}) }}">{{ 'Partager'|trans }}</a>
+        {% endif %}
+    </nav>
+    {% endif %}
+    {#- What the net worth is made of: the accounts and the properties. -#}
+    <p class="page-head-links">
+        <a class="btn btn-small" href="{{ path('app_accounts') }}">{{ 'Comptes'|trans }}</a>
+        <a class="btn btn-small" href="{{ path('app_properties') }}">{{ 'Biens immobiliers'|trans }}</a>
+        <a class="btn btn-small" href="{{ path('app_indicators') }}">{{ 'Indicateurs'|trans }}</a>
+    </p>
+</div>
+{{ include('_perimeter.html.twig') }}
+
+{% if not has_accounts and not own %}
+<div class="card empty-state">
+    <p>{{ 'Aucun compte dans ce périmètre.'|trans }}</p>
+    <a class="btn" href="{{ path('app_family') }}">{{ 'Membres de la famille'|trans }}</a>
+</div>
+{% elseif not has_accounts %}
+{#- Welcome: five ways to start, the pyramid built level by level first. -#}
+<section class="card welcome" aria-labelledby="welcome-title">
+    <h2 id="welcome-title">{{ 'Bienvenue dans Patrimeter'|trans }}</h2>
+    <p>{{ 'En quelques minutes, dessinons votre pyramide de patrimoine : comment voulez-vous commencer ? Tout se modifie ensuite.'|trans }}</p>
+    <ul class="welcome-choices">
+        <li>
+            <a class="welcome-choice is-default" href="{{ path('app_welcome_pyramid') }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 22 20H2zM6.5 13h11M9.3 8h5.4"/></svg>
+                <span><strong>{{ 'Construire ma pyramide'|trans }}</strong> <span class="welcome-tag">{{ 'le plus simple'|trans }}</span><br>
+                <span class="muted small">{{ 'Niveau par niveau, en partant de la base · environ 5 minutes'|trans }}</span></span>
+            </a>
+        </li>
+        <li>
+            <a class="welcome-choice" href="{{ path('app_welcome_questions') }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></svg>
+                <span><strong>{{ 'Répondre à quelques questions'|trans }}</strong> <span class="welcome-tag">{{ 'pour débuter'|trans }}</span><br>
+                <span class="muted small">{{ 'Une question à la fois, des montants par tranches · environ 4 minutes'|trans }}</span></span>
+            </a>
+        </li>
+        <li>
+            <a class="welcome-choice" href="{{ path('app_welcome_express') }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>
+                <span><strong>{{ 'Saisie express'|trans }}</strong><br>
+                <span class="muted small">{{ 'Tous vos comptes et leurs soldes sur une seule page · environ 2 minutes'|trans }}</span></span>
+            </a>
+        </li>
+        <li>
+            <a class="welcome-choice" href="{{ path('app_data', {_fragment: 'csv'}) }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>
+                <span><strong>{{ 'Importer un fichier CSV'|trans }}</strong><br>
+                <span class="muted small">{{ 'Comptes, crédits et biens depuis un tableur'|trans }}</span></span>
+            </a>
+        </li>
+        <li>
+            <a class="welcome-choice" href="{{ path('app_account_new') }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                <span><strong>{{ 'Créer compte par compte'|trans }}</strong><br>
+                <span class="muted small">{{ 'Avec tous les réglages : niveau, nature, date d\'ouverture'|trans }}</span></span>
+            </a>
+        </li>
+    </ul>
+    <p class="muted small">{{ 'Propriétaire d\'un logement ou d\'un bien locatif ? Créez-le comme bien immobilier, avec votre part et ses crédits.'|trans }}
+        <a href="{{ path('app_property_new') }}">{{ 'Créer un bien immobilier'|trans }}</a></p>
+    <p class="muted small">{{ 'Compte famille : importez plutôt les données de ses membres.'|trans }}
+        <a href="{{ path('app_family') }}">{{ 'Membres de la famille'|trans }}</a></p>
+</section>
+{% elseif first_steps is not null %}
+{#- First steps of the challenges: five steps to see the whole wealth, one star each (until they are done once). -#}
+{%- set first_steps_routes = {household: 'app_budget_household', accounts: 'app_welcome_express', month_entered: 'app_entry', property: 'app_property_new', goal: 'app_goal_new'} -%}
+<section class="card first-steps" aria-labelledby="first-steps-title">
+    <div class="first-steps-head">
+        <h2 id="first-steps-title">{{ 'Premiers pas'|trans }}</h2>
+        {{ include('challenges/_stars.html.twig', {earned: first_steps|filter(item => item.done)|length, total: first_steps|length}, with_context = false) }}
+    </div>
+    <p class="muted small">{{ 'Cinq étapes pour voir tout votre patrimoine, une étoile chacune.'|trans }}</p>
+    {#- The saver style orders the challenges: asked here as long as none is chosen (optional). -#}
+    {% if saver_style() is null %}
+    <p class="small">{{ 'Quel épargnant êtes-vous ? Votre style ordonne les défis selon ce qui compte pour vous.'|trans }}
+        <a href="{{ path('app_security', {_fragment: 'game-title'}) }}">{{ 'Choisir mon style'|trans }}</a></p>
+    {% endif %}
+    <ul class="first-steps-list">
+        {% for item in first_steps %}
+        {%- set step_route = first_steps_routes[item.step.value] -%}
+        <li class="{{ item.done ? 'is-done' }}">
+            <span class="step-mark" aria-hidden="true">{{ item.done ? '✓' }}</span>
+            <span>{{ item.step.label|trans }}
+                {%- if item.done %}<span class="visually-hidden"> ({{ 'fait'|trans }})</span>
+                {%- elseif demo_allows(step_route) %} · <a href="{{ path(step_route) }}">{{ 'Y aller'|trans }}<span class="visually-hidden"> : {{ item.step.label|trans }}</span></a>{% endif -%}
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+    <form method="post" action="{{ path('app_challenges_settings') }}" class="actions">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <input type="hidden" name="_return" value="{{ path('app_dashboard') }}">
+        <a class="btn btn-small" href="{{ path('app_challenges') }}">{{ 'Voir les défis'|trans }}</a>
+        <button type="submit" name="action" value="hide_first_steps" class="btn btn-small">{{ 'Masquer cette carte'|trans }}</button>
+    </form>
+</section>
+{% elseif own and (not has_property or not has_other_account) %}
+{#- Guidance until both exist: what is still missing to see the whole wealth. -#}
+<section class="card onboarding" aria-labelledby="onboarding-title">
+    <h2 id="onboarding-title">{{ 'Complétez votre patrimoine'|trans }}</h2>
+    {% if not has_property %}
+    <p>{{ 'Propriétaire d\'un logement ou d\'un bien locatif ? Ajoutez-le comme bien immobilier, avec votre part et ses crédits : la pyramide en tiendra compte.'|trans }}</p>
+    <p class="actions"><a class="btn btn-primary" href="{{ path('app_property_new') }}">{{ 'Créer un bien immobilier'|trans }}</a></p>
+    {% else %}
+    <p>{{ 'Ajoutez vos comptes (compte courant, livrets, assurance-vie, PEA…) et vos autres crédits, pour voir tout votre patrimoine.'|trans }}</p>
+    <p class="actions"><a class="btn btn-primary" href="{{ path('app_account_new') }}">{{ 'Créer un compte'|trans }}</a></p>
+    {% endif %}
+</section>
+{% endif %}
+{#- The page itself, once accounts exist: nothing more without any (the welcome above). -#}
+{% if not has_accounts %}
+{% elseif not snapshot.hasData %}
+<div class="card empty-state">
+    <p>{{ 'Aucun solde connu pour %month%.'|trans({'%month%': month|month_label}) }}</p>
+    {% if first_month %}
+    <p class="muted">{{ 'Vos données commencent en %month%.'|trans({'%month%': first_month|month_label}) }}</p>
+    <div class="actions actions-center">
+        <a class="btn btn-primary" href="{{ path('app_dashboard', {mois: first_month.toString}) }}">{{ 'Aller à %month%'|trans({'%month%': first_month|month_label}) }}</a>
+        {% if own %}
+        <a class="btn" href="{{ path('app_entry', {mois: month.toString}) }}">{{ 'Saisir les soldes %of_month%'|trans({'%of_month%': month|month_of}) }}</a>
+        {% endif %}
+    </div>
+    {% elseif own %}
+    <a class="btn btn-primary" href="{{ path('app_entry', {mois: month.toString}) }}">{{ 'Saisir les soldes %of_month%'|trans({'%of_month%': month|month_of}) }}</a>
+    {% endif %}
+</div>
+{% else %}
+
+{% if entry_due %}
+<p class="flash entry-due">{{ 'Les soldes de %month% ne sont pas encore saisis.'|trans({'%month%': month|month_label}) }} <a href="{{ path('app_entry') }}">{{ 'Saisir le mois'|trans }}</a></p>
+{% endif %}
+
+<section class="card summary" aria-label="{{ 'Synthèse'|trans }}">
+    <div class="summary-main">
+        <p class="summary-label">{{ 'Patrimoine net'|trans }}</p>
+        <p class="summary-total num{{ snapshot.net < 0 ? ' negative' }}">{{ snapshot.net|money }}</p>
+        {% for comparison in comparisons %}
+        {% if comparison.variation is not null %}
+        <p class="summary-variation {{ comparison.variation|sign_class }}">
+            <span class="num">{{ comparison.variation|money(true) }}</span>
+            {% if comparison.percent is not null %}
+            <span class="num">({{ (comparison.percent > 0 ? '+' : '') ~ comparison.percent|percent(2) }})</span>
+            {% endif %}
+            <span class="muted">{{ loop.first ? 'vs %month%'|trans({'%month%': comparison.month|month_label}) : 'sur 1 an'|trans }}</span>
+        </p>
+        {% elseif loop.first %}
+        <p class="summary-variation muted">{{ 'Pas de donnée pour %month%.'|trans({'%month%': comparison.month|month_label}) }}</p>
+        {% endif %}
+        {% endfor %}
+        {% if saver_level %}
+        <p class="summary-level"><a href="{{ path('app_challenges') }}"><span class="summary-level-star" aria-hidden="true">★</span>
+            {{ 'Niveau %number% : %name%'|trans({'%number%': saver_level.level.number, '%name%': saver_level.level.name|trans}) }}
+            <span class="muted">· {{ '%count% étoile|%count% étoiles'|trans({'%count%': saver_level.stars}) }}</span></a></p>
+        {% endif %}
+    </div>
+    <dl class="summary-figures">
+        <div><dt>{{ 'Actifs bruts'|trans }}</dt><dd class="num">{{ snapshot.assets|money }}</dd></div>
+        <div><dt>{{ 'Passifs'|trans }}</dt><dd class="num{{ snapshot.liabilities > 0 ? ' negative' }}">{{ (-snapshot.liabilities)|money }}</dd></div>
+        <div>
+            <dt>{{ 'Soldes'|trans }}</dt>
+            <dd>
+                {%- if own -%}
+                <a href="{{ path('app_entry', {mois: month.toString}) }}">{{ '%count% saisi|%count% saisis'|trans({'%count%': snapshot.enteredCount}) }},
+                {{ '%count% reporté|%count% reportés'|trans({'%count%': snapshot.carriedCount}) }}</a>
+                {%- else -%}
+                {{ '%count% saisi|%count% saisis'|trans({'%count%': snapshot.enteredCount}) }},
+                {{ '%count% reporté|%count% reportés'|trans({'%count%': snapshot.carriedCount}) }}
+                {%- endif -%}
+            </dd>
+        </div>
+    </dl>
+</section>
+
+{% if indicators is not empty %}
+{#- The user's own indicators this month (IndicatorController), from the net worth computed above. -#}
+<section class="card indicators-card" aria-labelledby="indicators-title">
+    <h2 id="indicators-title">{{ 'Mes indicateurs'|trans }}</h2>
+    <dl class="summary-figures">
+        {% for line in indicators %}
+        <div>
+            <dt><a href="{{ path('app_indicator_edit', {id: line.indicator.id}) }}">{{ line.indicator.name }}</a></dt>
+            <dd class="num{{ line.value < 0 ? ' negative' }}">{{ line.value|money }}{% if line.share is not null %} <span class="muted small">· {{ line.share|percent }}</span>{% endif %}</dd>
+        </div>
+        {% endfor %}
+    </dl>
+</section>
+{% endif %}
+
+{#- A level of the pyramid, hovered or clicked, highlights its lines in the other boxes, and the other way round
+    (app.js, data-level). -#}
+<div class="dashboard-grid" data-level-highlight>
+    <section class="card pyramid-card" aria-label="{{ 'Pyramide du patrimoine'|trans }}">
+        {{ pyramid(snapshot) }}
+        {% if snapshot.net <= 0 %}
+        <p class="muted small">{{ 'Patrimoine net négatif ou nul : les pourcentages ne sont pas significatifs.'|trans }}</p>
+        {% endif %}
+    </section>
+
+    <section class="card levels-card" aria-label="{{ 'Détail par niveau'|trans }}">
+        <h2>{{ 'Détail par niveau'|trans }}</h2>
+        {# Visual order of the pyramid: from the top to the base. #}
+        {% for level in levels()|reverse %}
+        {% set total = snapshot.level(level) %}
+        {% set level_variation = total.net - previous.level(level).net %}
+        <details class="level-detail level-{{ level.value }}" data-level="{{ level.value }}">
+            <summary>
+                <span class="level-name"><span class="level-dot" aria-hidden="true"></span>{{ level.label|trans({}, 'levels') }}</span>
+                <span class="level-figures">
+                    <span class="num{{ total.net < 0 ? ' negative' }}">{{ total.net|money }}</span>
+                    <span class="num muted small">{{ snapshot.share(level)|percent }}</span>
+                </span>
+            </summary>
+            {% if total.isEmpty %}
+            <p class="muted small">{{ 'Aucun compte valorisé à ce niveau.'|trans }}</p>
+            {% else %}
+            <ul class="level-lines">
+                {% for line in total.lines %}
+                <li>
+                    {%- if account_members[line.account.id] is defined %}
+                    <span>{{ line.account.name }} <span class="muted small">· {{ account_members[line.account.id] }}</span></span>
+                    {%- else %}
+                    <a href="{{ path('app_account_edit', {id: line.account.id}) }}">{{ line.account.name }}</a>
+                    {%- endif %}
+                    <span class="line-value">
+                        <span class="num{{ line.account.isLiability ? ' negative' }}">{{ line.account.signed(line.value.cents)|money }}</span>
+                        {{ value_badge(line.value) }}
+                    </span>
+                </li>
+                {% endfor %}
+                {% if previous.hasData %}
+                <li class="muted small">
+                    <span>{{ 'Variation vs %month%'|trans({'%month%': prev_month|month_short}) }}</span>
+                    <span class="num {{ level_variation|sign_class }}">{{ level_variation|money(true) }}</span>
+                </li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </details>
+        {% endfor %}
+    </section>
+
+    {#- Split of the investments and recommendations: side by side, of the same height. -#}
+    {% if allocation %}
+    <div class="card allocation-card">
+        {{ include('dashboard/_allocation.html.twig') }}
+    </div>
+    {% endif %}
+    {{ include('dashboard/_advice.html.twig') }}
+</div>
+
+{#- Change of the net worth over 3, 6 and 12 months, when at least one period is known. -#}
+{% if trends|filter(t => t.value is not null) is not empty %}
+{{ include('dashboard/_trends.html.twig') }}
+{% endif %}
+
+{#- Position among French households and among the world's adults: one card each, side by side. -#}
+{% if wealth_rank or world_rank %}
+<div class="rank-grid">
+    {% if wealth_rank %}
+    {{ include('dashboard/_wealth_rank.html.twig', {rank: wealth_rank}) }}
+    {% endif %}
+    {% if world_rank %}
+    {{ include('dashboard/_world_wealth_rank.html.twig', {rank: world_rank}) }}
+    {% endif %}
+</div>
+{% endif %}
+{% endif %}
+
+{#- History of the net worth, up to the month shown, at the bottom of the page (HistoryChart). -#}
+{% if has_accounts and series is not empty %}
+{{ include('dashboard/_history.html.twig') }}
+{% endif %}
+{% endblock %}

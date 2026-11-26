@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Lien expiré'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card login-card">
+    <h1>{{ 'Lien invalide ou expiré'|trans }}</h1>
+    <p>{{ 'Ce lien de confirmation n\'est plus valable : il a déjà servi, a expiré (24 heures) ou a été remplacé par une inscription plus récente.'|trans }}</p>
+    <p class="login-alt"><a href="{{ path('app_login') }}">{{ 'Se connecter'|trans }}</a> · <a href="{{ path('app_register') }}">{{ 'Recommencer l\'inscription'|trans }}</a></p>
+</section>
+{% endblock %}

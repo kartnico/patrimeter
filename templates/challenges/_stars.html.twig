@@ -1,0 +1,4 @@
+{#- Stars earned out of the total: drawn for the eye with the score in clear ("3 sur 6"), said in a sentence for screen
+    readers (never the colour alone). Variables: earned, total. -#}
+<span class="stars"><span aria-hidden="true">{% for i in 1..total %}<span class="{{ i <= earned ? 'star-on' : 'star-off' }}">{{ i <= earned ? '★' : '☆' }}</span>{% endfor %}</span>
+    <span class="stars-score" aria-hidden="true">{{ '%count% sur %total%'|trans({'%count%': earned, '%total%': total}) }}</span><span class="visually-hidden">{{ '%count% étoile sur %total%|%count% étoiles sur %total%'|trans({'%count%': earned, '%total%': total}) }}</span></span>

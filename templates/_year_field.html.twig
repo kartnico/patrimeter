@@ -1,0 +1,12 @@
+{#-
+    Optional YYYY year field (a birth year), usable without JavaScript; app.js shows it as the month picker of the page
+    heads ("1985"), a button that opens a calendar of 12 years, with a way to empty it again.
+    Variables: id, name, value, attributes (extra attributes of the field: aria-invalid… from the form's macros).
+-#}
+<div class="month-field" data-month-field data-mode="year" data-today="{{ current_month_value() }}"
+     data-label-open="{{ 'Choisir l\'année dans un calendrier'|trans }}" data-label-empty="{{ 'Choisir l\'année'|trans }}"
+     data-label-previous="{{ 'Années précédentes'|trans }}" data-label-next="{{ 'Années suivantes'|trans }}"
+     data-label-clear="{{ 'Aucune année'|trans }}">
+    <input type="text" id="{{ id }}" name="{{ name }}" value="{{ value }}" inputmode="numeric" maxlength="4"
+           pattern="[0-9]{4}" placeholder="{{ 'AAAA'|trans }}" autocomplete="off"{{ attributes ?? '' }}>
+</div>

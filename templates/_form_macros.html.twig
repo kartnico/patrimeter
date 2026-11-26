@@ -1,0 +1,11 @@
+{#- Error and description of a form field, for the forms without the Symfony Form component (registration,
+    installation wizard). Variables: errors (messages by field, translated on display), field, hint (id of a hint). -#}
+{%- macro error(errors, field) -%}
+    {%- if errors[field] is defined %}<p class="field-error" id="err-{{ field }}">{{ errors[field]|trans }}</p>{% endif -%}
+{%- endmacro -%}
+
+{%- macro described(errors, field, hint) -%}
+    {%- set ids = (hint ? [hint] : [])|merge(errors[field] is defined ? ['err-' ~ field] : []) -%}
+    {%- if errors[field] is defined %} aria-invalid="true"{% endif -%}
+    {%- if ids is not empty %} aria-describedby="{{ ids|join(' ') }}"{% endif -%}
+{%- endmacro -%}

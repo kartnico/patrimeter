@@ -1,0 +1,44 @@
+# Patrimeter with Docker Compose or Podman (podman compose, podman-compose): docs/docker.md.
+# Configuration in patrimeter.env (template: docker/patrimeter.env.example). HTTP on port 8080, to put behind the
+# reverse proxy that handles HTTPS.
+name: patrimeter
+
+x-patrimeter: &patrimeter
+  image: ${PATRIMETER_IMAGE:?Set PATRIMETER_IMAGE in the Compose .env file}
+  env_file: patrimeter.env
+  restart: unless-stopped
+  volumes:
+    - data:/srv/patrimeter/var
+
+services:
+  # nginx and php-fpm; on a new version, backs up the database then applies the migrations.
+  app:
+    <<: *patrimeter
+    command: web
+    ports:
+      - "${PATRIMETER_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8080/connexion') === false ? 1 : 0);"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  # Scheduled tasks (purges, database maintenance).
+  scheduler:
+    <<: *patrimeter
+    command: scheduler
+    depends_on: [app]
+
+  # Daily backup of the database into the "backups" volume.
+  backup:
+    <<: *patrimeter
+    command: backup
+    depends_on: [app]
+    volumes:
+      - data:/srv/patrimeter/var
+      - backups:/var/backups/patrimeter
+
+volumes:
+  data:
+  backups:

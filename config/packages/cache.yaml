@@ -1,0 +1,14 @@
+framework:
+    cache:
+        prefix_seed: kartzone/patrimeter
+        pools:
+            # Attempt limiting and TOTP code replay: in the database (cache_items table, created by a
+            # migration), hence shared by all the processes and kept by cache:clear.
+            cache.security:
+                adapter: cache.adapter.doctrine_dbal
+
+when@test:
+    framework:
+        cache:
+            # A test must inherit nothing from the previous one (client metadata documents…).
+            app: cache.adapter.array

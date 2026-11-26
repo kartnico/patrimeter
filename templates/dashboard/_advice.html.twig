@@ -1,0 +1,32 @@
+{#-
+    Recommendations of the month: emergency savings relative to the budget's spending, then the pyramid rules
+    (Patrimeter\Domain\PyramidAdvice). Variables: precaution, precaution_budgeted, advice, month, own (perimeter of this account).
+-#}
+{% import '_advice.html.twig' as advice_ui %}
+<section class="card advice-card" aria-labelledby="advice-title">
+    <h2 id="advice-title">{{ 'Recommandations'|trans }}</h2>
+    <p class="muted small">{{ 'Selon votre pyramide et votre budget %of_month%.'|trans({'%of_month%': month|month_of}) }}</p>
+
+    <h3 class="advice-subtitle"><span class="level-dot level-precaution" aria-hidden="true"></span>{{ 'Épargne de précaution'|trans }}</h3>
+    {{ include('_precaution.html.twig', {coverage: precaution, budgeted: precaution_budgeted, month: month, editable: own}) }}
+
+    <h3 class="advice-subtitle"><svg class="advice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 22 21H2z"/></svg>{{ 'Pyramide'|trans }}</h3>
+    <ul class="advice-list">
+        {% for item in advice %}
+        <li class="advice is-{{ item.severity.value }}">{{ advice_ui.tag(item.severity.value) }}
+            {%- if item.code == 'base_first' %}
+            {{ 'Vous détenez %risky% en actions et placements exotiques alors que l\'épargne de précaution n\'atteint pas sa cible : la pyramide se construit par la base.'|trans({'%risky%': item.values.risky|money}) }}
+            {%- elseif item.code == 'negative_level' %}
+            {{ 'Niveau « %level% » négatif (%amount%) : ses crédits dépassent la valeur des biens qu\'ils financent.'|trans({'%level%': item.values.level.label|trans({}, 'levels'), '%amount%': item.values.amount|money}) }}
+            {%- elseif item.code == 'allocation_above' %}
+            {{ '%level% : %actual% de vos placements, au-dessus du repère de %recommended%.'|trans({'%level%': item.values.level.label|trans({}, 'levels'), '%actual%': item.values.actual|percent(0), '%recommended%': item.values.recommended|percent(0)}) }}
+            {%- elseif item.code == 'allocation_below' %}
+            {{ '%level% : %actual% de vos placements, en dessous du repère de %recommended%.'|trans({'%level%': item.values.level.label|trans({}, 'levels'), '%actual%': item.values.actual|percent(0), '%recommended%': item.values.recommended|percent(0)}) }}
+            {%- else %}
+            {{ 'Rien à signaler sur l\'équilibre de la pyramide.'|trans }}
+            {%- endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    <p class="muted small">{{ 'Repères indicatifs, à adapter à votre situation : ce n\'est pas un conseil en investissement.'|trans }}</p>
+</section>

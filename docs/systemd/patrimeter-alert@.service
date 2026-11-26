@@ -1,0 +1,8 @@
+# Patrimeter — email alert to ADMIN_EMAIL when a service fails (OnFailure= of the other units).
+# To copy into /etc/systemd/system/patrimeter-alert@.service. Instance: name of the failed service.
+[Unit]
+Description=Alerte Patrimeter : échec de %i
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/runuser -u www-data -- /usr/bin/php /srv/patrimeter/bin/console app:alert "Le service %i a échoué. Détails : journalctl -u %i"

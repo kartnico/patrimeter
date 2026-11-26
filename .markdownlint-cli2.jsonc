@@ -1,0 +1,27 @@
+// markdownlint-cli2 ("js-css-lint" job, make js, docs/ci.md): Markdown of the repository and of the user
+// documentation (Zensical). Only the files under version control (gitignore): the pages that documentation/prepare.sh
+// copies into the site come from docs/ and are checked there.
+{
+    "gitignore": true,
+    "config": {
+        "default": true,
+        // Prose wrapped at 120 characters, like the code; tables, code blocks and headings are not wrapped.
+        "MD013": { "line_length": 120, "tables": false, "code_blocks": false, "headings": false },
+        // Python-Markdown (Zensical) needs 4 spaces for a nested list.
+        "MD007": { "indent": 4 },
+        // CHANGELOG: the same sections (Added, Changed…) under each version.
+        "MD024": { "siblings_only": true },
+        // Compact tables (| a | b |), the style of the whole repository.
+        "MD060": false,
+        // Anchors: Zensical's slugs (without accents nor punctuation) differ from GitHub's that this rule computes;
+        // they are checked by DocumentationLinksTest with Zensical's rule.
+        "MD051": false,
+        // Zensical admonitions and content tabs: their indented content is not an indented code block.
+        "MD046": { "style": "fenced" },
+        // Comments of the executed blocks (<!-- ci:… -->) and a few HTML elements (kbd, br) are allowed.
+        "MD033": { "allowed_elements": ["kbd", "br", "details", "summary", "img", "a", "p", "picture", "source"] }
+    },
+    "globs": ["*.md", "docs/**/*.md", "documentation/**/*.md", "tests/Fixtures/regression/*.md"],
+    // THIRD-PARTY-LICENSES.md is generated (make licenses), from composer.lock.
+    "ignores": ["node_modules/**", "vendor/**", "documentation/site/**", "THIRD-PARTY-LICENSES.md"]
+}

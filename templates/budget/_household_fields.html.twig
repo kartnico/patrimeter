@@ -1,0 +1,95 @@
+{#-
+    Fields of the tax household (budget creation and Tax household and categories page). Variables: household
+    (Household or null), form (HouseholdForm shown again after an error, or null).
+    The number of adults and the number of children are chosen in lists; app.js then shows only the rows of the people
+    chosen. Without JavaScript all the rows show, and only those up to the numbers chosen count (HouseholdForm).
+-#}
+{%- set household_errors = form ? form.errors : {} -%}
+{%- set household_adults = form ? form.adults : (household and household.isCouple ? '2' : '1') -%}
+{%- set household_children = form ? form.childrenCount : (household ? household.children|length : 0) -%}
+{%- set household_rows = household_child_rows(household, form) -%}
+{%- macro error(errors, field) -%}
+    {%- if errors[field] is defined %}<p class="field-error" id="err-{{ field|replace({'.': '-'}) }}">{{ errors[field]|trans }}</p>{% endif -%}
+{%- endmacro -%}
+{%- macro invalid(errors, field) -%}
+    {%- if errors[field] is defined %} aria-invalid="true" aria-describedby="err-{{ field|replace({'.': '-'}) }}"{% endif -%}
+{%- endmacro -%}
+{#- Field with a help text: the error, if any, is added to its description. -#}
+{%- macro described(errors, field, hint) -%}
+    {%- if errors[field] is defined %} aria-invalid="true" aria-describedby="{{ hint }} err-{{ field|replace({'.': '-'}) }}"{% else %} aria-describedby="{{ hint }}"{% endif -%}
+{%- endmacro -%}
+{% import _self as hf %}
+<div class="form-row">
+    <div class="field">
+        <label for="adults-count">{{ 'Nombre d\'adultes'|trans }}</label>
+        <select id="adults-count" name="adults" data-household-count="adult"{{ hf.invalid(household_errors, 'adults') }}>
+            <option value="1"{{ household_adults == '1' ? ' selected' }}>{{ 'Un adulte'|trans }}</option>
+            <option value="2"{{ household_adults == '2' ? ' selected' }}>{{ 'Deux adultes'|trans }}</option>
+        </select>
+        {{ hf.error(household_errors, 'adults') }}
+    </div>
+    <div class="field">
+        <label for="children-count">{{ 'Nombre d\'enfants'|trans }}</label>
+        <select id="children-count" name="children_count" data-household-count="child"{{ hf.described(household_errors, 'children_count', 'children-count-hint') }}>
+            {% for household_number in 0..12 %}
+            <option value="{{ household_number }}"{{ household_number == household_children ? ' selected' }}>{{ household_number == 0 ? 'Aucun'|trans : household_number }}</option>
+            {% endfor %}
+        </select>
+        <p class="hint" id="children-count-hint">{{ 'Un poste du budget peut être rattaché à un enfant ; à partir de 16 ans, ses revenus se saisissent avec ceux des adultes.'|trans }}</p>
+        {{ hf.error(household_errors, 'children_count') }}
+    </div>
+</div>
+
+<fieldset class="field household-people">
+    <legend>{{ 'Adultes du foyer fiscal'|trans }}</legend>
+    {% for household_adult in [1, 2] %}
+    <div class="form-row" data-household-row="adult" data-household-index="{{ household_adult }}">
+        <div class="field">
+            <label for="adult-{{ household_adult }}">{{ household_adult == 1 ? 'Prénom du premier adulte'|trans : 'Prénom du second adulte'|trans }}</label>
+            <input type="text" id="adult-{{ household_adult }}" name="adult_names[{{ household_adult }}]" maxlength="40" autocomplete="off"
+                   value="{{ form ? (form.adultNames[household_adult] ?? '') : (household and household.hasAdult(household_adult) ? household.adultName(household_adult) : '') }}"{{ hf.invalid(household_errors, 'adult_names.' ~ household_adult) }}>
+            {{ hf.error(household_errors, 'adult_names.' ~ household_adult) }}
+        </div>
+        <div class="field">
+            <label for="adult-year-{{ household_adult }}">{{ 'Année de naissance'|trans }}</label>
+            {{ include('_year_field.html.twig', {id: 'adult-year-' ~ household_adult, name: 'adult_years[' ~ household_adult ~ ']',
+                value: form ? (form.adultYears[household_adult] ?? '') : (household ? household.adultBirthYear(household_adult) : ''),
+                attributes: hf.invalid(household_errors, 'adult_years.' ~ household_adult)}, with_context = false) }}
+            {{ hf.error(household_errors, 'adult_years.' ~ household_adult) }}
+        </div>
+    </div>
+    {% endfor %}
+</fieldset>
+
+<fieldset class="field household-people" data-household-group="child">
+    <legend>{{ 'Enfants'|trans }}</legend>
+    {% for household_row in household_rows %}
+    {%- set household_slot = loop.index0 -%}
+    <div class="form-row" data-household-row="child" data-household-index="{{ loop.index }}">
+        <input type="hidden" name="child_ids[{{ household_slot }}]" value="{{ household_row.id }}">
+        <div class="field">
+            <label for="child-{{ household_slot }}">{{ 'Prénom de l\'enfant n° %number%'|trans({'%number%': loop.index}) }}</label>
+            <input type="text" id="child-{{ household_slot }}" name="child_names[{{ household_slot }}]" maxlength="40" autocomplete="off"
+                   value="{{ household_row.name }}"{{ hf.invalid(household_errors, 'child_names.' ~ household_slot) }}>
+            {{ hf.error(household_errors, 'child_names.' ~ household_slot) }}
+        </div>
+        <div class="field">
+            <label for="child-year-{{ household_slot }}">{{ 'Année de naissance'|trans }}</label>
+            {{ include('_year_field.html.twig', {id: 'child-year-' ~ household_slot, name: 'child_years[' ~ household_slot ~ ']',
+                value: household_row.year, attributes: hf.invalid(household_errors, 'child_years.' ~ household_slot)}, with_context = false) }}
+            {{ hf.error(household_errors, 'child_years.' ~ household_slot) }}
+        </div>
+    </div>
+    {% endfor %}
+    <p class="hint">{{ 'Seuls les enfants jusqu\'au nombre choisi comptent. Videz le prénom d\'un enfant déjà enregistré pour le retirer du foyer : ses postes ne lui sont plus rattachés.'|trans }}</p>
+</fieldset>
+
+<div class="form-row">
+    <div class="field">
+        <label for="precaution-months">{{ 'Épargne de précaution visée'|trans }}</label>
+        <input type="text" id="precaution-months" name="precaution_months" inputmode="numeric" maxlength="2" required autocomplete="off"
+               value="{{ form ? form.precautionMonths : (household ? household.precautionMonths : 3) }}"{{ hf.described(household_errors, 'precaution_months', 'precaution-months-hint') }}>
+        <p class="hint" id="precaution-months-hint">{{ 'En mois de dépenses du foyer (souvent de 3 à 6) ; 0 : pas de cible.'|trans }}</p>
+        {{ hf.error(household_errors, 'precaution_months') }}
+    </div>
+</div>

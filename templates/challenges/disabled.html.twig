@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{#- Challenges turned off by the user: how to turn them on again. -#}
+{% block title %}{{ 'Défis'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-head"><h1>{{ 'Défis'|trans }}</h1></div>
+<section class="card empty-state">
+    <p>{{ 'Les défis et les étoiles sont désactivés pour votre compte. Vos étoiles sont gardées.'|trans }}</p>
+    <form method="post" action="{{ path('app_challenges_settings') }}" class="actions actions-center">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <input type="hidden" name="_return" value="{{ path('app_challenges') }}">
+        <button type="submit" name="action" value="enable" class="btn btn-primary">{{ 'Activer les défis et les étoiles'|trans }}</button>
+    </form>
+</section>
+{% endblock %}

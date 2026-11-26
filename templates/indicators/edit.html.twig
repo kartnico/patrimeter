@@ -1,0 +1,51 @@
+{#- One indicator: its form, its history over twelve months, its deletion. Variables: indicator, history (month,
+    value, share), fields, errors, levels, accounts. -#}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ indicator.name }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ indicator.name }} <span class="muted">{{ 'Indicateur'|trans }}</span></h1>
+    <a class="btn btn-small" href="{{ path('app_indicators') }}">{{ 'Tous les indicateurs'|trans }}</a>
+</div>
+
+<section class="sheet" aria-labelledby="indicator-history-title">
+    <h2 id="indicator-history-title">{{ 'Douze derniers mois'|trans }}</h2>
+    {% if history is empty %}
+    <p class="muted">{{ 'Aucun relevé sur cette période.'|trans }}</p>
+    {% else %}
+    <table class="ledger">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Mois'|trans }}</th>
+                <th scope="col" class="num">{{ 'Valeur'|trans }}</th>
+                {% if indicator.shareOfNetWorth %}<th scope="col" class="num">{{ 'Part du patrimoine net'|trans }}</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in history %}
+            <tr>
+                <th scope="row">{{ row.month|month_label|capitalize }}</th>
+                <td class="num">{{ row.value|money }}</td>
+                {% if indicator.shareOfNetWorth %}<td class="num">{{ row.share is null ? '—' : row.share|percent }}</td>{% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</section>
+
+<section class="sheet" aria-labelledby="indicator-edit-title">
+    <h2 id="indicator-edit-title">{{ 'Modifier'|trans }}</h2>
+    {{ include('indicators/_form.html.twig', {action: path('app_indicator_update', {id: indicator.id}), submit: 'Enregistrer'|trans}) }}
+</section>
+
+<section class="sheet" aria-labelledby="indicator-delete-title">
+    <h2 id="indicator-delete-title">{{ 'Supprimer'|trans }}</h2>
+    <form method="post" action="{{ path('app_indicator_delete', {id: indicator.id}) }}" class="actions">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <button type="submit" class="btn btn-danger">{{ 'Supprimer cet indicateur'|trans }}</button>
+    </form>
+</section>
+{% endblock %}

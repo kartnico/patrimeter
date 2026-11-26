@@ -1,0 +1,95 @@
+parameters:
+    # Container compiled into a single file (Symfony's performance best practices).
+    .container.dumper.inline_factories: true
+
+    # Time zone used to determine the month and today's date.
+    app.timezone: '%env(APP_TIMEZONE)%'
+
+    # Expiry of the session after inactivity, and maximum duration since the sign-in (seconds).
+    app.session_idle_timeout: 1800
+    app.session_max_lifetime: 43200
+
+    # Derivation of the envelope key from the password (Argon2id): 3 passes, 64 MiB.
+    app.crypto.kdf_ops_limit: 3
+    app.crypto.kdf_mem_limit: 67108864
+
+    # Monitoring markers (/sante): written by the scheduled tasks and by the backup script.
+    app.supervision_dir: '%kernel.project_dir%/var/supervision'
+
+    # Demonstration mode (DEMO_MODE): lifetime of an account (seconds), accounts at the same time, rows of data an
+    # account may store (the example data take about 450), years of history of the example data.
+    app.demo.lifetime: 7200
+    app.demo.max_accounts: 50
+    app.demo.max_rows: 2000
+    app.demo.history_years: 3
+
+    # Attempt limiting: config/packages/rate_limiter.yaml.
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $timezone: '%app.timezone%'
+
+    Patrimeter\:
+        resource: '../src/'
+        exclude:
+            - '../src/Kernel.php'
+            - '../src/Domain/'
+
+    # Foreign keys enabled on each connection, with the same high priority as the SQLite settings
+    # (#[AsMiddleware(priority: 200)] on SqlitePragmasMiddleware): applied on the new connection, before any
+    # transaction (otherwise SQLite ignores them, notably under dama/doctrine-test-bundle, which opens a
+    # transaction per test). Doctrine class: configured here for lack of an attribute.
+    Doctrine\DBAL\Driver\AbstractSQLiteDriver\Middleware\EnableForeignKeys:
+        tags: [{ name: doctrine.middleware, priority: 200 }]
+
+    # Each user's Carbure instance: Symfony's HttpClient. The local network is allowed (Carbure often runs on a
+    # NAS); CARBURE_ALLOWED_HOSTS restricts the hosts (Patrimeter\Application\Carbure\CarbureBudget).
+    patrimeter.carbure_http_client:
+        alias: http_client
+
+    # Latest version check (LatestVersionCheck): Symfony's HttpClient, towards the address set by the administrator.
+    patrimeter.update_check_http_client:
+        alias: http_client
+
+    # Metadata documents of the OAuth clients: Symfony's HttpClient, private networks forbidden.
+    patrimeter.client_metadata_http_client:
+        class: Symfony\Component\HttpClient\NoPrivateNetworkHttpClient
+        arguments: ['@http_client']
+
+when@test:
+    parameters:
+        # Minimal cost in tests only (Argon2id remains the algorithm).
+        app.crypto.kdf_ops_limit: 1
+        app.crypto.kdf_mem_limit: 8192
+        # Monitoring markers specific to the tests, outside the development var/.
+        app.supervision_dir: '%kernel.cache_dir%/supervision'
+
+    services:
+        # Metadata documents: simulated answers (tests/Support/ClientMetadataResponses), without network.
+        patrimeter.client_metadata_http_client:
+            class: Symfony\Component\HttpClient\MockHttpClient
+            arguments: ['@Patrimeter\Tests\Support\ClientMetadataResponses']
+
+        Patrimeter\Tests\Support\ClientMetadataResponses: ~
+
+        # Simulated Carbure instance (tests/Support/FakeCarbure), without network.
+        patrimeter.carbure_http_client:
+            class: Symfony\Component\HttpClient\MockHttpClient
+            arguments: ['@Patrimeter\Tests\Support\FakeCarbure']
+
+        Patrimeter\Tests\Support\FakeCarbure:
+            public: true
+
+        # Detection of N+1 queries (tests/Functional/QueryCountTest).
+        Patrimeter\Tests\Support\QueryCounter:
+            public: true
+            tags: [{ name: doctrine.middleware }]
+
+        # Clock frozen in tests: current month, delays and expiries become deterministic.
+        clock:
+            class: Symfony\Component\Clock\MockClock
+            public: true
+            arguments: ['2026-11-15 12:00:00', 'Europe/Paris']

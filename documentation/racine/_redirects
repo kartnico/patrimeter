@@ -1,0 +1,6 @@
+# GitLab Pages redirections: site addresses without a language (up to 2.6.0), to the French site.
+/patrimeter/demarrage-rapide/ /patrimeter/fr/demarrage-rapide/ 301
+/patrimeter/utilisation/* /patrimeter/fr/utilisation/:splat 301
+/patrimeter/exploitation/* /patrimeter/fr/exploitation/:splat 301
+/patrimeter/CHANGELOG/ /patrimeter/fr/CHANGELOG/ 301
+/patrimeter/SECURITY/ /patrimeter/fr/SECURITY/ 301

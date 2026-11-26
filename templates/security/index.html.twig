@@ -1,0 +1,413 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Mon compte'|trans }}{% endblock %}
+
+{% block scripts %}{% if tab == 'sign_in' %}<script src="{{ asset('js/webauthn.js') }}" defer></script>{% endif %}{% endblock %}
+
+{% block body %}
+{{ include('_account_tabs.html.twig') }}
+
+{% if tab == 'profile' %}
+<section class="card">
+    <h2>{{ 'Profil'|trans }}</h2>
+    <dl class="profile">
+        <div><dt>{{ 'Adresse de connexion'|trans }}</dt><dd>{{ user.email }}</dd></div>
+        <div><dt>{{ 'Connexion'|trans }}</dt><dd>{{ 'Mot de passe, puis application d\'authentification (%count% code de secours restant)|Mot de passe, puis application d\'authentification (%count% codes de secours restants)'|trans({'%count%': backup_codes_left}) }}</dd></div>
+        <div><dt>{{ 'Passkeys (FIDO2) et clés de sécurité'|trans }}</dt><dd>{{ credentials|length }}</dd></div>
+        {% if api_available.any %}<div><dt>{{ 'Accès des agents IA et des applications'|trans }}</dt><dd>{{ api_grants|length }}</dd></div>{% endif %}
+    </dl>
+</section>
+
+{% if user.password %}
+<section class="card">
+    <h2>{{ 'Mot de passe'|trans }}</h2>
+    <form method="post" action="{{ path('app_security_password') }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        {#- Hidden account name, for password managers. -#}
+        <label for="password_username" hidden>{{ 'Adresse e-mail'|trans }}</label>
+        <input type="text" id="password_username" name="username" value="{{ user.email }}" autocomplete="username" hidden>
+        <label for="current_password">{{ 'Mot de passe actuel'|trans }}</label>
+        <input type="password" id="current_password" name="current_password" autocomplete="current-password" required>
+        <div class="form-row">
+            <div class="field">
+                <label for="new_password">{{ 'Nouveau mot de passe'|trans }}</label>
+                <input type="password" id="new_password" name="new_password" autocomplete="new-password"
+                       minlength="{{ min_length }}" required aria-describedby="new_password-meter new-password-hint">
+            </div>
+            <div class="field">
+                <label for="new_password_confirmation">{{ 'Confirmation'|trans }}</label>
+                <input type="password" id="new_password_confirmation" name="new_password_confirmation" autocomplete="new-password" required>
+            </div>
+        </div>
+        {{ include('_password_meter.html.twig', {input_id: 'new_password', confirm_id: 'new_password_confirmation', email: user.email, min_length: min_length}) }}
+        <p class="hint" id="new-password-hint">{{ 'Vos autres sessions seront déconnectées.'|trans }}</p>
+        <p class="actions"><button type="submit" class="btn btn-primary">{{ 'Changer le mot de passe'|trans }}</button></p>
+    </form>
+</section>
+{% endif %}
+
+<section class="card" aria-labelledby="reminder-title">
+    <h2 id="reminder-title">{{ 'Rappel mensuel'|trans }}</h2>
+    <p>{{ 'Un e-mail, le jour choisi vers %hour% h, si les soldes du mois ne sont pas encore saisis. Il ne contient aucun montant : hors de votre session, le serveur ne peut pas lire vos données.'|trans({'%hour%': reminder_hour}) }}</p>
+    {% if reminder_sender is not null %}
+    <p class="hint">{{ 'Expéditeur : %sender% (à ajouter à vos contacts pour qu\'il n\'arrive pas dans les indésirables).'|trans({'%sender%': reminder_sender}) }}</p>
+    {% endif %}
+    <form method="post" action="{{ path('app_reminder_save') }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <label class="choice"><input type="checkbox" name="enabled" value="1"{{ reminder_day is not null ? ' checked' }}> {{ 'Recevoir le rappel'|trans }}</label>
+        <div class="field">
+            <label for="reminder-day">{{ 'Jour du mois'|trans }}</label>
+            <select id="reminder-day" name="day">
+                {% for reminder_option in 1..28 %}
+                <option value="{{ reminder_option }}"{{ reminder_option == (reminder_day ?? reminder_default_day) ? ' selected' }}>{{ reminder_option }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <p class="actions"><button type="submit" class="btn">{{ 'Enregistrer'|trans }}</button></p>
+    </form>
+</section>
+
+<section class="card" aria-labelledby="email-locale-title">
+    <h2 id="email-locale-title">{{ 'Langue des e-mails'|trans }}</h2>
+    <p>{{ 'Les e-mails de Patrimeter (rappel mensuel, alertes de sécurité, mot de passe oublié) sont écrits dans cette langue.'|trans }}</p>
+    <form method="post" action="{{ path('app_security_email_locale') }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="field">
+            <label for="email-locale">{{ 'Langue'|trans }}</label>
+            <select id="email-locale" name="email_locale">
+                <option value=""{{ email_locale is null ? ' selected' }}>{{ 'Celle de l\'interface au moment de l\'envoi'|trans }}</option>
+                <option value="fr" lang="fr"{{ email_locale == 'fr' ? ' selected' }}>Français</option>
+                <option value="en" lang="en"{{ email_locale == 'en' ? ' selected' }}>English</option>
+            </select>
+        </div>
+        <p class="actions"><button type="submit" class="btn">{{ 'Enregistrer'|trans }}</button></p>
+    </form>
+</section>
+
+{% if game_offered() %}
+{#- Challenges and stars: on or off for this account (ChallengeController). -#}
+<section class="card" aria-labelledby="game-title">
+    <h2 id="game-title">{{ 'Défis et étoiles'|trans }}</h2>
+    <p>{{ 'Des étoiles pour de bonnes habitudes, une carte « Premiers pas » sur le tableau de bord et la page Défis. Ce n\'est pas un conseil en investissement.'|trans }}</p>
+    <form method="post" action="{{ path('app_challenges_settings') }}" class="actions">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <input type="hidden" name="_return" value="{{ path('app_security', {_fragment: 'game-title'}) }}">
+        {% if game_enabled() %}
+        <a class="btn" href="{{ path('app_challenges') }}">{{ 'Voir les défis'|trans }}</a>
+        <button type="submit" name="action" value="disable" class="btn">{{ 'Désactiver les défis et les étoiles'|trans }}</button>
+        {% else %}
+        <button type="submit" name="action" value="enable" class="btn">{{ 'Activer les défis et les étoiles'|trans }}</button>
+        {% endif %}
+    </form>
+    {% if game_enabled() %}
+    {#- Saver style: it only orders the challenges (ChallengeController::style). -#}
+    {%- set current_style = saver_style() -%}
+    <form method="post" action="{{ path('app_challenges_style') }}" class="style-form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <input type="hidden" name="_return" value="{{ path('app_security', {_fragment: 'game-title'}) }}">
+        <fieldset>
+            <legend>{{ 'Mon style d\'épargnant (facultatif)'|trans }}</legend>
+            <p class="muted small">{{ 'Il change seulement l\'ordre des défis ; il ne dit rien de ce que vous devriez acheter ni du risque à prendre.'|trans }}</p>
+            {% for style in enum_cases('Patrimeter\\Domain\\Game\\SaverStyle') %}
+            <label class="style-choice">
+                <input type="radio" name="style" value="{{ style.value }}"{% if current_style == style %} checked{% endif %}>
+                <span><strong>{{ style.label|trans }}</strong> <span class="muted small">{{ style.description|trans }}</span></span>
+            </label>
+            {% endfor %}
+            <label class="style-choice">
+                <input type="radio" name="style" value=""{% if current_style is null %} checked{% endif %}>
+                <span>{{ 'Aucun style'|trans }}</span>
+            </label>
+        </fieldset>
+        <button type="submit" class="btn btn-small">{{ 'Enregistrer le style'|trans }}</button>
+    </form>
+    {% endif %}
+</section>
+{% endif %}
+
+<section class="card">
+    <h2>{{ 'Vos données'|trans }}</h2>
+    <p>{{ 'Exportez vos comptes et relevés dans un fichier, pour les importer sur une autre instance de Patrimeter.'|trans }}</p>
+    <p class="actions"><a class="btn" href="{{ path('app_data') }}">{{ 'Exporter ou importer'|trans }}</a></p>
+</section>
+
+{#- Deletion of the account: identity confirmed less than 5 minutes ago, box to tick, then a last dialog (app.js). -#}
+<section class="card danger-zone" aria-labelledby="delete-account-title">
+    <h2 id="delete-account-title">{{ 'Supprimer mon compte'|trans }}</h2>
+    <p>{{ 'Le compte et toutes ses données sont supprimés définitivement : comptes, relevés, biens, budget, lien avec Carbure, membres de la famille, moyens de connexion et journal. Rien ne peut être récupéré ensuite ; exportez d\'abord vos données si vous voulez les garder.'|trans }}</p>
+    {% if reauthenticated %}
+    <form method="post" action="{{ path('app_security_delete_account') }}" class="form"
+          data-confirm="{{ 'Supprimer définitivement votre compte et toutes ses données ?'|trans }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        {% if user.email %}
+        <label for="delete_email">{{ 'Pour confirmer, saisissez l\'adresse de votre compte : %email%'|trans({'%email%': user.email}) }}</label>
+        <input type="email" id="delete_email" name="confirm_email" autocomplete="off" spellcheck="false" maxlength="254" required>
+        {% else %}
+        <label class="checkbox"><input type="checkbox" name="confirm" value="1" required> {{ 'Je comprends que mon compte et toutes ses données seront supprimés définitivement.'|trans }}</label>
+        {% endif %}
+        <p class="actions"><button type="submit" class="btn btn-danger">{{ 'Supprimer mon compte'|trans }}</button></p>
+    </form>
+    {% else %}
+    {{ include('security/_reauthenticate.html.twig', {
+        return_path: path('app_security'),
+        password_label: 'Pour supprimer votre compte, confirmez votre mot de passe'|trans,
+    }) }}
+    {% endif %}
+</section>
+{% elseif tab == 'sign_in' %}
+<section class="card">
+    <h2>{{ 'Second facteur'|trans }}</h2>
+    <p>{{ 'Application d\'authentification :'|trans }} <strong>{{ 'active'|trans }}</strong>.
+        {{ 'Codes de secours restants :'|trans }} <strong>{{ backup_codes_left }}</strong>.</p>
+    {% if reauthenticated %}
+    <div class="actions">
+        <a class="btn" href="{{ path('app_totp_setup') }}">{{ 'Changer d\'application'|trans }}</a>
+        <form method="post" action="{{ path('app_security_backup_codes') }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+            <button type="submit" class="btn">{{ 'Générer de nouveaux codes de secours'|trans }}</button>
+        </form>
+        <form method="post" action="{{ path('app_recovery_key_renew') }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+            <button type="submit" class="btn">{{ 'Nouvelle clé de récupération'|trans }}</button>
+        </form>
+    </div>
+    {% else %}
+    {{ include('security/_reauthenticate.html.twig', {
+        return_path: path('app_security_signin'),
+        password_label: 'Pour changer d\'application, renouveler vos codes de secours ou votre clé de récupération, ou déconnecter vos autres sessions, confirmez votre mot de passe'|trans,
+    }) }}
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>{{ 'Passkeys (FIDO2) et clés de sécurité'|trans }}</h2>
+    {% if credentials is empty %}
+    <p class="muted">{{ 'Aucun appareil enregistré.'|trans }}</p>
+    {% else %}
+    <ul class="credential-list">
+        {% for credential in credentials %}
+        <li>
+            <strong>{{ credential.label }}</strong>
+            <span class="muted">{{ credential.usage == 'passkey' ? 'Passkey (FIDO2)'|trans : 'Clé de sécurité (second facteur)'|trans }} · {{ 'ajouté le %date%'|trans({'%date%': credential.created_at|datetime_fr}) }}{% if credential.last_used_at %} · {{ 'utilisé le %date%'|trans({'%date%': credential.last_used_at|datetime_fr}) }}{% endif %}</span>
+            {% if reauthenticated %}
+            <div class="actions">
+                <form method="post" action="{{ path('app_passkey_rename', {credential: credential.credential_id}) }}" class="inline-form">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+                    <label for="rename-{{ loop.index }}" class="visually-hidden">{{ 'Nouveau nom'|trans }}</label>
+                    <input type="text" id="rename-{{ loop.index }}" name="label" value="{{ credential.label }}" maxlength="60" required>
+                    <button type="submit" class="btn btn-small">{{ 'Renommer'|trans }}</button>
+                </form>
+                <form method="post" action="{{ path('app_passkey_delete', {credential: credential.credential_id}) }}" data-confirm="{{ 'Supprimer cet appareil ?'|trans }}">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+                    <button type="submit" class="btn btn-small btn-danger">{{ 'Supprimer'|trans }}</button>
+                </form>
+            </div>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if reauthenticated %}
+    <form method="post" action="{{ path('app_passkey_register') }}" class="form webauthn-form" data-webauthn="register" data-webauthn-options="{{ path('app_passkey_options') }}" hidden>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <input type="hidden" name="credential">
+        <input type="hidden" name="prf_output">
+        <div class="form-row">
+            <div class="field">
+                <label for="passkey-label">{{ 'Nom de l\'appareil'|trans }}</label>
+                <input type="text" id="passkey-label" name="label" maxlength="60" placeholder="{{ 'ex. Téléphone'|trans }}" required>
+            </div>
+            <div class="field">
+                <label for="passkey-usage">{{ 'Usage'|trans }}</label>
+                <select id="passkey-usage" name="usage">
+                    <option value="passkey">{{ 'Passkey (FIDO2) : connexion sans mot de passe'|trans }}</option>
+                    <option value="security_key">{{ 'Clé de sécurité : second facteur'|trans }}</option>
+                </select>
+            </div>
+        </div>
+        <p class="actions"><button type="submit" class="btn">{{ 'Ajouter cet appareil'|trans }}</button></p>
+        <p class="field-error" data-webauthn-error hidden>{{ 'L\'enregistrement n\'a pas abouti.'|trans }}</p>
+    </form>
+    {% else %}
+    {#- Highlighted: adding a FIDO2 device needs a fresh identity confirmation, in the second factor box above. -#}
+    <p class="flash identity-notice"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>
+        <strong>{{ 'Confirmez votre identité ci-dessus pour ajouter ou modifier un appareil.'|trans }}</strong></p>
+    {% endif %}
+</section>
+
+{#- Open sessions, laid out like the sign-in log below: the current one marked, the others signed out one by one or
+    all together, once the identity is confirmed. -#}
+<section class="card" id="sessions" aria-labelledby="sessions-title">
+    <h2 id="sessions-title">{{ 'Sessions ouvertes'|trans }}</h2>
+    {% if sessions is empty %}
+    <p class="muted">{{ 'Aucune session.'|trans }}</p>
+    {% else %}
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="sessions-title">
+        <table class="table journal sessions">
+            <thead>
+                <tr><th scope="col">{{ 'Ouverte le'|trans }}</th><th scope="col">{{ 'Dernière activité'|trans }}</th><th scope="col">{{ 'Adresse IP'|trans }}</th><th scope="col">{{ 'Navigateur'|trans }}</th>{% if reauthenticated %}<th scope="col"><span class="visually-hidden">{{ 'Action'|trans }}</span></th>{% endif %}</tr>
+            </thead>
+            <tbody>
+            {% for open_session in sessions %}
+                <tr{% if open_session.current %} class="is-current"{% endif %}>
+                    <td>{{ open_session.created_at|datetime_fr }}{% if open_session.current %} <span class="badge badge-entered">{{ 'cette session'|trans }}</span>{% endif %}</td>
+                    <td>{{ open_session.last_seen_at|datetime_fr }}</td>
+                    <td>{{ open_session.ip ?? '—' }}</td>
+                    <td class="journal-agent">{{ open_session.user_agent ?? '—' }}</td>
+                    {% if reauthenticated %}
+                    <td>{% if not open_session.current %}
+                        <form method="post" action="{{ path('app_security_session_revoke', {session: open_session.id}) }}">
+                            <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+                            <button type="submit" class="btn btn-small">{{ 'Déconnecter'|trans }}</button>
+                        </form>
+                    {% endif %}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    <p class="hint">{{ 'Une session se ferme après %idle% minutes sans activité, et au plus tard %max% heures après la connexion.'|trans({'%idle%': session_idle_minutes, '%max%': session_max_hours}) }}</p>
+    {% if reauthenticated %}
+    <form method="post" action="{{ path('app_security_sessions') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <p class="actions"><button type="submit" class="btn">{{ 'Déconnecter mes autres sessions'|trans }}</button></p>
+    </form>
+    {% else %}
+    <p class="flash identity-notice"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>
+        <strong>{{ 'Confirmez votre identité ci-dessus pour déconnecter une session.'|trans }}</strong></p>
+    {% endif %}
+</section>
+
+{#- Trusted browsers: the code is not asked again there for a while; removed one by one or all together, once the
+    identity is confirmed. -#}
+<section class="card" id="trusted-browsers" aria-labelledby="trusted-browsers-title">
+    <h2 id="trusted-browsers-title">{{ 'Navigateurs de confiance'|trans }}</h2>
+    <p>{{ 'Sur un navigateur de confiance, la connexion ne demande plus le code de vérification pendant %days% jours : le mot de passe reste demandé. Cochez « Faire confiance à ce navigateur » sur l\'écran du code, jamais sur un ordinateur partagé.'|trans({'%days%': trusted_days}) }}</p>
+    {% if trusted_browsers is empty %}
+    <p class="muted">{{ 'Aucun navigateur de confiance.'|trans }}</p>
+    {% else %}
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="trusted-browsers-title">
+        <table class="table journal sessions">
+            <thead>
+                <tr><th scope="col">{{ 'Ajouté le'|trans }}</th><th scope="col">{{ 'Dernière utilisation'|trans }}</th><th scope="col">{{ 'Jusqu\'au'|trans }}</th><th scope="col">{{ 'Adresse IP'|trans }}</th><th scope="col">{{ 'Navigateur'|trans }}</th>{% if reauthenticated %}<th scope="col"><span class="visually-hidden">{{ 'Action'|trans }}</span></th>{% endif %}</tr>
+            </thead>
+            <tbody>
+            {% for trusted_browser in trusted_browsers %}
+                <tr{% if trusted_browser.current %} class="is-current"{% endif %}>
+                    <td>{{ trusted_browser.created_at|datetime_fr }}{% if trusted_browser.current %} <span class="badge badge-entered">{{ 'ce navigateur'|trans }}</span>{% endif %}</td>
+                    <td>{{ trusted_browser.last_used_at is null ? '—' : trusted_browser.last_used_at|datetime_fr }}</td>
+                    <td>{{ trusted_browser.expires_at|datetime_fr }}</td>
+                    <td>{{ trusted_browser.ip ?? '—' }}</td>
+                    <td class="journal-agent">{{ trusted_browser.user_agent ?? '—' }}</td>
+                    {% if reauthenticated %}
+                    <td>
+                        <form method="post" action="{{ path('app_security_trusted_browser_revoke', {browser: trusted_browser.id}) }}">
+                            <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+                            <button type="submit" class="btn btn-small">{{ 'Retirer'|trans }}</button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    <p class="hint">{{ 'Changer de mot de passe ou déconnecter vos autres sessions retire aussi tous vos navigateurs de confiance.'|trans }}</p>
+    {% if trusted_browsers is not empty %}
+    {% if reauthenticated %}
+    <form method="post" action="{{ path('app_security_trusted_browsers_revoke') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <p class="actions"><button type="submit" class="btn">{{ 'Retirer tous les navigateurs de confiance'|trans }}</button></p>
+    </form>
+    {% else %}
+    <p class="flash identity-notice"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>
+        <strong>{{ 'Confirmez votre identité ci-dessus pour retirer un navigateur de confiance.'|trans }}</strong></p>
+    {% endif %}
+    {% endif %}
+</section>
+
+{#- Sign-in log, at the end of this tab (/securite/journal leads here). -#}
+<section class="card" id="journal" aria-labelledby="journal-title">
+    <h2 id="journal-title">{{ 'Journal des connexions'|trans }}</h2>
+    {% if events is empty %}
+    <p class="muted">{{ 'Aucun événement.'|trans }}</p>
+    {% else %}
+    {#- Horizontally scrolling area: reachable with the keyboard (arrows), announced by the section title. -#}
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="journal-title">
+        <table class="table journal">
+            <thead>
+                <tr><th scope="col">{{ 'Date'|trans }}</th><th scope="col">{{ 'Événement'|trans }}</th><th scope="col">{{ 'Adresse IP'|trans }}</th><th scope="col">{{ 'Navigateur'|trans }}</th></tr>
+            </thead>
+            <tbody>
+            {% for event in events %}
+                <tr{% if not event.success %} class="is-failure"{% endif %}>
+                    <td>{{ event.created_at|datetime_fr }}</td>
+                    <td>{{ event.label|trans }}</td>
+                    <td>{{ event.ip ?? '—' }}</td>
+                    <td class="journal-agent">{{ event.user_agent ?? '—' }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p class="hint">{{ 'Événements des 180 derniers jours (30 au plus).'|trans }}</p>
+    {% endif %}
+</section>
+{% elseif tab == 'agents' %}
+<section class="card">
+    <h2>{{ 'Connecter un agent IA'|trans }}</h2>
+    <p>{{ 'Un agent IA (Claude, un assistant de code…) consulte vos données, et les saisit si vous l\'y autorisez, par le service MCP ; un script passe par l\'API REST. Chacun se connecte avec un jeton personnel ou après votre accord dans le navigateur.'|trans }}</p>
+    {#- Copy buttons (app.js): shown only when the browser lets the page write to the clipboard. -#}
+    <dl class="profile agent-urls">
+        {% if api_available.mcp %}<div><dt>{{ 'Adresse du service MCP'|trans }}</dt><dd><code id="mcp-url">{{ mcp_url }}</code>
+            <button type="button" class="btn btn-small copy-button" data-copy="mcp-url" data-copied="{{ 'Copié'|trans }}" aria-label="{{ 'Copier l\'adresse du service MCP'|trans }}" hidden>{{ 'Copier'|trans }}</button></dd></div>{% endif %}
+        {% if api_available.api %}<div><dt>{{ 'Adresse de l\'API REST'|trans }}</dt><dd><code id="api-url">{{ api_url }}</code>
+            <button type="button" class="btn btn-small copy-button" data-copy="api-url" data-copied="{{ 'Copié'|trans }}" aria-label="{{ 'Copier l\'adresse de l\'API REST'|trans }}" hidden>{{ 'Copier'|trans }}</button></dd></div>{% endif %}
+    </dl>
+    <p class="visually-hidden" role="status" data-copy-status data-copied-message="{{ 'Adresse copiée dans le presse-papiers.'|trans }}"></p>
+    <p><a href="{{ app_documentation_url(app.request.locale, 'utilisation/api/') }}">{{ 'Guide : connecter un agent IA ou un script'|trans }}</a></p>
+</section>
+
+<section class="card">
+    <h2>{{ 'API et applications'|trans }}</h2>
+    <p class="hint">{{ 'Applications et jetons qui accèdent à vos données par l\'API ou le service MCP.'|trans }}
+        {% if not api_available.api %}{{ 'Sur cette instance, seul le service MCP est activé.'|trans }}{% elseif not api_available.mcp %}{{ 'Sur cette instance, seule l\'API REST est activée.'|trans }}{% endif %}</p>
+    {% for grant in api_grants %}
+    <div class="api-grant">
+        <p><strong>{{ grant.name }}</strong> : {{ grant.scope matches '/write/' ? 'lecture et écriture'|trans : 'lecture'|trans }}{% if grant.personal %}, {{ 'jeton personnel'|trans }}{% endif %}
+            <br><span class="hint">{{ 'Accordé le %date%'|trans({'%date%': grant.created_at|slice(0, 10)|date_fr}) }}{% if grant.last_used_at %}, {{ 'utilisé le %date%'|trans({'%date%': grant.last_used_at|slice(0, 10)|date_fr}) }}{% endif %}{% if grant.expires_at %}, {{ 'expire le %date%'|trans({'%date%': grant.expires_at|slice(0, 10)|date_fr}) }}{% endif %}</span></p>
+        <form method="post" action="{{ path('app_access_token_revoke', {id: grant.id}) }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+            <p class="actions"><button type="submit" class="btn">{{ 'Retirer l\'accès'|trans }}</button></p>
+        </form>
+    </div>
+    {% else %}
+    <p>{{ 'Aucun accès accordé.'|trans }}</p>
+    {% endfor %}
+    {% if reauthenticated %}
+    <h3>{{ 'Créer un jeton personnel'|trans }}</h3>
+    <form method="post" action="{{ path('app_access_token_create') }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <label for="token_name">{{ 'Nom du jeton'|trans }}</label>
+        <input type="text" id="token_name" name="name" maxlength="80" required>
+        <label for="token_days">{{ 'Durée'|trans }}</label>
+        <select id="token_days" name="days">
+            {% for days in api_token_days %}
+            <option value="{{ days }}"{% if loop.index == 2 %} selected{% endif %}>{{ '%count% jours'|trans({'%count%': days}) }}</option>
+            {% endfor %}
+        </select>
+        <label class="checkbox"><input type="checkbox" name="write" value="1"> {{ 'Autoriser aussi l\'écriture'|trans }}</label>
+        <p class="actions"><button type="submit" class="btn">{{ 'Créer le jeton'|trans }}</button></p>
+    </form>
+    {% else %}
+    {{ include('security/_reauthenticate.html.twig', {
+        return_path: path('app_security_agents'),
+        password_label: 'Pour créer un jeton personnel, confirmez votre mot de passe'|trans,
+    }) }}
+    {% endif %}
+</section>
+{% endif %}
+{% endblock %}

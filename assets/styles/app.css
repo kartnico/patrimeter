@@ -1,0 +1,1437 @@
+/* Patrimeter — single style sheet, mobile first. No dependency. */
+
+:root {
+    --bg: #f4f5f2;
+    --surface: #ffffff;
+    --surface-2: #eef0ec;
+    --text: #1d2420;
+    --muted: #5d6862;
+    --border: #d7dcd6;
+    --primary: #2f6f5e;
+    --primary-text: #ffffff;
+    --primary-soft: #dcefe8;
+    /* Logo of the header and of the report: the favicon's two colours (public/favicon.svg), in both themes. */
+    --brand-base: #2f6f5e;
+    --brand-tip: #9cd3c0;
+    --danger: #b3261e;
+    --danger-soft: #fbe3e1;
+    --positive: #1f7a43;
+    --negative: #b3261e;
+    --info-soft: #e3edf9;
+    --carried: #7a5f14;
+    --carried-soft: #fbf3dc;
+    /* Stars of the challenges (text on surface and on star-soft: WCAG AA). */
+    --star: #8a5300;
+    --star-soft: #fdf0d5;
+    --focus: #1d5fd1;
+    /* Border of the input fields: contrast of at least 3:1 with the background (WCAG 1.4.11). */
+    --field-border: #78827c;
+    --radius: 10px;
+    --shadow: 0 1px 2px rgb(0 0 0 / 6%), 0 2px 8px rgb(0 0 0 / 4%);
+    --nav-height: 60px;
+
+    /*
+     * Colours of the pyramid levels: white text readable on them (contrast of at least 4.6:1), and levels
+     * distinct two by two for colour-blind people (protanopia, deuteranopia, tritanopia). Checked, in both
+     * themes, by tests/Architecture/ColorAccessibilityTest.php.
+     */
+    --lvl-residence: #3c537c;
+    --lvl-precaution: #0c6e64;
+    --lvl-fonds_euros: #5e7237;
+    --lvl-actions: #976611;
+    --lvl-immobilier: #8a3a0f;
+    --lvl-exotique: #8539ac;
+    --lvl-text: #ffffff;
+
+    /*
+     * Budget groups (50/30/20 rule) and remaining money: contrast of at least 3:1 on the surface (chart areas and
+     * flows), groups distinct two by two for colour-blind people. Checked by ColorAccessibilityTest.
+     */
+    --grp-needs: #2b6cb0;
+    --grp-wants: #a8661a;
+    --grp-savings: #2f855a;
+    --grp-available: #6b7280;
+
+    /* QR code: black on white in both themes (readable by every app) */
+    --qr-dark: #000000;
+    --qr-light: #ffffff;
+
+    color-scheme: light dark;
+}
+
+/*
+ * Dark theme: the system's, unless the user chose the light theme…
+ * (same set of colours repeated further down: CSS cannot share it).
+ */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #121614;
+        --surface: #1b211e;
+        --surface-2: #232b27;
+        --text: #e5ebe7;
+        --muted: #9aa69f;
+        --border: #34403a;
+        --primary: #5fb59b;
+        --primary-text: #0d1a15;
+        --primary-soft: #1f3a31;
+        --danger: #ef8a82;
+        --danger-soft: #3d1f1d;
+        --positive: #6bd296;
+        --negative: #ef8a82;
+        --info-soft: #1d2a3b;
+        --carried: #e2c46d;
+        --carried-soft: #3a311a;
+        --star: #f2c94c;
+        --star-soft: #3a311a;
+        --focus: #8ab4ff;
+        --field-border: #7c8982;
+        --lvl-residence: #9ad7f4;
+        --lvl-precaution: #4b9b91;
+        --lvl-fonds_euros: #c3d788;
+        --lvl-actions: #ebc347;
+        --lvl-immobilier: #c16f44;
+        --lvl-exotique: #a475bd;
+        --lvl-text: #0d1a15;
+        --grp-needs: #7ab3ec;
+        --grp-wants: #e0a458;
+        --grp-savings: #6ccf98;
+        --grp-available: #a3acb9;
+        --shadow: none;
+    }
+}
+
+/* …or if they chose it explicitly (attribute written by the server and by app.js). */
+:root[data-theme="dark"] {
+    --bg: #121614;
+    --surface: #1b211e;
+    --surface-2: #232b27;
+    --text: #e5ebe7;
+    --muted: #9aa69f;
+    --border: #34403a;
+    --primary: #5fb59b;
+    --primary-text: #0d1a15;
+    --primary-soft: #1f3a31;
+    --danger: #ef8a82;
+    --danger-soft: #3d1f1d;
+    --positive: #6bd296;
+    --negative: #ef8a82;
+    --info-soft: #1d2a3b;
+    --carried: #e2c46d;
+    --carried-soft: #3a311a;
+    --star: #f2c94c;
+    --star-soft: #3a311a;
+    --focus: #8ab4ff;
+    --field-border: #7c8982;
+    --lvl-residence: #9ad7f4;
+    --lvl-precaution: #4b9b91;
+    --lvl-fonds_euros: #c3d788;
+    --lvl-actions: #ebc347;
+    --lvl-immobilier: #c16f44;
+    --lvl-exotique: #a475bd;
+    --lvl-text: #0d1a15;
+    --grp-needs: #7ab3ec;
+    --grp-wants: #e0a458;
+    --grp-savings: #6ccf98;
+    --grp-available: #a3acb9;
+    --shadow: none;
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* scroll-padding-bottom: keyboard focus stays above the sticky bars (monthly and budget entry) and the phone
+   navigation (WCAG 2.4.11). */
+html {
+    -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+    scroll-padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 6rem);
+}
+@media (min-width: 760px) {
+    html { scroll-padding-bottom: 6rem; }
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Liberation Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.45;
+}
+
+a { color: var(--primary); }
+h1, h2, h3 { line-height: 1.2; margin: 0 0 .75rem; }
+h1 { font-size: 1.4rem; }
+h2 { font-size: 1.15rem; }
+h3 { font-size: 1rem; }
+p { margin: 0 0 .75rem; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.visually-hidden {
+    position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; border: 0; padding: 0; margin: -1px;
+}
+
+/* ---------- Top bar and navigation ---------- */
+
+.topbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: .75rem;
+    padding: .6rem 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+.brand {
+    display: inline-flex; align-items: center; gap: .45rem;
+    color: var(--text); text-decoration: none; font-weight: 700; font-size: 1.1rem;
+}
+.brand-logo { width: 22px; height: 22px; }
+.brand-logo-base { fill: var(--brand-base); }
+.brand-logo-tip { fill: var(--brand-tip); }
+.theme-form { margin-left: auto; }
+/* Current month, centred in the space between the navigation and the buttons. */
+.topbar-month { flex: 1 1 auto; min-width: 0; margin: 0; text-align: center; font-weight: 600; color: var(--text); white-space: nowrap; }
+.topbar-month a { color: inherit; text-decoration: none; }
+.topbar-month a:hover, .topbar-month a:focus-visible { text-decoration: underline; }
+.topbar-month-short { display: none; }
+@media (max-width: 1099px) {
+    .topbar-month-long { display: none; }
+    .topbar-month-short { display: inline; }
+}
+@media (max-width: 480px) {
+    /* Phone: the logo alone (the link keeps its accessible name), so that the month fits. */
+    .is-auth .brand span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+.theme-toggle, .locale-toggle {
+    display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); cursor: pointer;
+}
+.theme-toggle:hover, .locale-toggle:hover { background: var(--surface-2); }
+.locale-toggle { width: auto; gap: .3rem; padding: 0 .6rem; font-size: .85rem; font-weight: 700; letter-spacing: .02em; cursor: pointer; }
+.locale-toggle .icon { width: 18px; height: 18px; fill: none; stroke: currentcolor; stroke-width: 1.8; }
+/* Language menu: drop-down list under the button, above the content. */
+.locale-menu { position: relative; }
+.locale-menu > summary { list-style: none; }
+.locale-menu > summary::-webkit-details-marker { display: none; }
+.locale-menu > summary .caret { font-size: .75rem; }
+.locale-menu[open] > summary { background: var(--surface-2); }
+.locale-form {
+    position: absolute; right: 0; top: calc(100% + 4px); z-index: 20; display: grid; min-width: 9rem; padding: .25rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow);
+}
+.locale-form button {
+    display: flex; justify-content: space-between; align-items: center; gap: .75rem; min-height: 40px; padding: .4rem .75rem;
+    border: 0; border-radius: 6px; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer;
+}
+.locale-form button:hover { background: var(--surface-2); }
+.locale-form button[aria-current="true"] { font-weight: 700; color: var(--primary); }
+.theme-toggle .icon-sun { display: none; }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: inline; }
+    :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
+}
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: inline; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+/* Account menu: "My account" button, then profile, AI agents and sign out, below the button. */
+.account-menu { position: relative; }
+.account-menu > summary { list-style: none; }
+.account-menu > summary::-webkit-details-marker { display: none; }
+.account-toggle {
+    display: inline-flex; align-items: center; gap: .35rem; min-height: 40px; padding: 0 .6rem;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text);
+    font-size: .9rem; font-weight: 600; cursor: pointer;
+}
+.account-toggle:hover, .account-menu[open] > summary { background: var(--surface-2); }
+.account-toggle[data-current] { color: var(--primary); border-color: var(--primary); }
+.account-toggle .caret { font-size: .75rem; }
+.account-menu .icon { width: 20px; height: 20px; flex: none; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.account-items {
+    position: absolute; right: 0; top: calc(100% + 4px); z-index: 20; display: grid; min-width: 12rem; padding: .25rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow);
+}
+.account-items a, .account-items button {
+    display: flex; align-items: center; gap: .6rem; min-height: 40px; padding: .4rem .75rem; width: 100%;
+    border: 0; border-radius: 6px; background: none; color: var(--text); font: inherit; text-align: left;
+    text-decoration: none; cursor: pointer;
+}
+.account-items a:hover, .account-items button:hover { background: var(--surface-2); }
+.account-items a[aria-current="page"] { font-weight: 700; color: var(--primary); }
+.account-items form { margin: 0; border-top: 1px solid var(--border); padding-top: .25rem; margin-top: .25rem; }
+/* My account tabs: one address per tab; horizontal scrolling on a phone. */
+/* Tabs wrap onto several lines: all of them stay visible, the current one included, even on a phone. */
+.account-tabs {
+    display: flex; flex-wrap: wrap; gap: .25rem; margin: 0 0 1rem; padding: .25rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+}
+.account-tabs a {
+    display: inline-flex; align-items: center; gap: .4rem; flex: none; min-height: 40px; padding: .35rem .8rem;
+    border-radius: 8px; color: var(--text); text-decoration: none; font-size: .9rem; white-space: nowrap;
+}
+@media (max-width: 480px) {
+    .account-tabs a { min-height: 36px; padding: .3rem .55rem; font-size: .85rem; }
+}
+.account-tabs a:hover { background: var(--surface-2); }
+.account-tabs a[aria-current] { background: var(--primary); color: var(--primary-text); font-weight: 600; }
+.account-tabs .icon { width: 18px; height: 18px; flex: none; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* Profile (My account page) */
+.profile { display: grid; gap: .4rem; margin: 0 0 .5rem; }
+.profile div { display: grid; grid-template-columns: minmax(10rem, 1fr) 2fr; gap: .5rem; }
+.profile dt { color: var(--muted); }
+.profile dd { margin: 0; }
+.profile code { overflow-wrap: anywhere; }
+/* Addresses of the AI agents tab: the copy button next to its address, below it on a narrow screen. */
+.agent-urls dd { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; }
+.copy-button.is-copied { border-color: var(--positive); color: var(--positive); }
+@media (max-width: 480px) {
+    /* Label hidden on screen but read by screen readers: name of the account menu button. */
+    .account-label {
+        position: absolute; width: 1px; height: 1px; overflow: hidden;
+        clip-path: inset(50%); white-space: nowrap; border: 0; padding: 0; margin: -1px;
+    }
+    /* Language: "FR ▾" without the globe, so that the header fits on a phone. */
+    .locale-toggle { padding: 0 .45rem; }
+    .locale-toggle .icon { display: none; }
+    .profile div { grid-template-columns: 1fr; gap: 0; }
+}
+
+.nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    /* As many columns as entries: five, six with the challenges. */
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+    height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+}
+.nav a {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    color: var(--muted); text-decoration: none; font-size: .75rem;
+}
+.nav a[aria-current] { color: var(--primary); font-weight: 600; }
+.nav svg { width: 22px; height: 22px; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-long { display: none; }
+/* Narrow computer screen: the month is in each page's title, and the logo alone names the site (the link keeps its
+   accessible name), so that the five entries and the buttons fit. */
+@media (min-width: 760px) and (max-width: 1199px) {
+    .topbar-month { display: none; }
+    .theme-form { margin-left: auto; }
+    .is-auth .brand span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
+/* Five entries on a medium screen: the short labels, and the account menu without its label. */
+@media (min-width: 760px) and (max-width: 1379px) {
+    .nav .nav-long { display: none; }
+    .nav .nav-short { display: inline; }
+    .account-label {
+        position: absolute; width: 1px; height: 1px; overflow: hidden;
+        clip-path: inset(50%); white-space: nowrap; border: 0; padding: 0; margin: -1px;
+    }
+}
+
+/* Monthly entry still to do: the item stands out (bold, framed) with a dot; the hidden text says it to screen readers. */
+/* Monthly entry: always put forward; red while the month is still to enter. */
+.nav a.nav-entry { position: relative; color: var(--primary); font-weight: 700; }
+.nav a.needs-entry { color: var(--text); }
+.nav a.needs-entry svg { stroke: var(--danger); }
+.nav-due {
+    position: absolute; top: .45rem; right: calc(50% - 1.1rem);
+    width: .6rem; height: .6rem; border: 2px solid var(--surface); border-radius: 50%; background: var(--danger);
+}
+
+
+.main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 1rem calc(var(--nav-height) + 2rem + env(safe-area-inset-bottom, 0px));
+}
+.is-guest .main { padding-bottom: 2rem; }
+
+@media (min-width: 760px) {
+    .nav {
+        position: static; display: flex; gap: .25rem; height: auto; padding: 0;
+        border: 0; background: transparent; margin-left: 1rem;
+    }
+    .nav a { flex-direction: row; gap: .4rem; padding: .45rem .7rem; border-radius: 8px; font-size: .95rem; white-space: nowrap; }
+    .nav a:hover { background: var(--surface-2); }
+    .nav a[aria-current] { background: var(--primary-soft); }
+    .nav svg { width: 18px; height: 18px; }
+    .nav-long { display: inline; }
+    .nav-short { display: none; }
+    .nav a.nav-entry { box-shadow: inset 0 0 0 1px var(--primary); }
+    .nav a.needs-entry { box-shadow: inset 0 0 0 1px var(--danger); }
+    .nav-due { top: .15rem; right: .15rem; }
+    .main { padding: 1.5rem 1.5rem 3rem; }
+}
+
+/* Narrowest computer screens: the entries without their icons, closer together. */
+@media (min-width: 760px) and (max-width: 979px) {
+    .nav svg { display: none; }
+    .nav { margin-left: .5rem; gap: 0; }
+}
+
+/* ---------- Composants ---------- */
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+@media (min-width: 760px) { .card { padding: 1.25rem 1.5rem; } }
+
+.page-head {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem;
+    margin-bottom: 1rem;
+}
+.page-head h1 { margin: 0; }
+.page-head-links { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; }
+/* Head of a My account tab: section title and its action. */
+.tab-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; margin: 0 0 .75rem; }
+.tab-head h2 { margin: 0; font-size: 1.25rem; }
+.tab-head h2 .muted { font-weight: 400; }
+
+.flash { padding: .65rem .85rem; border-radius: 8px; margin: 0 0 1rem; background: var(--info-soft); }
+.flash-success { background: var(--primary-soft); }
+.flash-error { background: var(--danger-soft); color: var(--danger); }
+
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.positive { color: var(--positive); }
+.negative { color: var(--negative); }
+
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+    min-height: 44px; padding: .55rem 1rem;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: var(--surface); color: var(--text);
+    font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.btn:hover { background: var(--surface-2); }
+.btn-primary { background: var(--primary); border-color: var(--primary); color: var(--primary-text); }
+.btn-primary:hover { background: var(--primary); filter: brightness(1.08); }
+.btn-danger { color: var(--danger); border-color: var(--danger); }
+.btn-small { min-height: 36px; padding: .3rem .7rem; font-size: .9rem; }
+.btn:disabled { cursor: default; opacity: .55; }
+.btn-block { width: 100%; }
+.btn-link {
+    background: none; border: 0; padding: .4rem; color: var(--muted);
+    font: inherit; font-size: .9rem; cursor: pointer; text-decoration: underline;
+}
+
+.segmented { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.segmented a {
+    padding: .4rem .75rem; min-height: 36px; display: inline-flex; align-items: center;
+    color: var(--text); text-decoration: none; font-size: .9rem; border-right: 1px solid var(--border);
+}
+.segmented a:last-child { border-right: 0; }
+.segmented a[aria-current="true"] { background: var(--primary); color: var(--primary-text); font-weight: 600; }
+
+/* ---------- Forms ---------- */
+
+.form { display: grid; gap: .5rem; }
+.form label { font-weight: 600; font-size: .95rem; }
+.form .field { display: grid; gap: .3rem; margin-bottom: .5rem; }
+.hint { font-size: .85rem; color: var(--muted); }
+.checkbox-field { grid-template-columns: auto 1fr; align-items: start; }
+.form .error { font-size: .9rem; color: var(--danger); }
+/* Fields aligned at the top: a field without help is not stretched to the height of its neighbour. */
+.form-row { display: grid; gap: .75rem; align-items: start; }
+/* Rows of the people of the tax household beyond the numbers chosen (app.js). */
+.form-row[hidden], .household-people[hidden] { display: none; }
+@media (min-width: 640px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
+input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="month"], input[type="search"], input[type="number"], select, textarea {
+    width: 100%; min-height: 44px; padding: .5rem .65rem;
+    border: 1px solid var(--field-border); border-radius: 8px;
+    background: var(--surface); color: var(--text);
+    font: inherit; font-size: 16px; /* avoids the automatic zoom of iOS */
+}
+input[aria-invalid="true"] { border-color: var(--danger); }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+
+.login-card { max-width: 380px; margin: 3rem auto; }
+.sent-cases { margin: 0 0 .75rem; padding-left: 1.2rem; }
+.sent-cases li { margin-bottom: .4rem; }
+.login-alt { margin: 1rem 0 0; text-align: center; font-size: .9rem; color: var(--muted); }
+/* Demonstration mode: offer under the sign-in card, banner of a demonstration account. */
+.demo-offer { margin-top: -1.5rem; }
+.demo-offer h2 { margin: 0 0 .5rem; font-size: 1.05rem; }
+.demo-offer p { margin: 0 0 .75rem; font-size: .9rem; color: var(--muted); }
+.demo-banner {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem;
+    margin: 0 0 1rem; padding: .5rem .85rem; border-left: 4px solid var(--carried); border-radius: 8px;
+    background: var(--carried-soft); font-size: .9rem;
+}
+.demo-banner p { flex: 1 1 16rem; margin: 0; }
+.demo-banner form { margin: 0; }
+
+/* Guided tour of the demonstration: card of the step kept at the bottom of the screen (above the navigation bar on a
+   phone), and the element it talks about. */
+.tour-card {
+    position: sticky; bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + .5rem); z-index: 5;
+    max-width: 28rem; margin: 1rem 0 0 auto; padding: .85rem 1rem;
+    background: var(--surface); border: 2px solid var(--focus); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.tour-card h2 { margin: 0 0 .35rem; font-size: 1.05rem; }
+.tour-card p { margin: 0 0 .6rem; font-size: .9rem; }
+.tour-card .tour-step { margin-bottom: .25rem; color: var(--muted); font-size: .8rem; }
+.tour-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.tour-highlight { outline: 3px solid var(--focus); outline-offset: 4px; scroll-margin-top: calc(var(--nav-height) + 1rem); }
+@media (min-width: 760px) { .tour-card { bottom: 1rem; } }
+
+/* Second factor setup and backup codes */
+.setup-card { max-width: 560px; margin: 2rem auto; }
+.setup-steps { padding-left: 1.25rem; }
+.setup-steps > li + li { margin-top: 1.25rem; }
+.setup-steps h2 { font-size: 1rem; }
+.qr-code { display: block; width: 200px; height: 200px; margin: .5rem 0; }
+.qr-code-background { fill: var(--qr-light); }
+.qr-code-modules { fill: var(--qr-dark); }
+.secret-key code, .backup-codes code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 1rem; letter-spacing: .05em;
+}
+.secret-key code { overflow-wrap: anywhere; }
+.backup-codes {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem;
+    padding: .75rem; margin: 1rem 0; list-style: none;
+    background: var(--surface-2); border-radius: 8px;
+}
+.backup-codes li { text-align: center; }
+.copy-actions { margin: .25rem 0 .75rem; }
+.webauthn-form { margin-top: 1rem; }
+.credential-list { display: grid; gap: .75rem; padding: 0; margin: 0 0 1rem; list-style: none; }
+.credential-list li { display: grid; gap: .25rem; }
+.inline-form { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.inline-form input { width: auto; flex: 1; min-width: 8rem; }
+.journal td { font-size: .9rem; }
+.journal .is-failure td { color: var(--danger); }
+.journal-agent { max-width: 16rem; overflow-wrap: anywhere; color: var(--muted); }
+/* Open sessions: the current one marked by a badge (never colour alone), sign-out button at the end of the row. */
+.sessions .is-current td { font-weight: 600; }
+.sessions form { margin: 0; }
+/* Identity to confirm before an action: highlighted, with a padlock, so that the step is not missed. */
+.identity-notice { display: flex; align-items: flex-start; gap: .5rem; margin: .75rem 0 0; border-left: 4px solid var(--primary); }
+.identity-notice .icon { flex: none; margin-top: .15rem; }
+
+/* ---------- Badges, levels ---------- */
+
+.badge {
+    display: inline-block; padding: .05rem .45rem; border-radius: 999px;
+    font-size: .75rem; font-weight: 600; line-height: 1.5; white-space: nowrap;
+    background: var(--surface-2); color: var(--muted);
+}
+.badge-entered { background: var(--primary-soft); color: var(--primary); }
+.badge-carried { background: var(--carried-soft); color: var(--carried); font-style: italic; }
+.badge-copied { background: var(--info-soft); color: var(--text); }
+.badge-liability { background: var(--danger-soft); color: var(--danger); }
+
+.level-dot {
+    display: inline-block; width: .7rem; height: .7rem; border-radius: 3px;
+    margin-right: .45rem; vertical-align: baseline; background: var(--lvl-color, var(--muted));
+}
+.level-residence { --lvl-color: var(--lvl-residence); }
+.level-precaution { --lvl-color: var(--lvl-precaution); }
+.level-fonds_euros { --lvl-color: var(--lvl-fonds_euros); }
+.level-actions { --lvl-color: var(--lvl-actions); }
+.level-immobilier { --lvl-color: var(--lvl-immobilier); }
+.level-exotique { --lvl-color: var(--lvl-exotique); }
+
+.empty-state { text-align: center; padding: 2rem 1rem; }
+
+/* ---------- List of accounts ---------- */
+
+
+/* ---------- Monthly entry ---------- */
+
+.month-nav { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.month-nav > .btn { min-width: 40px; }
+
+/* Month picker (calendar year + 12 months) */
+.month-picker-toggle { list-style: none; gap: .4rem; }
+.month-picker-toggle::-webkit-details-marker { display: none; }
+.month-picker-toggle::after {
+    content: ""; width: .4rem; height: .4rem; margin-left: .1rem;
+    border-right: 2px solid currentcolor; border-bottom: 2px solid currentcolor;
+    transform: translateY(-2px) rotate(45deg);
+}
+.month-picker[open] .month-picker-toggle { background: var(--primary-soft); border-color: var(--primary); }
+.icon { width: 18px; height: 18px; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.month-picker-panel {
+    position: absolute; z-index: 20; top: calc(100% + .4rem); left: 0;
+    width: min(19rem, calc(100vw - 2rem)); padding: .75rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 8px 28px rgb(0 0 0 / 18%);
+}
+.mp-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .6rem; }
+.mp-step, .mp-year {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px;
+    border: 0; border-radius: 8px; background: none; color: var(--text);
+    font: inherit; font-size: 1.15rem; font-weight: 700; text-decoration: none; cursor: pointer;
+}
+.mp-year { padding: 0 .9rem; font-size: 1.05rem; }
+.mp-year::after {
+    content: ""; width: .35rem; height: .35rem; margin-left: .5rem;
+    border-right: 2px solid currentcolor; border-bottom: 2px solid currentcolor;
+    transform: translateY(-2px) rotate(45deg);
+}
+.mp-year[aria-expanded="true"]::after { transform: translateY(2px) rotate(-135deg); }
+.mp-step:hover, .mp-year:hover { background: var(--surface-2); }
+.mp-step.is-disabled { color: var(--muted); opacity: .4; cursor: default; }
+.mp-step.is-disabled:hover { background: none; }
+.mp-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; }
+.mp-grid[hidden] { display: none; }
+.mp-years { max-height: 13.5rem; overflow-y: auto; }
+.mp-cell {
+    display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px;
+    border: 1px solid transparent; border-radius: 8px; background: none; color: var(--text);
+    font: inherit; font-size: .95rem; text-decoration: none; cursor: pointer;
+}
+a.mp-cell:hover, button.mp-cell:hover { background: var(--surface-2); }
+.mp-cell.is-empty { color: var(--muted); }
+.mp-cell.is-today { border-color: var(--primary); }
+.mp-cell[aria-current] { background: var(--primary); border-color: var(--primary); color: var(--primary-text); font-weight: 700; }
+.mp-cell[aria-current]:hover { background: var(--primary); }
+.mp-cell.is-disabled { color: var(--muted); opacity: .4; cursor: default; }
+.mp-foot { margin: .6rem 0 0; text-align: center; font-size: .9rem; }
+/* Month field with a calendar (_month_field.html.twig): the calendar opens under the field. */
+.month-field { position: relative; display: flex; gap: .4rem; }
+.copy-form { display: grid; gap: .4rem; }
+.copy-form label { font-weight: 600; }
+.copy-row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: flex-start; }
+.copy-row .month-field { flex: 1 1 12rem; max-width: 16rem; }
+.copy-form .hint { margin: 0; }
+/* What to add before entering: links of the copy card, spaced enough to be touched. */
+.copy-links { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin: .25rem 0 0; padding-top: .5rem; border-top: 1px solid var(--border); }
+.copy-links a { display: inline-flex; align-items: center; min-height: 24px; }
+.copy-links a::before { content: "+"; margin-right: .3rem; font-weight: 700; }
+.month-field input { flex: 1; min-width: 0; }
+.month-field-toggle { flex: none; min-height: 44px; }
+/* A button that reads as a link (empty an optional year). */
+.link-button { padding: 0; border: 0; background: none; color: var(--primary); font: inherit; text-decoration: underline; cursor: pointer; }
+.month-field-panel[hidden] { display: none; }
+@media (min-width: 760px) { .month-picker-panel.month-field-panel { left: 0; right: auto; } }
+span.mp-year { cursor: default; }
+span.mp-year::after { content: none; }
+.mp-step:disabled { color: var(--muted); opacity: .4; cursor: default; }
+@media (min-width: 760px) {
+    .month-picker-panel { left: auto; right: 0; }
+}
+.actions-center { justify-content: center; }
+.field-error { grid-column: 1 / -1; margin: 0; color: var(--danger); font-size: .9rem; }
+/* Typing list (app.js combobox): the filtered list opens under the field. */
+.combobox { position: relative; }
+.combobox-input { padding-right: 2.5rem; }
+/* Arrow of the list: at the right end of the field, never in the way of the text. */
+.combobox-toggle {
+    position: absolute; top: 0; right: 0; width: 2.5rem; height: 100%; min-height: 40px;
+    border: 0; background: transparent; color: var(--muted); cursor: pointer;
+}
+.combobox-toggle::before { content: "▾"; font-size: 1rem; }
+.combobox-toggle:hover { color: var(--text); }
+.combobox-list {
+    position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 20; max-height: 16rem; overflow-y: auto;
+    margin: 0; padding: .25rem; list-style: none;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 28px rgb(0 0 0 / 18%);
+}
+.combobox-list[hidden] { display: none; }
+.combobox-group { padding: .45rem .6rem .15rem; color: var(--muted); font-size: .8rem; font-weight: 700; }
+.combobox-option { display: flex; align-items: center; min-height: 40px; padding: .35rem .6rem; border-radius: 6px; cursor: pointer; }
+.combobox-option:hover, .combobox-option.is-active { background: var(--surface-2); }
+.combobox-option[aria-selected="true"] { font-weight: 700; color: var(--primary); }
+.combobox-empty { padding: .5rem .6rem; color: var(--muted); }
+
+.amount-field { position: relative; }
+.amount-field input { text-align: right; padding-right: 1.8rem; font-variant-numeric: tabular-nums; }
+.amount-unit { position: absolute; right: .65rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+
+
+.sticky-actions {
+    position: sticky; bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + .5rem);
+    z-index: 5; padding: .5rem 0;
+}
+.sticky-actions .btn { box-shadow: 0 4px 14px rgb(0 0 0 / 18%); }
+@media (min-width: 760px) {
+    .sticky-actions { bottom: .75rem; }
+}
+
+/* ---------- Sheets: one card per section, bold title, ruled tables, aligned amounts (monthly entry, accounts,
+   properties, budget); Patrimeter's original font and display ---------- */
+
+.sheet {
+    margin: 0 0 1rem; padding: 1rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+@media (min-width: 760px) { .sheet { padding: 1.25rem 1.5rem; } }
+.sheet > h2, .sheet > summary > h2 { margin: 0 0 .5rem; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.sheet h2 .level-dot { width: .55rem; height: .55rem; margin-right: .4rem; }
+.sheet h2 a { color: inherit; }
+.sheet-lead { margin: 0 0 .75rem; max-width: 70ch; font-size: .85rem; color: var(--muted); }
+details.sheet > summary { cursor: pointer; }
+details.sheet > summary > h2 { display: inline; }
+details.sheet[open] > summary { margin-bottom: .25rem; }
+
+.ledger { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ledger thead th {
+    padding: .35rem 0; border-bottom: 1px solid var(--border);
+    font-size: .85rem; font-weight: 600; color: var(--muted); text-align: left;
+}
+.ledger th.num, .ledger td.num { text-align: right; }
+/* A column heading wraps rather than running over its neighbour (fixed layout, narrow columns on a phone). */
+.ledger thead th.num { white-space: normal; overflow-wrap: anywhere; }
+/* Rule above each row except the first; the total's, stronger, closes the table. */
+.ledger tbody th, .ledger tbody td {
+    padding: .6rem 0; border-top: 1px solid var(--border); vertical-align: top; text-align: left; font-weight: 400;
+}
+.ledger tbody tr:first-child > th, .ledger tbody tr:first-child > td { border-top: 0; }
+.ledger tfoot th, .ledger tfoot td {
+    padding: .5rem 0 0; border-top: 1px solid var(--field-border);
+    font-size: .9rem; font-weight: 600; color: var(--muted); text-align: left;
+}
+.ledger tfoot td.num { text-align: right; font-size: 1rem; font-weight: 700; color: var(--text); }
+.ledger .num { font-variant-numeric: tabular-nums; }
+.ledger-name { font-weight: 600; overflow-wrap: anywhere; }
+.ledger-sub { display: block; font-size: .75rem; color: var(--muted); }
+.ledger-status { width: 5.75rem; }
+.ledger-amount { width: 8.5rem; }
+.ledger-action { width: 5.5rem; text-align: right; }
+.ledger .ledger-action form { margin: 0; }
+.ledger .ledger-closed { width: 9.5rem; text-align: right; font-size: .85rem; }
+.ledger .badge-carried {
+    background: transparent; border: 1px solid var(--border); border-radius: 2px; color: var(--muted); font-style: normal; font-weight: 500;
+}
+.ledger .badge-copied { border-radius: 2px; }
+.ledger .liability { text-decoration-color: var(--muted); }
+/* Detail row (loans of a property): indented, more discreet. */
+.ledger .ledger-detail > th { padding-left: 1rem; }
+.ledger .ledger-detail > * { font-size: .9rem; }
+@media (min-width: 640px) {
+    .ledger-status { width: 10.5rem; }
+    .ledger-amount { width: 12rem; }
+}
+
+/* Forms of a sheet: without a card, under the subheading. */
+.sheet .form { margin-top: .5rem; }
+.loan-row { margin: 0 0 .75rem; padding: .75rem 0 0; border: 0; border-top: 1px solid var(--border); }
+.loan-row legend { padding: 0; font-weight: 600; }
+.sheet.danger-zone > h2 { color: var(--danger); }
+
+/* ---------- Monthly entry: one thin table per level, amounts in tabular figures ---------- */
+
+.entry-counter { display: flex; align-items: center; gap: .6rem; margin: 0; font-size: .85rem; color: var(--muted); }
+.entry-counter strong { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+.entry-progress { width: 4.5rem; height: .35rem; accent-color: var(--primary); }
+
+.entry-legend {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 1rem; position: relative;
+    margin: 0 0 .5rem; padding-top: .75rem; border-top: 0;
+}
+.entry-intro { flex: 1 1 100%; margin: 0 0 .25rem; max-width: 70ch; font-size: .85rem; color: var(--muted); }
+.entry-statuses { display: flex; flex-wrap: wrap; gap: .25rem 1.1rem; flex: 1 1 auto; margin: 0; padding: 0; list-style: none; font-size: .8rem; color: var(--muted); }
+.entry-help-toggle > summary {
+    display: flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem;
+    border: 1px solid var(--field-border); border-radius: 50%; color: var(--muted); font-weight: 600; cursor: pointer; list-style: none;
+}
+.entry-help-toggle > summary::-webkit-details-marker { display: none; }
+.entry-help-toggle > summary:hover, .entry-help-toggle[open] > summary { color: var(--primary); border-color: var(--primary); }
+.entry-help {
+    position: absolute; right: 0; top: calc(100% + .25rem); z-index: 15; width: min(24rem, 100%);
+    padding: .75rem .9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); font-size: .85rem; color: var(--muted);
+}
+.entry-help h2 {
+    margin: .5rem 0 .3rem; font-size: .9rem; font-weight: 700; color: var(--text);
+}
+.entry-help h2:first-child { margin-top: 0; }
+.entry-help p { margin: 0; }
+.entry-keys { display: grid; grid-template-columns: auto 1fr; gap: .25rem .6rem; margin: 0; }
+.entry-keys dt { text-align: right; }
+.entry-keys dd { margin: 0; }
+kbd {
+    padding: 0 .25rem; border: 1px solid var(--border); border-radius: 2px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: .75rem; color: var(--text);
+}
+
+/* Statuses: dot and label; "carried over" as a grey badge. Never colour alone. */
+.status { display: inline-flex; align-items: center; gap: .35rem; font-size: .8rem; white-space: nowrap; }
+/* Phone: "carried over", without its original month (recalled by the title and the previous month's row). */
+.status-source { display: none; }
+.status-dot { width: .45rem; height: .45rem; border-radius: 50%; flex: none; background: var(--muted); }
+.status-entered { color: var(--positive); }
+.status-entered .status-dot { background: var(--positive); }
+.status-carried, .status-empty { color: var(--muted); }
+.entry-statuses .badge-carried {
+    background: transparent; border: 1px solid var(--border); border-radius: 2px; color: var(--muted); font-style: normal; font-weight: 500;
+}
+/* Loan: "owed" prefix, dotted like the underline of its amounts. */
+.badge-due {
+    display: inline-block; margin-left: .3rem; padding: 0 .3rem; vertical-align: 1px;
+    border: 1px dotted var(--muted); border-radius: 2px; font-size: .7rem; font-weight: 500; line-height: 1.4; color: var(--muted);
+}
+.liability { text-decoration: underline dotted var(--muted); text-underline-offset: 3px; }
+
+.entry-table thead th:nth-child(1) { width: auto; }
+.entry-table thead th:nth-child(2) { width: 5.75rem; }
+.entry-table thead th:nth-child(3) { width: 0; padding: 0; font-size: 0; overflow: hidden; }
+.entry-table thead th:nth-child(4) { width: 8.5rem; }
+.entry-cell input, .entry-diff, .entry-previous-inline, .entry-net strong { font-variant-numeric: tabular-nums; }
+
+.entry-account { padding-right: .6rem; overflow-wrap: anywhere; }
+.entry-advance { display: block; font-size: .75rem; color: var(--primary); }
+.entry-previous-inline { display: block; font-size: .75rem; color: var(--muted); white-space: nowrap; }
+/* Phone: previous month column reduced to nothing (the fixed-layout table would keep its room); the previous
+   balance goes under the account name. */
+.entry-table td.entry-previous { padding: 0; font-size: 0; color: var(--muted); overflow: hidden; }
+
+/* Status: the server's, replaced by "entered" as soon as the amount is confirmed (app.js). */
+.status-confirmed { display: none; }
+.entry-row.is-touched .status-confirmed { display: inline-flex; }
+.entry-row.is-touched .status-initial { display: none; }
+
+/* Boxed field, "€" inside; carried-over balance dotted on an amber background, as originally. The "−" of a loan is
+   part of the value. */
+.entry-cell { text-align: right; }
+.entry-cell .amount-field input { font-size: 1rem; font-weight: 500; color: var(--text); text-align: right; }
+.entry-row.is-carried input { border-style: dashed; background: var(--carried-soft); color: var(--carried); font-style: italic; }
+.entry-row.is-empty input { color: var(--muted); }
+.entry-row.is-touched input { border-style: solid; border-color: var(--primary); background: var(--surface); color: var(--text); font-style: normal; }
+.entry-row.is-liability input { text-decoration: underline dotted var(--muted); text-underline-offset: 3px; }
+.entry-cell input[aria-invalid="true"] { border-color: var(--danger); }
+.entry-diff { display: block; min-height: 1rem; margin-top: .15rem; font-size: .75rem; line-height: 1rem; color: var(--muted); }
+.entry-diff.is-error { color: var(--danger); font-family: inherit; }
+.entry-cell .field-error { margin-top: .15rem; font-size: .8rem; text-align: right; }
+
+/* Level of the entry, folded once all its balances are entered this month: name, "entered" and net in the summary. */
+.entry-fold > summary {
+    display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
+    cursor: pointer; list-style: none;
+}
+.entry-fold > summary::-webkit-details-marker { display: none; }
+.entry-fold > summary::before { content: "\25B8"; flex: none; width: .9rem; color: var(--muted); }
+.entry-fold[open] > summary::before { content: "\25BE"; }
+.entry-fold > summary > h2 { flex: 1 1 auto; margin: 0 0 .5rem; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.entry-fold-meta { display: inline-flex; align-items: baseline; gap: .6rem; flex: none; }
+.entry-fold-total { font-size: .9rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.entry-fold:not([open]) > summary > h2 { margin-bottom: 0; }
+/* "=": the previous month's balance taken as is; on the line of the gap, which replaces it once confirmed. */
+.entry-same {
+    display: block; margin: .15rem 0 0 auto; padding: 0 .35rem; min-height: 1.5rem;
+    border: 1px solid var(--border); border-radius: 4px; background: var(--surface);
+    font: inherit; font-size: .75rem; line-height: 1.4; color: var(--muted); cursor: pointer;
+}
+.entry-same:hover, .entry-same:focus-visible { border-color: var(--primary); color: var(--primary); }
+.entry-same[hidden], .entry-diff[hidden] { display: none; }
+/* First balance given roughly on the welcome pages: dashed, as a carried-over balance, until saved again. */
+.badge-approximate {
+    display: inline-block; margin-top: .2rem; padding: 0 .3rem; border: 1px dashed var(--carried); border-radius: 2px;
+    background: transparent; color: var(--carried); font-size: .7rem; font-weight: 600; line-height: 1.4;
+}
+.entry-change { display: block; font-size: .8rem; font-variant-numeric: tabular-nums; }
+
+.entry-actions {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem 1rem;
+    margin-top: 1.25rem; padding: .6rem 0; background: var(--bg); border-top: 1px solid var(--border);
+}
+.entry-actions .btn { flex: 1 1 100%; box-shadow: none; }
+.entry-net { margin: 0; font-size: .85rem; color: var(--muted); }
+.entry-net strong { margin-left: .4rem; font-size: 1.05rem; font-weight: 600; color: var(--text); white-space: nowrap; }
+
+@media (min-width: 640px) {
+    .entry-table thead th:nth-child(2) { width: 10.5rem; }
+    .status-source { display: inline; }
+    .entry-diff { white-space: nowrap; }
+    .entry-table thead th:nth-child(3) { width: 10rem; padding: .35rem 1.25rem .35rem 0; font-size: .85rem; overflow: visible; }
+    .entry-table thead th:nth-child(4) { width: 12rem; }
+    .entry-table td.entry-previous { font-size: .875rem; padding: .75rem 1.25rem .6rem 0; white-space: nowrap; }
+    .entry-previous-inline { display: none; }
+    .entry-actions .btn { flex: 0 0 auto; }
+}
+
+/* ---------- Household budget: summary, flows (Sankey), 50/30/20 rule, entry, household and categories ---------- */
+
+.is-needs { --grp-color: var(--grp-needs); }
+.is-wants { --grp-color: var(--grp-wants); }
+.is-savings { --grp-color: var(--grp-savings); }
+.is-available { --grp-color: var(--grp-available); }
+.is-income, .is-budget { --grp-color: var(--primary); }
+.is-overrun { --grp-color: var(--danger); }
+.group-dot {
+    display: inline-block; width: .6rem; height: .6rem; border-radius: 50%;
+    margin-right: .45rem; vertical-align: baseline; background: var(--grp-color, var(--muted));
+}
+
+.budget-status { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-bottom: 1rem; }
+.budget-status p { margin: 0; color: var(--muted); font-size: .9rem; }
+.budget-status .actions { margin: 0; }
+.budget-headline { font-size: 1.1rem; }
+.summary-figures.budget-figures { grid-template-columns: 1fr 1fr; }
+.summary-figures.budget-figures div:last-child { grid-column: auto; }
+.budget-networth { margin: .75rem 0 0; }
+@media (min-width: 760px) { .summary-figures.budget-figures { grid-template-columns: repeat(4, 1fr); } }
+
+/* Flows: the chart keeps a readable width and scrolls horizontally on a phone. */
+.sankey-scroll { overflow-x: auto; }
+.sankey { display: block; width: 100%; min-width: 820px; height: auto; }
+.sankey-link { fill: none; stroke: var(--grp-color); stroke-opacity: .35; }
+.sankey-node { fill: var(--grp-color); }
+.sankey-label rect { fill: var(--surface); fill-opacity: .92; stroke: var(--border); }
+.sankey-label text { fill: var(--text); font-family: inherit; font-size: 13px; }
+.sankey-name { font-weight: 600; }
+.sankey-detail { fill: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+.budget-rule-share { width: 45%; }
+.ledger .budget-rule-share { padding-left: 1rem; }
+.budget-rule-target { width: 4rem; }
+.budget-rule-share .num { display: inline-block; min-width: 4rem; }
+.rule-bar { display: inline-block; width: calc(100% - 4.5rem); max-width: 12rem; height: .6rem; vertical-align: middle; overflow: visible; }
+.rule-track { fill: var(--surface-2); stroke: var(--field-border); stroke-width: .5; }
+.rule-fill { fill: var(--grp-color); }
+.rule-target { stroke: var(--text); stroke-width: 1.5; }
+
+.budget-lines { margin-top: .75rem; }
+.budget-lines caption { padding: .35rem 0; text-align: left; font-weight: 600; }
+.budget-detail > summary { display: flex; align-items: baseline; gap: .5rem; list-style: none; }
+.budget-detail > summary::-webkit-details-marker { display: none; }
+/* Arrow of the collapsible budgets (the flex summary hides the browser's marker): turns when the budget is open. */
+.budget-detail > summary::before { content: "▸"; color: var(--muted); transition: transform .15s; }
+.budget-detail[open] > summary::before { transform: rotate(90deg); }
+.budget-detail > summary > h2 { flex: 1; }
+.budget-adults th, .budget-adults td { padding-right: .5rem; }
+.budget-rule .ledger-sub { font-size: .8rem; }
+
+/* Budget entry: fields of the monthly entry tables. */
+.budget-scope { margin: 1.5rem 0 .75rem; font-size: 1.15rem; }
+.budget-category { margin-top: 0; }
+/* Order of the categories and items: small arrow buttons (44 px touch target kept by the padding). */
+.move-form { display: inline-flex; gap: .15rem; margin: 0 0 0 .25rem; vertical-align: middle; }
+.btn-icon {
+    min-width: 2rem; min-height: 2rem; padding: 0 .4rem; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface); color: var(--muted); font: inherit; line-height: 1; cursor: pointer;
+}
+.btn-icon:hover { color: var(--primary); border-color: var(--primary); }
+.budget-category > h3, .budget-admin > h4 {
+    margin: 0 0 .5rem; font-size: 1rem; font-weight: 700;
+}
+.budget-table th { padding-right: .6rem; overflow-wrap: anywhere; }
+.budget-table td.entry-cell { width: 9.5rem; }
+.budget-table .entry-cell input { font-variant-numeric: tabular-nums; }
+.budget-split { margin: 1rem 0 0; padding: 0; border: 0; }
+.budget-split legend { padding: 0 0 .25rem; font-weight: 600; }
+.choice, .form label.choice { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; min-height: 44px; font-weight: 400; }
+.form fieldset.field { margin: 0 0 .5rem; padding: 0; border: 0; }
+.form fieldset.field legend { padding: 0 0 .3rem; font-weight: 600; font-size: .95rem; }
+.choice input[type="radio"] { width: 1.1rem; height: 1.1rem; margin: 0; }
+.choice-field { margin: 0 0 .5rem; padding: 0; border: 0; }
+.choice-field legend { padding: 0 0 .25rem; font-weight: 600; font-size: .95rem; }
+.budget-share-field { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .35rem; }
+.budget-share-field input { width: 5.5rem; min-height: 36px; text-align: right; }
+.budget-actions {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem 1rem;
+    margin-top: 1.25rem; padding: .6rem 0; background: var(--bg); border-top: 1px solid var(--border);
+}
+.budget-actions .btn { flex: 1 1 100%; box-shadow: none; }
+.budget-totals { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin: 0; font-size: .85rem; color: var(--muted); }
+.budget-totals strong { margin-left: .35rem; font-size: 1rem; color: var(--text); }
+@media (min-width: 640px) { .budget-actions .btn { flex: 0 0 auto; } }
+
+/* Household and categories */
+.budget-admin { padding: .75rem 0; border-top: 1px solid var(--border); }
+.budget-admin > h4 { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .5rem; }
+.budget-admin > h4 .btn-link { margin-left: auto; padding: 0; font-weight: 400; }
+.budget-admin-lines { margin: 0 0 .5rem; padding: 0 0 0 1.05rem; }
+.budget-admin-lines li { padding: .15rem 0; }
+.budget-add-line input { max-width: 20rem; min-height: 36px; }
+.budget-add-line .field-error { flex-basis: 100%; margin: 0; }
+
+/* ---------- Tableaux ---------- */
+
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: .5rem .4rem; border-bottom: 1px solid var(--border); text-align: left; }
+.table th { font-size: .85rem; color: var(--muted); font-weight: 600; }
+.table .num { text-align: right; }
+
+.danger-zone .actions + .actions, .danger-zone form + form { margin-top: 1rem; }
+
+/* ---------- Dashboard ---------- */
+
+.page-head h1 .muted { font-weight: 400; }
+
+.summary { display: grid; gap: 1rem; }
+.summary-label { margin: 0; color: var(--muted); font-size: .9rem; text-transform: uppercase; letter-spacing: .04em; }
+.summary-total { margin: .1rem 0; font-size: clamp(1.9rem, 8vw, 2.6rem); font-weight: 700; line-height: 1.1; }
+.summary-variation { margin: 0; display: flex; flex-wrap: wrap; gap: .1rem .4rem; font-weight: 600; }
+/* Level of the challenges, a link to the Challenges page. */
+.summary-level { margin: .5rem 0 0; font-size: .9rem; }
+.summary-level a { color: var(--text); font-weight: 600; text-decoration: none; }
+.summary-level a:hover { text-decoration: underline; }
+.summary-level-star { color: var(--star); font-size: 1.3rem; vertical-align: -.1em; }
+.summary-variation .muted { font-weight: 400; }
+.summary-figures { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin: 0; }
+.summary-figures div:last-child { grid-column: 1 / -1; }
+.summary-figures div { background: var(--surface-2); border-radius: 8px; padding: .5rem .75rem; }
+.summary-figures dt { font-size: .8rem; color: var(--muted); }
+.summary-figures dd { margin: 0; font-weight: 600; }
+@media (min-width: 760px) {
+    .summary { grid-template-columns: 1fr auto; align-items: center; }
+    .summary-figures { grid-template-columns: repeat(3, auto); }
+    .summary-figures div:last-child { grid-column: auto; }
+}
+
+/* Savings goals: card of the dashboard and sheets of My account > Goals. The status is always written in words; its
+   colour only repeats it. */
+.goals-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem; }
+.goals-card h2, .goal h2 { margin: 0 0 .5rem; font-size: 1.05rem; }
+.goal-line + .goal-line { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.goal-line h3 { margin: 0 0 .25rem; font-size: 1rem; }
+.goal-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.goal-heading { min-width: 0; }
+.goal-heading h2 { margin: 0 0 .2rem; }
+.goal-heading .muted { margin: 0 0 .45rem; }
+/* Status as a pill: written in words, its colour only repeats it. */
+.goal-status { display: inline-block; margin: 0; padding: .1rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 700;
+    background: var(--surface-2); color: var(--muted); }
+.goal-status.status-reached, .goal-status.status-ahead, .goal-status.status-on_track { background: var(--primary-soft); color: var(--primary); }
+.goal-status.status-watch { background: var(--carried-soft); color: var(--carried); }
+.goal-status.status-late { background: var(--danger-soft); color: var(--danger); }
+/* Gauge: ring of the share reached, mark of where the planned trajectory stands this month. */
+.goal-gauge { flex: none; width: 6.5rem; height: 6.5rem; }
+.goal-gauge-track { fill: none; stroke: var(--surface-2); stroke-width: 12; }
+.goal-gauge-fill { fill: none; stroke: var(--primary); stroke-width: 12; stroke-linecap: round; }
+.goal-gauge.status-reached .goal-gauge-fill { stroke: var(--positive); }
+.goal-gauge.status-watch .goal-gauge-fill { stroke: var(--carried); }
+.goal-gauge.status-late .goal-gauge-fill { stroke: var(--danger); }
+.goal-gauge-mark { stroke: var(--text); stroke-width: 3; stroke-linecap: round; }
+.goal-gauge-value { fill: var(--text); font-size: 24px; font-weight: 700; }
+.goal-gauge-caption { fill: var(--muted); font-size: 11px; }
+/* Key figures as tiles: two per row on a phone, four side by side on a wide screen. */
+.goal-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: .5rem; margin: 0; }
+.goal-stat { padding: .55rem .75rem; border-radius: var(--radius); background: var(--surface-2); }
+.goal-stat dt { color: var(--muted); font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.goal-stat dd { margin: .15rem 0 0; font-size: 1.05rem; font-weight: 700; }
+.goal-stat-note { display: block; color: var(--muted); font-size: .75rem; font-weight: 400; }
+.goal-advice { margin: .5rem 0 0; font-size: .9rem; }
+.goal-history-title { margin: 1rem 0 .35rem; font-size: .9rem; }
+.goal-history { display: flex; flex-wrap: wrap; gap: .4rem .9rem; margin: 0; padding: 0; list-style: none; font-size: .85rem; }
+.goal-history .goal-status { margin-left: .2rem; font-size: .75rem; }
+.goal-accounts .choice .muted { margin-left: .25rem; }
+/* With JavaScript, a goal field only shows when it applies: the "(if …)" mentions become useless. */
+.has-goal-conditions .goal-condition { display: none; }
+.form [data-goal-when][hidden] { display: none; }
+/* Projection chart (goals.js): the lines differ by their style (solid, dashed, dotted, thin), repeated in the legend. */
+.goal-chart { margin: 1rem 0 0; }
+.goal-chart-box { position: relative; height: 14rem; }
+@media (min-width: 760px) { .goal-chart-box { height: 17rem; } }
+.goal-chart-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem; margin: .5rem 0 .25rem; padding: 0; list-style: none; font-size: .8rem; color: var(--muted); }
+.goal-chart-legend .key { display: inline-block; width: 1.5rem; margin-right: .35rem; vertical-align: middle; border-top: 3px solid var(--primary); }
+.goal-chart-legend .key-plan { border-top: 2px dashed var(--muted); }
+.goal-chart-legend .key-projection { border-top: 3px dotted var(--primary); }
+.goal-chart-legend .key-target { border-top: 1px solid var(--text); }
+.goal-chart-summary { color: var(--muted); font-size: .8rem; }
+
+.dashboard-grid { display: grid; gap: 0 1rem; }
+@media (min-width: 900px) {
+    .dashboard-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+}
+
+.pyramid-card { padding: .75rem .5rem; }
+.pyramid { display: block; width: 100%; max-width: 500px; height: auto; margin: 0 auto; }
+.pyr-tier polygon { fill: var(--lvl-color); stroke: none; }
+.pyr-tier.is-empty polygon { fill: var(--surface-2); stroke: var(--border); stroke-dasharray: 4 3; }
+.pyr-residence { --lvl-color: var(--lvl-residence); }
+.pyr-precaution { --lvl-color: var(--lvl-precaution); }
+.pyr-fonds_euros { --lvl-color: var(--lvl-fonds_euros); }
+.pyr-actions { --lvl-color: var(--lvl-actions); }
+.pyr-immobilier { --lvl-color: var(--lvl-immobilier); }
+.pyr-exotique { --lvl-color: var(--lvl-exotique); }
+.pyramid text { fill: var(--lvl-text); text-anchor: middle; font-family: inherit; }
+.pyr-tier.is-empty text { fill: var(--muted); }
+/* A level hovered or clicked (app.js, data-level): its tier outlined, the others faded; its lines in the other boxes
+   on a tinted background with a bar on the left (not the colour alone). */
+.pyr-tier { cursor: pointer; transition: opacity .15s; }
+.has-level-highlight .pyr-tier:not(.is-level-highlighted) { opacity: .45; }
+.pyr-tier.is-level-highlighted polygon { stroke: var(--text); stroke-width: 2.5; stroke-dasharray: none; }
+.level-detail.is-level-highlighted > summary,
+tr.is-level-highlighted > * { background: var(--primary-soft); }
+.level-detail.is-level-highlighted > summary,
+tr.is-level-highlighted > :first-child { box-shadow: inset 4px 0 0 var(--primary); }
+@media (prefers-reduced-motion: reduce) {
+    .pyr-tier { transition: none; }
+}
+.pyr-label { font-size: 14px; font-weight: 700; }
+.pyr-amount { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pyr-share { font-size: 12px; }
+.pyr-label.is-compact, .pyr-amount.is-compact { font-size: 13.5px; }
+
+/* Position among French households (under the pyramid) */
+.rank-grid { display: grid; gap: 0 1rem; }
+@media (min-width: 760px) { .rank-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; } }
+/* Same columns as the pyramid and the detail by level: the gaps between cards line up. */
+@media (min-width: 900px) { .rank-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
+.allocation { border-top: 1px solid var(--border); margin-top: .75rem; padding: .75rem .5rem 0; }
+.allocation-title { font-size: 1rem; margin: 0 0 .25rem; }
+.allocation-table { border-collapse: collapse; width: 100%; max-width: 420px; margin: .25rem 0 .5rem; font-size: .95rem; }
+.allocation-table th, .allocation-table td { padding: .25rem .5rem .25rem 0; text-align: left; }
+.allocation-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.allocation-table thead th { color: var(--muted); font-weight: 600; font-size: .85rem; }
+/* Savings of the year, under the source of the allocation. */
+.year-to-date-title { margin: 1rem 0 .25rem; font-size: 1rem; }
+.allocation-table tfoot th, .allocation-table tfoot td { border-top: 1px solid var(--border); font-weight: 600; }
+/* Split of the investments and recommendations: two cards side by side, of the same height. */
+.allocation-card, .advice-card { align-self: stretch; }
+.allocation-card .allocation { border-top: 0; margin-top: 0; padding: 0; }
+.allocation-card .allocation-title { font-size: 1.15rem; margin-bottom: .5rem; }
+.advice-card h2 { margin-bottom: .15rem; }
+.advice-subtitle { display: flex; align-items: center; font-size: 1rem; margin: 1rem 0 .4rem; }
+/* Pyramid sign in front of its recommendations, the size of the level dot in front of the emergency savings. */
+.advice-icon { flex: none; width: .8rem; height: .8rem; margin-right: .45rem; fill: var(--primary); }
+.advice-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
+
+/* ---------- Recommendations and emergency savings (dashboard, budget) ---------- */
+
+/* Finding: the colour doubles the tag ("Alerte", "Attention", "À noter", "Bon point"), never alone. */
+.advice {
+    margin: .5rem 0; padding: .5rem .7rem; border-radius: 8px; border-left: 4px solid var(--muted);
+    background: var(--surface-2); color: var(--text); font-size: .92rem;
+}
+.advice-list .advice { margin: 0; }
+.advice-tag { margin-right: .3rem; font-weight: 700; white-space: nowrap; }
+.advice-tag .icon { width: 16px; height: 16px; margin-right: .2rem; vertical-align: -3px; }
+.advice.is-alert { background: var(--danger-soft); border-left-color: var(--danger); }
+.advice.is-alert .advice-tag { color: var(--danger); }
+/* Warning: amber hues of the carried-over balances. */
+.advice.is-warning { background: var(--carried-soft); border-left-color: var(--carried); }
+.advice.is-warning .advice-tag { color: var(--carried); }
+.advice.is-info { background: var(--info-soft); border-left-color: var(--focus); }
+.advice.is-ok { background: var(--primary-soft); border-left-color: var(--primary); }
+.advice.is-ok .advice-tag { color: var(--primary); }
+
+.precaution-figures { margin: .25rem 0 .1rem; }
+.precaution-gauge { display: block; width: 100%; max-width: 400px; height: auto; margin: .1rem 0 .25rem; overflow: visible; }
+.gauge-zone { fill: var(--surface-2); }
+.gauge-zone.is-critical { fill: var(--danger-soft); }
+.gauge-zone.is-low { fill: var(--carried-soft); }
+.gauge-zone.is-reached { fill: var(--primary-soft); }
+.gauge-outline { fill: none; stroke: var(--field-border); stroke-width: 1; }
+.gauge-fill { fill: var(--primary); }
+.gauge-fill.is-critical { fill: var(--danger); }
+.gauge-fill.is-low { fill: var(--carried); }
+.gauge-marker { fill: var(--text); }
+.gauge-target { stroke: var(--text); stroke-width: 2; }
+.precaution-gauge text { font-family: inherit; }
+.gauge-value { fill: var(--text); font-size: 13.5px; font-weight: 700; }
+.gauge-label { fill: var(--muted); font-size: 12px; }
+
+/* Budget: planned and actual (Carbure) */
+.actual-bars { display: block; width: 100%; max-width: 16rem; height: 14px; margin-top: .3rem; }
+.bar-planned-group { fill: var(--grp-color, var(--primary)); }
+.bar-actual { fill: var(--text); }
+.bar-actual.is-over { fill: var(--danger); }
+.carbure-mapping select { width: 100%; max-width: 20rem; }
+
+/* Family account: choice of the perimeter (family, each member, this account) and members */
+.perimeter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; margin: -.25rem 0 1rem; }
+.perimeter-manage { color: var(--muted); }
+.family-member .wealth-tiles { margin-bottom: .75rem; }
+.family-import { margin-top: .75rem; }
+.family-steps { margin: 0 0 .75rem; padding-left: 1.25rem; }
+.family-steps li { margin-bottom: .35rem; }
+
+/* Budget: with the month's net worth */
+.wealth-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .5rem; margin: 0 0 1rem; }
+.wealth-tile { padding: .6rem .75rem; border-radius: 8px; background: var(--surface-2); }
+.wealth-tile dt { display: flex; align-items: center; font-size: .82rem; color: var(--muted); }
+.wealth-tile dd { display: flex; flex-direction: column; gap: .1rem; margin: .2rem 0 0; }
+.wealth-tile-value { font-size: 1.15rem; font-weight: 700; }
+a.wealth-tile-value { color: var(--text); }
+.wealth-tile-sub { font-size: .82rem; color: var(--muted); }
+.wealth-tile-sub.positive { color: var(--positive); }
+.wealth-tile-sub.negative { color: var(--negative); }
+.wealth-grid { display: grid; gap: 1rem; }
+@media (min-width: 760px) { .wealth-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.wealth-block h3 { font-size: 1rem; margin: 0 0 .4rem; }
+.savings-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.savings-item { padding: .55rem .7rem; border: 1px solid var(--border); border-radius: 8px; }
+.savings-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .2rem .75rem; margin: 0 0 .35rem; }
+.savings-name { font-weight: 700; }
+.savings-account { font-size: .85rem; }
+.savings-bars { display: block; width: 100%; height: 20px; }
+.bar-track { fill: var(--surface-2); }
+.bar-planned { fill: var(--grp-savings); }
+.bar-change { fill: var(--primary); }
+.bar-change.is-below { fill: var(--carried); }
+.bar-change.is-decrease { fill: var(--danger); }
+.savings-figures { display: flex; flex-wrap: wrap; gap: .2rem 1.25rem; margin: .35rem 0 0; font-size: .88rem; }
+.savings-figures div { display: flex; align-items: center; gap: .4rem; }
+.savings-figures dt { display: inline-flex; align-items: center; color: var(--muted); }
+.savings-figures dd { margin: 0; font-weight: 600; }
+.savings-key { display: inline-block; width: .7rem; height: .7rem; margin-right: .3rem; border-radius: 2px; background: var(--primary); }
+.savings-key.is-planned { background: var(--grp-savings); }
+.savings-key.is-below { background: var(--carried); }
+.savings-key.is-decrease { background: var(--danger); }
+.savings-key.is-unknown { background: var(--surface-2); border: 1px solid var(--field-border); }
+.savings-status { margin: .35rem 0 0; font-size: .88rem; }
+.savings-item.is-reached .advice-tag { color: var(--primary); }
+.savings-item.is-below .advice-tag { color: var(--carried); }
+.savings-item.is-decrease .advice-tag { color: var(--danger); }
+.savings-item.is-unknown .advice-tag { color: var(--muted); }
+.wealth-rank-title { margin: 0 0 .5rem; }
+.wealth-rank-main { margin: 0 0 .25rem; }
+.wealth-rank-main strong { font-size: 1.35rem; color: var(--primary); }
+.wealth-rank-scale { display: block; width: 100%; max-width: 420px; height: auto; margin: .5rem 0 0; }
+.wealth-rank-track { fill: var(--surface-2); stroke: var(--field-border); stroke-width: .5; }
+.wealth-rank-fill { fill: var(--primary); }
+.wealth-rank-tick { stroke: var(--border); stroke-width: 1; }
+.wealth-rank-tick.is-median { stroke: var(--muted); stroke-width: 1.5; }
+.wealth-rank-marker { fill: var(--primary); stroke: var(--surface); stroke-width: 2; }
+.wealth-rank-ends { display: flex; justify-content: space-between; max-width: 420px; margin: .1rem 0 .5rem; }
+.wealth-rank-details summary { cursor: pointer; color: var(--muted); font-size: .9rem; }
+.wealth-rank-table { border-collapse: collapse; margin: .5rem 0; font-size: .9rem; }
+.wealth-rank-table th, .wealth-rank-table td { padding: .15rem .75rem .15rem 0; text-align: left; }
+.wealth-rank-table td.num { text-align: right; }
+
+.level-detail { border-top: 1px solid var(--border); }
+.level-detail:first-of-type { border-top: 0; }
+.level-detail summary {
+    display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+    /* Room on each side for the highlight of the level, the text staying aligned with the title. */
+    margin: 0 -.5rem; padding: .65rem .5rem; border-radius: 6px; cursor: pointer; list-style: none; min-height: 48px;
+}
+.level-detail summary::-webkit-details-marker { display: none; }
+.level-detail summary::after { content: "▸"; color: var(--muted); transition: transform .15s; }
+.level-detail[open] summary::after { transform: rotate(90deg); }
+.level-name { font-weight: 600; flex: 1; min-width: 0; }
+.level-figures { display: grid; justify-items: end; }
+.level-lines { list-style: none; margin: 0 0 .75rem; padding: 0 0 0 1.15rem; }
+.level-lines li { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .3rem 0; }
+.level-lines a { color: var(--text); overflow-wrap: anywhere; }
+.line-value { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: .3rem; }
+
+/* ---------- Historique ---------- */
+
+/* History at the bottom of the wealth page. */
+.history { margin-top: 1.5rem; scroll-margin-top: 1rem; }
+.history-controls { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.history-summary .summary-total { font-size: clamp(1.5rem, 6vw, 2rem); }
+.chart-box { position: relative; height: 300px; }
+@media (min-width: 760px) { .chart-box { height: 420px; } }
+.history-table summary { cursor: pointer; }
+.history-table summary h3 { display: inline; font-size: 1rem; margin: 0; }
+.history-table[open] summary { margin-bottom: .5rem; }
+.table-scroll { overflow-x: auto; }
+.table th[scope="row"] { font-weight: 400; color: var(--text); font-size: 1rem; }
+
+/* ---------- Report to share: a card that fills a phone screen ---------- */
+
+.is-report .main { max-width: 30rem; padding-bottom: 2rem; }
+.report-card {
+    padding: 1.1rem 1rem .9rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.report-head { margin-bottom: .5rem; }
+.report-brand { display: flex; align-items: center; gap: .35rem; margin: 0 0 .2rem; font-size: .85rem; font-weight: 700; color: var(--primary); }
+.report-brand .brand-logo { width: 1rem; height: 1rem; }
+.report-head h1 { margin: 0; font-size: 1.15rem; }
+.report-head h1 span { font-weight: 400; color: var(--muted); white-space: nowrap; }
+.report-total { margin: .1rem 0; font-size: 2.1rem; font-weight: 700; line-height: 1.15; letter-spacing: -.01em; }
+.report-variations { display: flex; flex-wrap: wrap; gap: .15rem 1rem; margin: 0 0 .6rem; padding: 0; list-style: none; font-size: .9rem; }
+.report-variations .num { font-weight: 600; }
+.report-period { color: var(--muted); }
+.report-card .pyramid { max-width: 22rem; }
+.report-figures { display: flex; justify-content: space-around; gap: 1rem; margin: .6rem 0 0; }
+.report-figures div { text-align: center; }
+.report-figures dt { font-size: .75rem; color: var(--muted); }
+.report-figures dd { margin: 0; font-weight: 600; }
+.report-note { margin: .5rem 0 0; text-align: center; font-size: .8rem; color: var(--muted); }
+.report-stars { margin: .75rem 0 0; text-align: center; font-size: .9rem; font-weight: 600; color: var(--star); }
+.report-foot { margin-top: .75rem; padding-top: .5rem; border-top: 1px solid var(--border); font-size: .75rem; color: var(--muted); text-align: center; }
+.report-foot p { margin: 0; }
+.report-tools { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 .5rem; }
+
+/* Sharing the card as a picture (report.js): share sheet, download, social networks. */
+.report-share { margin: 1rem 0 .5rem; }
+.report-share-main { display: flex; flex-wrap: wrap; gap: .5rem; }
+.report-share-main .btn { flex: 1 1 10rem; }
+.report-share-main .btn[hidden] { display: none; }
+.report-share-warning { margin: .6rem 0 0; color: var(--muted); }
+.report-share-label { margin: .9rem 0 .4rem; color: var(--muted); }
+.share-networks { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+.share-mastodon { margin-top: .75rem; }
+.share-mastodon label { display: block; margin-bottom: .25rem; font-size: .9rem; }
+.share-mastodon-row { display: flex; gap: .5rem; }
+.share-mastodon-row input { flex: 1 1 auto; min-width: 0; }
+.report-share-status { margin: .5rem 0 0; }
+
+/* Phone: the card fills the screen, so that a screenshot shows it alone; the share buttons start just below. */
+@media (max-width: 759.98px) {
+    .is-report .main { padding: 0 0 2rem; }
+    .is-report .main > :not(.report-card) { margin-left: 1rem; margin-right: 1rem; }
+    .report-card {
+        display: flex; flex-direction: column;
+        min-height: calc(100vh - 4.5rem); min-height: calc(100svh - 4.5rem);
+        padding: 1.25rem 1rem 1rem; border: 0; border-radius: 0;
+    }
+    .report-total { font-size: 2.6rem; }
+    .report-variations { font-size: 1rem; }
+    .report-card .pyramid { max-width: none; margin: auto 0; }
+    .report-figures dt { font-size: .85rem; }
+    .report-figures dd { font-size: 1.15rem; }
+}
+
+/* ---------- Footer: Patrimeter version ---------- */
+
+.app-footer { margin-top: 2rem; text-align: center; font-size: .75rem; color: var(--muted); }
+.app-footer p { margin: 0; }
+.app-footer a { color: inherit; white-space: nowrap; }
+.app-version { white-space: nowrap; }
+
+/* ---------- New password: strength in real time and requirements (app.js, _password_meter.html.twig) ---------- */
+
+.password-meter { margin: .35rem 0 0; font-size: .85rem; }
+.password-strength { display: grid; gap: .25rem; margin: 0 0 .4rem; }
+.strength-bar { display: block; height: .4rem; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); overflow: hidden; }
+.strength-fill { display: block; height: 100%; width: 4%; background: var(--danger); transition: width .2s ease; }
+.strength-fill[data-level="1"] { width: 25%; background: var(--danger); }
+.strength-fill[data-level="2"] { width: 55%; background: var(--carried); }
+.strength-fill[data-level="3"] { width: 80%; background: var(--positive); }
+.strength-fill[data-level="4"] { width: 100%; background: var(--positive); }
+@media (prefers-reduced-motion: reduce) { .strength-fill { transition: none; } }
+.password-strength-label { margin: 0; color: var(--muted); }
+.password-strength-label strong { color: var(--text); }
+.password-rules-title { margin: 0 0 .15rem; color: var(--muted); }
+.password-rules { list-style: none; margin: 0 0 .4rem; padding: 0; display: grid; gap: .15rem; }
+.password-rules li { display: flex; gap: .4rem; align-items: baseline; color: var(--muted); }
+/* State in the mark and in the hidden text: never conveyed by colour alone. */
+.rule-mark { flex: none; width: 1rem; text-align: center; font-weight: 700; }
+.rule-mark::before { content: "•"; }
+.password-rules li.is-met { color: var(--text); }
+.password-rules li.is-met .rule-mark { color: var(--positive); }
+.password-rules li.is-met .rule-mark::before { content: "✓"; }
+.password-rules li.is-unmet .rule-mark { color: var(--danger); }
+.password-rules li.is-unmet .rule-mark::before { content: "✗"; }
+.password-meter .hint { margin: 0; }
+
+/* Welcome, while there is no account: the ways to start, the pyramid built level by level, the first accounts. */
+.page-intro { max-width: 70ch; color: var(--muted); }
+.welcome-choices { list-style: none; margin: 1rem 0; padding: 0; display: grid; gap: .6rem; }
+.welcome-choice {
+    display: flex; gap: .8rem; align-items: center; height: 100%; padding: .9rem 1rem; text-align: left;
+    border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); text-decoration: none;
+}
+.welcome-choice:hover { background: var(--surface-2); }
+.welcome-choice.is-default { border: 2px solid var(--primary); background: var(--primary-soft); }
+.welcome-choice svg {
+    flex: none; width: 2.6rem; height: 2.6rem; padding: .55rem; border-radius: 10px; background: var(--primary-soft);
+    fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.welcome-choice.is-default svg { background: var(--primary); stroke: var(--primary-text); }
+.welcome-tag { padding: 0 .35rem; border: 1px solid var(--primary); border-radius: 6px; color: var(--primary); font-size: .75rem; font-weight: 700; white-space: nowrap; }
+.welcome-grid, .game-grid { display: grid; gap: 1rem; margin-bottom: 1rem; }
+.pyramid-count { margin: .5rem 0 0; text-align: center; }
+.welcome-levels, .first-steps-list, .stage-ladder, .level-ladder, .challenge-list { list-style: none; margin: .5rem 0 .75rem; padding: 0; }
+.welcome-levels li, .stage-ladder li, .level-ladder li { display: flex; align-items: center; gap: .6rem; padding: .5rem 0; border-bottom: 1px solid var(--border); }
+.welcome-levels li:last-child, .stage-ladder li:last-child, .level-ladder li:last-child { border-bottom: 0; }
+.welcome-levels .num { font-weight: 600; }
+.welcome-levels .level-name { display: flex; align-items: center; }
+.welcome-levels .level-dot { flex: none; }
+.starter-level { margin: 0 0 1rem; padding: 0; border: 0; }
+.starter-level legend { margin-bottom: .4rem; padding: 0; font-weight: 700; }
+.starter-row {
+    display: grid; grid-template-columns: minmax(0, 1fr) 9.5rem; gap: .3rem .6rem; align-items: center;
+    padding: .5rem 0; border-top: 1px solid var(--border);
+}
+.starter-type, .starter-row .field-error { grid-column: 1 / -1; margin: 0; }
+.starter-type { font-weight: 600; }
+.starter-name { width: 100%; }
+/* Simple questions: one per screen with JavaScript (app.js), large choices for the thumb. */
+.questions-progress { margin: 0 0 .5rem; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.question { margin: 0 0 1.25rem; padding: 0; border: 0; min-width: 0; }
+.question[hidden] { display: none; }
+.question legend { margin-bottom: .75rem; padding: 0; font-size: 1.15rem; font-weight: 700; line-height: 1.35; }
+.question-choices { display: grid; gap: .5rem; }
+.question-choice {
+    display: flex; align-items: center; gap: .6rem; min-height: 2.75rem; padding: .5rem .75rem;
+    border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); cursor: pointer;
+}
+.question-choice:hover { background: var(--surface-2); }
+.question-choice input { flex: none; margin: 0; accent-color: var(--primary); }
+.question-amount { max-width: 14rem; margin-left: 2rem; }
+.question-why { margin-top: .75rem; font-size: .85rem; color: var(--muted); }
+.question-why summary { cursor: pointer; color: var(--primary); }
+.question-why p { margin: .4rem 0 0; max-width: 60ch; }
+.questions-actions [hidden] { display: none; }
+
+/* Challenges and stars: first-steps card, level, saver profile, challenges. The stars are always said in words too. */
+/* Stars: earned ones large and full, those still to earn outlined and muted, so that the next one draws the eye. */
+.stars { display: inline-flex; align-items: center; color: var(--star); font-size: 1.5rem; line-height: 1; white-space: nowrap; }
+.star-off { color: var(--muted); opacity: .55; }
+.stars-score { margin-left: .4rem; color: var(--text); font-size: .9rem; font-weight: 700; }
+.star-total { margin: 0; padding: .3rem .9rem; border-radius: 999px; background: var(--star-soft); color: var(--star); font-size: 1.1rem; font-weight: 800; }
+.first-steps-head, .challenge-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem .5rem; }
+.first-steps-head h2, .challenge-head h3 { margin: 0; }
+.challenge-head h3 { font-size: 1rem; }
+.first-steps-list li { display: flex; align-items: flex-start; gap: .6rem; padding: .35rem 0; }
+.step-mark, .stage-mark {
+    flex: none; display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem;
+    border: 2px solid var(--field-border); border-radius: 50%; color: var(--primary-text); font-size: .8rem; font-weight: 800;
+}
+.is-done .step-mark, .is-reached .stage-mark { background: var(--primary); border-color: var(--primary); }
+/* A point to fix (installation wizard): the mark in the danger colour, the word said to screen readers. */
+.is-todo .step-mark { border-color: var(--danger); color: var(--danger); }
+/* Ladders (levels, stages, stars of a challenge): listed from the first step, drawn from the bottom (done) to the top
+   (still to reach). */
+.stage-ladder, .level-ladder, .challenge-ladder { display: flex; flex-direction: column-reverse; }
+.stage-ladder li, .level-ladder li { align-items: flex-start; }
+.stage-ladder li.is-current, .level-ladder li.is-current { margin: 0 -.75rem; padding: .5rem .75rem; border-radius: 8px; background: var(--primary-soft); }
+.stage-ladder .pill {
+    padding: 0 .45rem; border: 1px solid var(--primary); border-radius: 999px; background: var(--surface);
+    color: var(--primary); font-size: .75rem; font-weight: 700;
+}
+.style-form fieldset { margin: 1rem 0 .5rem; padding: 0; border: 0; }
+.style-form legend { padding: 0; font-weight: 700; }
+.style-choice { display: flex; align-items: flex-start; gap: .6rem; padding: .3rem 0; }
+.style-choice input { margin-top: .25rem; }
+.game-bar {
+    display: block; width: 100%; height: .6rem; margin: .5rem 0; overflow: hidden;
+    appearance: none; border: 0; border-radius: 999px; background: var(--surface-2); color: var(--primary);
+}
+.game-bar::-webkit-progress-bar { border-radius: 999px; background: var(--surface-2); }
+.game-bar::-webkit-progress-value { border-radius: 999px; background: var(--primary); }
+.game-bar::-moz-progress-bar { border-radius: 999px; background: var(--primary); }
+.game-bar-stars { color: var(--star); }
+.game-bar-stars::-webkit-progress-value { background: var(--star); }
+.game-bar-stars::-moz-progress-bar { background: var(--star); }
+.challenge-list { display: grid; gap: .75rem; }
+.challenge { display: flex; gap: .8rem; margin: 0; }
+.challenge-icon {
+    flex: none; display: flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
+    border-radius: 12px; background: var(--star-soft); color: var(--star);
+}
+.challenge-icon svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.challenge-body { flex: 1; min-width: 0; }
+.challenge-body p { margin: .25rem 0; }
+.challenge-progress { font-weight: 600; }
+.challenge-ladder { margin: .5rem 0; padding: 0; list-style: none; font-size: .85rem; }
+.challenge-ladder li { display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem .5rem; padding: .2rem 0; color: var(--muted); }
+.challenge-ladder li.is-done, .challenge-ladder li.is-next { color: var(--text); }
+.challenge-ladder li.is-next { font-weight: 600; }
+.ladder-stars { min-width: 4.5em; color: var(--star); font-size: 1.1rem; line-height: 1; }
+.challenge-ladder li:not(.is-done) .ladder-stars { opacity: .45; }
+.ladder-mark { color: var(--positive); font-weight: 700; }
+.challenge-ladder .pill, .level-ladder .pill {
+    padding: 0 .45rem; border: 1px solid var(--star); border-radius: 999px; background: var(--star-soft);
+    color: var(--star); font-size: .75rem; font-weight: 700;
+}
+/* Savings rate challenge: the rate aimed at, chosen by the user. */
+.challenge-setting { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; margin-top: .5rem; font-size: .85rem; }
+.challenge-setting select { width: auto; }
+.notice { padding-top: .6rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
+
+@media (min-width: 760px) {
+    .welcome-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .welcome-grid, .game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .challenge-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

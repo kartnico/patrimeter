@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Budget du foyer'|trans }}{% endblock %}
+
+{% block body %}
+{#- Shown on the Budget page, and in the household tab of My account (same form) until the household exists. -#}
+{% if account_tab(app.request.pathInfo) %}
+{{ include('_account_tabs.html.twig') }}
+<div class="tab-head">
+    <h2>{{ 'Budget du foyer'|trans }}</h2>
+</div>
+{% else %}
+<div class="page-head">
+    <h1>{{ 'Budget du foyer'|trans }}</h1>
+</div>
+{{ include('_perimeter.html.twig', {perimeters: perimeters ?? []}) }}
+{% endif %}
+<p class="sheet-lead">{{ 'Le budget répartit chaque mois les revenus du foyer : dépenses et épargne communes, payées par le compte commun, puis dépenses et épargne propres à chaque adulte. Il se lit avec le patrimoine du même mois, et se compare à la règle 50/30/20.'|trans }}</p>
+{% if form and form.errors is not empty %}
+<p class="flash flash-error" role="alert">{{ 'Certains champs sont invalides. Corrigez les champs signalés.'|trans }}</p>
+{% endif %}
+<section class="sheet">
+    <h2>{{ 'Votre foyer fiscal'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_household_save') }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        {{ include('budget/_household_fields.html.twig', {household: null, form: form}) }}
+        <p class="hint">{{ 'Des catégories et des postes vous sont proposés : vous pourrez les renommer, en ajouter ou en supprimer.'|trans }}</p>
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">{{ 'Créer le budget'|trans }}</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

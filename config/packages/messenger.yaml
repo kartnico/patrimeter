@@ -1,0 +1,4 @@
+# Messenger only serves the Scheduler (scheduled tasks, src/Application/Maintenance/): its "scheduler_maintenance"
+# transport is consumed by the patrimeter-scheduler service (docs/installation.md, § 9).
+framework:
+    messenger: ~

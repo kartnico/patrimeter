@@ -1,0 +1,22 @@
+# Build context of the image (docker/Dockerfile, built from the root of the repository): no history, no dependencies
+# or assets already built, no data, no development tools. ci/ (PHP installation) and docs/ (configurations) are
+# needed.
+.git
+.cache
+.env.local
+.env.*.local
+vendor
+var
+node_modules
+public/assets
+release
+reports
+image
+documentation
+tests
+playwright*.config.mjs
+package.json
+package-lock.json
+test-results
+playwright-report
+*.sqlite

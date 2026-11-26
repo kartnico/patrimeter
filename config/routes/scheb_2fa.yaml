@@ -1,0 +1,11 @@
+# Second factor: form (controller of scheb/2fa-bundle, security/two_factor.html.twig template) and check
+# address, intercepted by the firewall.
+app_2fa_login:
+    path: /connexion/code
+    methods: [GET]
+    defaults:
+        _controller: "scheb_two_factor.form_controller::form"
+
+app_2fa_login_check:
+    path: /connexion/code
+    methods: [POST]

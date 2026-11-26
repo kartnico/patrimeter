@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{#- Welcome: the accounts of one level of the pyramid, or of every level (express), with this month's balance. A row
+    without a balance creates nothing; a loan's balance is its outstanding principal. -#}
+{% set page_title = level ? level.label|trans({}, 'levels') : 'Saisie express'|trans %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ page_title }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+</div>
+<p class="page-intro">
+    {%- if level -%}
+    {{ 'Indiquez le solde d\'aujourd\'hui de ce que vous détenez à ce niveau ; laissez vide ce que vous n\'avez pas.'|trans }}
+    {%- else -%}
+    {{ 'Indiquez le solde d\'aujourd\'hui de chaque compte que vous détenez ; laissez vide ce que vous n\'avez pas. Tout est créé d\'un coup.'|trans }}
+    {%- endif -%}
+</p>
+<p class="muted small">{{ 'Des montants approximatifs suffisent : vous les préciserez lors de la saisie du mois. Crédit : le capital restant dû. Plusieurs comptes du même type ? Ajoutez les autres ensuite depuis Comptes.'|trans }}</p>
+
+<form method="post" action="{{ path('app_welcome_accounts') }}" class="card starter-form" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+    {% if level %}<input type="hidden" name="niveau" value="{{ level.value }}">{% endif %}
+    {#- Euro symbol on the language's side, as in the monthly entry. -#}
+    {% set euro_first = app.request.locale == 'en' %}
+    {% for group in groups %}
+    <fieldset class="starter-level level-{{ group.level.value }}">
+        <legend><span class="level-dot" aria-hidden="true"></span>{{ group.level.label|trans({}, 'levels') }}</legend>
+        {% for type in group.types %}
+        {%- set type_label = type.label|trans({}, 'account_types') -%}
+        {%- set typed = values[type.code] is defined and values[type.code] is iterable ? values[type.code] : {} -%}
+        {%- set row_error = errors[type.code] ?? null -%}
+        <div class="starter-row">
+            <p class="starter-type" id="type-{{ type.code }}">{{ type_label }}{% if type.nature == 'liability' %} <span class="muted small">{{ 'capital restant dû'|trans }}</span>{% endif %}</p>
+            <label class="visually-hidden" for="name-{{ type.code }}">{{ 'Nom du compte « %type% »'|trans({'%type%': type_label}) }}</label>
+            <input type="text" class="starter-name" id="name-{{ type.code }}" name="comptes[{{ type.code }}][name]" value="{{ typed.name ?? type_label }}" maxlength="80" autocomplete="off">
+            <label class="visually-hidden" for="amount-{{ type.code }}">{{ 'Solde de « %type% » en %month%'|trans({'%type%': type_label, '%month%': month|month_label}) }}</label>
+            <div class="amount-field starter-amount">
+                {%- if euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                <input type="text" id="amount-{{ type.code }}" name="comptes[{{ type.code }}][amount]" value="{{ typed.amount ?? '' }}" inputmode="decimal" autocomplete="off"
+                    {%- if row_error %} aria-invalid="true" aria-describedby="err-{{ type.code }}"{% endif %}>
+                {%- if not euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+            </div>
+            {% if row_error %}<p class="field-error" id="err-{{ type.code }}">{{ row_error|trans }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    </fieldset>
+    {% endfor %}
+    <div class="actions">
+        <button type="submit" class="btn btn-primary">{{ level ? 'Valider ce niveau'|trans : 'Créer mes comptes'|trans }}</button>
+        {% if level %}
+        <a class="btn" href="{{ path('app_welcome_pyramid') }}">{{ 'Je n\'en ai pas'|trans }}</a>
+        {% else %}
+        <a class="btn" href="{{ path('app_dashboard') }}">{{ 'Annuler'|trans }}</a>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

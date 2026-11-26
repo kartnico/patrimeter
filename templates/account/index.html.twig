@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Comptes'|trans }}{% endblock %}
+
+{% block body %}
+{{ include('_account_tabs.html.twig') }}
+<div class="tab-head">
+    <h2>{{ 'Comptes'|trans }}</h2>
+    <a class="btn btn-primary" href="{{ path('app_account_new') }}">+ {{ 'Nouveau compte'|trans }}</a>
+</div>
+
+{% if active is empty and archived is empty %}
+<div class="card empty-state">
+    <p>{{ 'Aucun compte pour l\'instant. Commencez par créer vos comptes (compte courant, livrets, assurance-vie…) et vos crédits en cours.'|trans }}</p>
+    <p>{{ 'Vous venez d\'une autre instance de Patrimeter ?'|trans }} <a href="{{ path('app_data') }}">{{ 'Importez vos données'|trans }}</a>.</p>
+</div>
+{% else %}
+<p class="sheet-lead">{{ 'Solde de chaque compte %of_month% : saisi ce mois-ci, ou dernier solde connu reporté. Le nom d\'un compte ouvre sa fiche et ses relevés.'|trans({'%of_month%': month|month_of}) }}</p>
+{% endif %}
+
+{#- One table per pyramid level, like the monthly entry. -#}
+{% for level in levels() %}
+{% if active[level.value] is defined %}
+<section class="sheet level-{{ level.value }}" aria-labelledby="accounts-{{ level.value }}">
+    <h2 id="accounts-{{ level.value }}"><span class="level-dot" aria-hidden="true"></span>{{ level.label|trans({}, 'levels') }}</h2>
+    <table class="ledger">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Compte'|trans }}</th>
+                <th scope="col" class="ledger-status">{{ 'Statut'|trans }}</th>
+                <th scope="col" class="num ledger-amount">{{ month|month_label|capitalize }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for line in active[level.value] %}
+            {% set account_is_liability = line.account.isLiability %}
+            <tr>
+                <th scope="row">
+                    <a class="ledger-name account-name" href="{{ path('app_account_edit', {id: line.account.id}) }}">{{ line.account.name }}</a>
+                    {%- if account_is_liability %} <span class="badge-due" title="{{ 'Capital restant dû'|trans }}">{{ 'dû'|trans }}</span>{% endif %}
+                    <span class="ledger-sub">{{ line.account.typeLabel|trans({}, 'account_types') }}</span>
+                </th>
+                <td class="ledger-status">{{ include('_value_status.html.twig', {value: line.value}) }}</td>
+                <td class="num">
+                    {%- if line.value is not null -%}
+                    <span class="{{ account_is_liability ? 'liability' }}">{{ line.account.signed(line.value.cents)|money }}</span>
+                    {%- else -%}
+                    <span class="muted">—</span>
+                    {%- endif -%}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+{% endfor %}
+
+{% if archived is not empty %}
+<details class="sheet archived">
+    <summary><h2>{{ 'Comptes archivés (%count%)'|trans({'%count%': archived|length}) }}</h2></summary>
+    <table class="ledger">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Compte'|trans }}</th>
+                <th scope="col" class="ledger-closed">{{ 'Clôture'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for line in archived %}
+            <tr>
+                <th scope="row">
+                    <a class="ledger-name account-name" href="{{ path('app_account_edit', {id: line.account.id}) }}">{{ line.account.name }}</a>
+                    <span class="ledger-sub">{{ line.account.typeLabel|trans({}, 'account_types') }} · {{ line.account.level.label|trans({}, 'levels') }}</span>
+                </th>
+                <td class="ledger-closed muted">{{ 'clôturé le %date%'|trans({'%date%': line.account.closedOn|date_fr}) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</details>
+{% endif %}
+{% endblock %}

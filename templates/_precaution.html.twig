@@ -1,0 +1,50 @@
+{#-
+    Emergency savings compared with the expenses of the month: figures, gauge and finding (net worth page and budget).
+    Variables: coverage (Patrimeter\Domain\Budget\PrecautionCoverage), budgeted (a budget applies to this month),
+    month (Month), editable (links to the budget entry and the household), figures (sentence of the figures, yes by default).
+-#}
+{% import '_advice.html.twig' as advice_ui %}
+{%- set precaution_status = coverage.status.value -%}
+<div class="precaution">
+    {% if coverage.months is not null %}
+    {% if figures ?? true %}
+    <p class="precaution-figures">
+        {{ '%amount%, soit %months% de dépenses (%expenses% par mois, épargne non comprise).'|trans({
+            '%amount%': '<strong class="num">' ~ coverage.amount|money ~ '</strong>',
+            '%months%': '<strong class="num">' ~ coverage.months|months_count ~ '</strong>',
+            '%expenses%': '<span class="num">' ~ coverage.monthlyExpenses|money ~ '</span>',
+        })|raw }}
+    </p>
+    {% endif %}
+    {{ precaution_gauge(coverage) }}
+    {% endif %}
+
+    {% if precaution_status == 'critical' %}
+    <p class="advice is-alert">{{ advice_ui.tag('alert') }}
+        {{ 'Moins d\'un mois de dépenses de côté : constituez votre épargne de précaution en priorité, avant tout autre placement.'|trans }}
+        {% if coverage.targetMonths > 0 %}{{ 'Il manque %missing% pour atteindre la cible de %count% mois.|Il manque %missing% pour atteindre la cible de %count% mois.'|trans({'%count%': coverage.targetMonths, '%missing%': (0 - coverage.gap)|money}) }}{% endif %}</p>
+    {% elseif precaution_status == 'low' %}
+    <p class="advice is-warning">{{ advice_ui.tag('warning') }}
+        {{ 'Il manque %missing% pour atteindre la cible de %count% mois de dépenses (%target%).|Il manque %missing% pour atteindre la cible de %count% mois de dépenses (%target%).'|trans({'%count%': coverage.targetMonths, '%missing%': (0 - coverage.gap)|money, '%target%': coverage.target|money}) }}</p>
+    {% elseif precaution_status == 'reached' %}
+    <p class="advice is-ok">{{ advice_ui.tag('ok') }}
+        {{ 'Cible de %count% mois de dépenses atteinte (%target%), avec une marge de %gap%.|Cible de %count% mois de dépenses atteinte (%target%), avec une marge de %gap%.'|trans({'%count%': coverage.targetMonths, '%target%': coverage.target|money, '%gap%': coverage.gap|money}) }}</p>
+    {% elseif precaution_status == 'surplus' %}
+    <p class="advice is-info">{{ advice_ui.tag('info') }}
+        {{ 'Plus du double de la cible de %count% mois : les %excess% au-delà de la cible pourraient être placés plus haut dans la pyramide (fonds euros, actions…).|Plus du double de la cible de %count% mois : les %excess% au-delà de la cible pourraient être placés plus haut dans la pyramide (fonds euros, actions…).'|trans({'%count%': coverage.targetMonths, '%excess%': coverage.gap|money}) }}</p>
+    {% elseif precaution_status == 'no_target' %}
+    <p class="advice is-info">{{ advice_ui.tag('info') }}
+        {{ 'Aucune cible fixée pour le foyer.'|trans }}
+        {% if editable %}<a href="{{ path('app_budget_household') }}">{{ 'Choisir un nombre de mois de dépenses'|trans }}</a>{% endif %}</p>
+    {% elseif coverage.amount <= 0 %}
+    <p class="advice is-alert">{{ advice_ui.tag('alert') }}
+        {{ 'Aucune épargne de précaution en %month% : c\'est la base de la pyramide, juste au-dessus de la résidence principale. Visez au moins trois mois de dépenses.'|trans({'%month%': month|month_label}) }}</p>
+    {% elseif budgeted %}
+    <p class="advice is-info">{{ advice_ui.tag('info') }}
+        {{ '%amount% d\'épargne de précaution ; le budget %of_month% ne prévoit aucune dépense pour la rapporter.'|trans({'%amount%': coverage.amount|money, '%of_month%': month|month_of}) }}</p>
+    {% else %}
+    <p class="advice is-info">{{ advice_ui.tag('info') }}
+        {{ '%amount% d\'épargne de précaution. Saisissez votre budget : vos dépenses du mois diront combien de mois elle couvre.'|trans({'%amount%': coverage.amount|money}) }}
+        {% if editable %}<a href="{{ path('app_budget') }}">{{ 'Ouvrir le budget'|trans }}</a>{% endif %}</p>
+    {% endif %}
+</div>

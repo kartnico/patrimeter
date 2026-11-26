@@ -1,0 +1,43 @@
+{
+    "extends": [
+        "stylelint-config-standard"
+    ],
+    "ignoreFiles": [
+        "assets/vendor/**",
+        "public/**",
+        "vendor/**",
+        "documentation/**",
+        "node_modules/**"
+    ],
+    "rules": {
+        "declaration-block-single-line-max-declarations": null,
+        "rule-empty-line-before": null,
+        "comment-empty-line-before": null,
+        "at-rule-empty-line-before": null,
+        "media-feature-range-notation": "prefix",
+        "color-hex-length": "long",
+        "custom-property-pattern": [
+            "^[a-z][a-z0-9]*(-[a-z0-9_]+)*$",
+            {
+                "message": "Variable CSS en minuscules, mots séparés par des tirets (codes de niveau : soulignés admis)"
+            }
+        ],
+        "property-no-vendor-prefix": [
+            true,
+            {
+                "ignoreProperties": [
+                    "text-size-adjust",
+                    "/text-size-adjust/"
+                ]
+            }
+        ],
+        "no-descending-specificity": null,
+        "declaration-empty-line-before": null,
+        "selector-class-pattern": [
+            "^[a-z][a-z0-9]*(-[a-z0-9_]+)*$",
+            {
+                "message": "Classe en minuscules, mots séparés par des tirets (codes de niveau : soulignés admis)"
+            }
+        ]
+    }
+}

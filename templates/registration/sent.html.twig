@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Vérifiez votre messagerie'|trans }}{% endblock %}
+
+{% block body %}
+{#- Same page whether the address is new or already has an account: it does not reveal who is registered. -#}
+<section class="card login-card">
+    <h1>{{ 'Vérifiez votre messagerie'|trans }}</h1>
+    <p>{{ email ? 'Un e-mail vient d\'être envoyé à %email%.'|trans({'%email%': email}) : 'Un e-mail vient d\'être envoyé à l\'adresse indiquée.'|trans }}</p>
+    <ul class="sent-cases">
+        <li>{{ 'Nouvelle inscription : il contient un lien de confirmation, valable 24 heures. Ouvrez-le, puis saisissez le mot de passe que vous venez de choisir.'|trans }}</li>
+        <li>{{ 'Adresse qui a déjà un compte : l\'e-mail vous le signale, sans rien modifier. Connectez-vous avec votre mot de passe habituel.'|trans }}</li>
+    </ul>
+    <p class="hint">{{ 'Rien reçu après quelques minutes ? Vérifiez l\'adresse et le dossier des indésirables, puis recommencez l\'inscription.'|trans }}</p>
+    <p class="login-alt"><a href="{{ path('app_login') }}">{{ 'Retour à la connexion'|trans }}</a></p>
+</section>
+{% endblock %}

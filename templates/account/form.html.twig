@@ -1,0 +1,289 @@
+{% extends 'base.html.twig' %}
+
+{%- set is_new = account is null -%}
+{%- set action = is_new ? path('app_account_create') : path('app_account_update', {id: account.id}) -%}
+
+{%- macro error(errors, field) -%}
+    {%- if errors[field] is defined %}<p class="field-error" id="err-{{ field }}">{{ errors[field]|trans }}</p>{% endif -%}
+{%- endmacro -%}
+
+{%- macro invalid(errors, field) -%}
+    {%- if errors[field] is defined %} aria-invalid="true" aria-describedby="err-{{ field }}"{% endif -%}
+{%- endmacro -%}
+
+{% block title %}{{ is_new ? 'Nouveau compte'|trans : account.name }}{% endblock %}
+
+{% block body %}
+{% import _self as f %}
+<div class="page-head">
+    <h1>{{ is_new ? 'Nouveau compte'|trans : account.name }}</h1>
+    <a class="btn btn-small" href="{{ path('app_accounts') }}">‹ {{ 'Comptes'|trans }}</a>
+</div>
+
+{% if not is_new %}
+<p class="sheet-lead">
+    {{- account.typeLabel|trans({}, 'account_types') }} · {{ account.level.label|trans({}, 'levels') }} ·
+    {{ account.isLiability ? 'passif'|trans : 'actif'|trans }} · {{ 'ouvert le %date%'|trans({'%date%': account.openedOn|date_fr}) -}}
+</p>
+{% endif %}
+
+{% if not is_new and account.isArchived %}
+<p class="flash">{{ 'Compte archivé depuis le %date% : il n\'apparaît plus dans la saisie ni dans le patrimoine à partir de ce mois-là.'|trans({'%date%': account.closedOn|date_fr}) }}</p>
+{% endif %}
+
+<section class="sheet">
+    <h2{% if is_new %} class="visually-hidden"{% endif %}>{{ 'Informations'|trans }}</h2>
+    <form method="post" action="{{ action }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+
+        <div class="field">
+            <label for="name">{{ 'Nom'|trans }}</label>
+            <input type="text" id="name" name="name" value="{{ values.name }}" maxlength="80" required
+                   placeholder="{{ 'ex. Livret A Banque Postale'|trans }}"{{ f.invalid(errors, 'name') }}>
+            {{ f.error(errors, 'name') }}
+        </div>
+
+        <div class="field">
+            <label for="type_id">{{ 'Type'|trans }}</label>
+            {#- Typing list (app.js): typing filters the types; without JavaScript, the full list. -#}
+            <select id="type_id" name="type_id" required data-type-select data-combobox
+                    data-combobox-placeholder="{{ 'Filtrer : livret, PEA, crédit…'|trans }}" data-status-none="{{ 'Aucun type ne correspond.'|trans }}" data-combobox-show-all="{{ 'Afficher toute la liste'|trans }}"
+                    data-status-one="{{ '%count% type'|trans }}" data-status-many="{{ '%count% types'|trans }}"{{ f.invalid(errors, 'type_id') }}>
+                <option value="">{{ '— Choisir —'|trans }}</option>
+                {% for level in levels %}
+                {% set level_types = types|filter(t => t.default_level == level.value) %}
+                {% if level_types is not empty %}
+                <optgroup label="{{ level.label|trans({}, 'levels') }}">
+                    {% for t in level_types %}
+                    <option value="{{ t.id }}" data-level="{{ t.default_level }}" data-nature="{{ t.nature }}"
+                        {{ t.id ~ '' == values.type_id ? 'selected' }}>{{ t.label|trans({}, 'account_types') }}</option>
+                    {% endfor %}
+                </optgroup>
+                {% endif %}
+                {% endfor %}
+            </select>
+            {{ f.error(errors, 'type_id') }}
+            {% if is_new or not is_property %}
+            <p class="hint">{{ 'Résidence principale, location, SCPI… : créez-les dans %link%, avec votre part et leurs crédits.'|trans({'%link%': '<a href="' ~ path('app_property_new') ~ '">' ~ 'Biens immobiliers'|trans ~ '</a>'})|raw }}</p>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="field">
+                <label for="level_code">{{ 'Niveau de la pyramide'|trans }}</label>
+                <select id="level_code" name="level_code" data-level-select{{ f.invalid(errors, 'level_code') }}>
+                    <option value="">{{ 'Selon le type'|trans }}</option>
+                    {% for level in levels %}
+                    <option value="{{ level.value }}" {{ level.value == values.level_code ? 'selected' }}>{{ level.label|trans({}, 'levels') }}</option>
+                    {% endfor %}
+                </select>
+                {{ f.error(errors, 'level_code') }}
+            </div>
+
+            <div class="field">
+                <label for="nature">{{ 'Nature'|trans }}</label>
+                <select id="nature" name="nature" data-nature-select{{ f.invalid(errors, 'nature') }}>
+                    <option value="">{{ 'Selon le type'|trans }}</option>
+                    <option value="asset" {{ values.nature == 'asset' ? 'selected' }}>{{ 'Actif (compte, placement, bien)'|trans }}</option>
+                    <option value="liability" {{ values.nature == 'liability' ? 'selected' }}>{{ 'Passif (crédit, dette)'|trans }}</option>
+                </select>
+                {{ f.error(errors, 'nature') }}
+                <p class="hint">{{ 'Un passif vient en déduction de son niveau : saisissez le capital restant dû.'|trans }}</p>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="field">
+                <label for="opened_on">{{ 'Date d\'ouverture'|trans }}</label>
+                <input type="date" id="opened_on" name="opened_on" value="{{ values.opened_on }}" required{{ f.invalid(errors, 'opened_on') }}>
+                {{ f.error(errors, 'opened_on') }}
+            </div>
+
+            {% if is_new %}
+            <div class="field">
+                <label for="initial_amount">{{ 'Solde actuel'|trans }} <span class="muted small">{{ '(optionnel)'|trans }}</span></label>
+                <div class="amount-field">
+                    <input type="text" id="initial_amount" name="initial_amount" value="{{ values.initial_amount }}"
+                           inputmode="decimal" autocomplete="off" placeholder="{{ 0|money_input }}"{{ f.invalid(errors, 'initial_amount') }}>
+                    <span class="amount-unit" aria-hidden="true">€</span>
+                </div>
+                {{ f.error(errors, 'initial_amount') }}
+                <p class="hint">{{ 'Enregistré comme relevé %of_month%.'|trans({'%of_month%': current_month|month_of}) }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">{{ is_new ? 'Créer le compte'|trans : 'Enregistrer'|trans }}</button>
+        </div>
+    </form>
+</section>
+
+{% if not is_new %}
+<section class="sheet">
+    <h2>{{ 'Relevés'|trans }}</h2>
+    <p class="sheet-lead">{{ account.isLiability ? 'Un relevé par mois : le capital restant dû, en positif. Un mois sans relevé reprend le précédent.'|trans : 'Un relevé par mois : le solde du compte. Un mois sans relevé reprend le précédent.'|trans }}</p>
+    {#- Statement read from a bank file (readStatementFile): the form below is filled in, nothing is saved yet. -#}
+    {%- set proposal = statement_proposal ?? null -%}
+    {% if proposal %}
+    <p class="flash flash-success" role="status">{{ 'Relevé lu : solde de %amount% au %date%. Vérifiez le mois et le montant, puis enregistrez.'|trans({'%amount%': proposal.cents|money, '%date%': proposal.date|date_fr}) }}</p>
+    {% endif %}
+    <form method="post" action="{{ path('app_statement_save', {id: account.id}) }}" class="form statement-form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="form-row">
+            <div class="field">
+                <label for="st-mois">{{ 'Mois'|trans }} <span class="muted small">{{ '(AAAA-MM)'|trans }}</span></label>
+                {{ include('_month_field.html.twig', {id: 'st-mois', name: 'mois', value: proposal ? proposal.month : current_month}) }}
+            </div>
+            <div class="field">
+                <label for="st-montant">{{ 'Montant'|trans }}</label>
+                <div class="amount-field">
+                    <input type="text" id="st-montant" name="montant" inputmode="decimal" autocomplete="off" required placeholder="{{ 0|money_input }}"{% if proposal %} value="{{ proposal.cents|money_input }}"{% endif %}>
+                    <span class="amount-unit" aria-hidden="true">€</span>
+                </div>
+            </div>
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn{{ proposal ? ' btn-primary' }}">{{ 'Ajouter / corriger le relevé'|trans }}</button>
+        </div>
+    </form>
+
+    {#- Or the balance read from the file exported by the bank (OFX, CAMT.053), for the form above. -#}
+    {%- set file_error = statement_file_error ?? null -%}
+    <form method="post" action="{{ path('app_statement_file', {id: account.id}) }}" enctype="multipart/form-data" class="form statement-file-form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="field">
+            <label for="st-fichier">{{ 'Ou lire le solde d\'un relevé bancaire'|trans }} <span class="muted small">{{ '(OFX ou CAMT.053)'|trans }}</span></label>
+            <input type="file" id="st-fichier" name="releve" accept=".ofx,.qfx,.xml" required aria-describedby="st-fichier-hint{{ file_error ? ' st-fichier-error' }}"{% if file_error %} aria-invalid="true"{% endif %}>
+            <p class="hint" id="st-fichier-hint">{{ 'Le fichier exporté par votre banque pour ce compte : Patrimeter en lit le solde de fin de période et remplit le formulaire ci-dessus ; rien n\'est enregistré avant votre confirmation.'|trans }}</p>
+            {% if file_error %}<p class="field-error" id="st-fichier-error">{{ file_error|trans }}</p>{% endif %}
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn">{{ 'Lire le relevé'|trans }}</button>
+        </div>
+    </form>
+
+    {% if statements is empty %}
+    <p class="muted">{{ 'Aucun relevé pour ce compte.'|trans }}</p>
+    {% else %}
+    <table class="ledger statements">
+        <thead><tr><th scope="col">{{ 'Mois'|trans }}</th><th scope="col" class="num ledger-amount">{{ 'Montant'|trans }}</th><th scope="col" class="ledger-action"><span class="visually-hidden">{{ 'Actions'|trans }}</span></th></tr></thead>
+        <tbody>
+        {% for line in statements %}
+            <tr>
+                <th scope="row">{{ line.month|month_short }}</th>
+                <td class="num"><span class="{{ account.isLiability ? 'liability' }}">{{ account.signed(line.cents)|money }}</span></td>
+                <td class="ledger-action">
+                    <form method="post" action="{{ path('app_statement_delete', {id: account.id, month: line.month.toString}) }}"
+                          data-confirm="{{ 'Supprimer le relevé %of_month% ?'|trans({'%of_month%': line.month|month_of}) }}">
+                        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+                        <button type="submit" class="btn-link" aria-label="{{ 'Supprimer le relevé %of_month%'|trans({'%of_month%': line.month|month_of}) }}">{{ 'Supprimer'|trans }}</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</section>
+
+{% if not is_new and is_property %}
+<section class="sheet">
+    <h2>{{ 'Votre part du bien'|trans }}</h2>
+    <p class="hint">{{ 'Saisissez toujours la valeur totale du bien : votre part s\'applique à partir de son mois d\'effet. Sans part indiquée : 100 %.'|trans }}</p>
+    <form method="post" action="{{ path('app_share_save', {id: account.id}) }}" class="form statement-form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="form-row">
+            <div class="field">
+                <label for="share-month">{{ 'À partir de'|trans }} <span class="muted small">{{ '(AAAA-MM)'|trans }}</span></label>
+                {{ include('_month_field.html.twig', {id: 'share-month', name: 'mois', value: current_month}) }}
+            </div>
+            <div class="field">
+                <label for="share-percent">{{ 'Part (%)'|trans }}</label>
+                <input type="text" id="share-percent" name="pourcentage" inputmode="decimal" autocomplete="off" required placeholder="50">
+            </div>
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn">{{ 'Ajouter / corriger la part'|trans }}</button>
+        </div>
+    </form>
+
+    {% if share_lines is empty %}
+    <p class="muted">{{ 'Aucune part indiquée : le bien compte pour 100 %.'|trans }}</p>
+    {% else %}
+    <table class="ledger shares">
+        <thead><tr><th scope="col">{{ 'À partir de'|trans }}</th><th scope="col" class="num ledger-amount">{{ 'Part'|trans }}</th><th scope="col" class="ledger-action"><span class="visually-hidden">{{ 'Actions'|trans }}</span></th></tr></thead>
+        <tbody>
+        {% for line in share_lines %}
+            <tr>
+                <th scope="row">{{ line.month|month_short }}</th>
+                <td class="num">{{ share_percent(line.share) }}{{ app.request.locale == 'en' ? '' : '&nbsp;' }}%</td>
+                <td class="ledger-action">
+                    <form method="post" action="{{ path('app_share_delete', {id: account.id, month: line.month.toString}) }}"
+                          data-confirm="{{ 'Supprimer la part %of_month% ?'|trans({'%of_month%': line.month|month_of}) }}">
+                        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+                        <button type="submit" class="btn-link" aria-label="{{ 'Supprimer la part %of_month%'|trans({'%of_month%': line.month|month_of}) }}">{{ 'Supprimer'|trans }}</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</section>
+{% endif %}
+
+{% if not is_new and account.isLiability %}
+<section class="sheet">
+    <h2>{{ 'Bien financé'|trans }}</h2>
+    <form method="post" action="{{ path('app_account_link', {id: account.id}) }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="form-row">
+            <div class="field">
+                <label for="asset_id">{{ 'Bien'|trans }}</label>
+                <select id="asset_id" name="asset_id">
+                    <option value="0">{{ 'Aucun'|trans }}</option>
+                    {% for property in properties %}
+                    <option value="{{ property.id }}" {{ property.id == account.linkedAssetId ? 'selected' }}>{{ property.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label for="loan_mode">{{ 'Le montant saisi est'|trans }}</label>
+                <select id="loan_mode" name="loan_mode">
+                    <option value="prorata" {{ account.loanMode.value != 'own' ? 'selected' }}>{{ 'Le total, compté selon ma part'|trans }}</option>
+                    <option value="own" {{ account.loanMode.value == 'own' ? 'selected' }}>{{ 'Ma part, comptée telle quelle'|trans }}</option>
+                </select>
+            </div>
+        </div>
+        <p class="actions"><button type="submit" class="btn">{{ 'Enregistrer'|trans }}</button></p>
+    </form>
+</section>
+{% endif %}
+
+<section class="sheet danger-zone">
+    <h2>{{ 'Archivage et suppression'|trans }}</h2>
+    {% if account.isArchived %}
+    <form method="post" action="{{ path('app_account_unarchive', {id: account.id}) }}" class="actions">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <button type="submit" class="btn">{{ 'Réactiver le compte'|trans }}</button>
+    </form>
+    {% else %}
+    <p class="hint">{{ 'Archiver un compte clôturé le conserve dans l\'historique jusqu\'au mois précédant sa clôture.'|trans }}</p>
+    <form method="post" action="{{ path('app_account_archive', {id: account.id}) }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="field">
+            <label for="closed_on">{{ 'Date de clôture'|trans }}</label>
+            <input type="date" id="closed_on" name="closed_on" value="{{ today }}" required>
+        </div>
+        <div class="actions"><button type="submit" class="btn">{{ 'Archiver'|trans }}</button></div>
+    </form>
+    {% endif %}
+    <form method="post" action="{{ path('app_account_delete', {id: account.id}) }}" class="actions"
+          data-confirm="{{ 'Supprimer définitivement « %name% » et tous ses relevés ?'|trans({'%name%': account.name}) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <button type="submit" class="btn btn-danger">{{ 'Supprimer définitivement'|trans }}</button>
+    </form>
+</section>
+{% endif %}
+{% endblock %}

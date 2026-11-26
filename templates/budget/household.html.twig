@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{%- macro error(errors, field) -%}
+    {%- if errors[field] is defined %}<p class="field-error" id="err-{{ field|replace({'.': '-'}) }}">{{ errors[field]|trans }}</p>{% endif -%}
+{%- endmacro -%}
+{%- macro invalid(errors, field) -%}
+    {%- if errors[field] is defined %} aria-invalid="true" aria-describedby="err-{{ field|replace({'.': '-'}) }}"{% endif -%}
+{%- endmacro -%}
+
+{% block title %}{{ 'Foyer fiscal et catégories'|trans }}{% endblock %}
+
+{% block body %}
+{% import _self as hh %}
+{%- set new_category_errors = category_form ? category_form.errors : {} -%}
+{{ include('_account_tabs.html.twig') }}
+<div class="tab-head">
+    <h2>{{ 'Foyer fiscal et catégories'|trans }}</h2>
+    <a class="btn btn-small" href="{{ path('app_budget') }}">{{ 'Voir le budget'|trans }}</a>
+</div>
+
+{% if (form and form.errors is not empty) or category_form or line_form %}
+<p class="flash flash-error" role="alert">{{ 'Certains champs sont invalides : rien n\'a été enregistré. Corrigez les champs signalés.'|trans }}</p>
+{% endif %}
+
+<section class="sheet" aria-labelledby="household-title">
+    <h2 id="household-title">{{ 'Foyer fiscal'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_household_save') }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        {{ include('budget/_household_fields.html.twig', {household: household, form: form}) }}
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">{{ 'Enregistrer le foyer fiscal'|trans }}</button>
+        </div>
+    </form>
+</section>
+
+<section class="sheet" aria-labelledby="categories-title">
+    <h2 id="categories-title">{{ 'Catégories et postes'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Les catégories communes sont payées par le compte commun ; celles d\'un adulte, sur ce qui lui reste ensuite. Leur famille (besoins, envies, épargne) compte pour la règle 50/30/20. Les montants se saisissent avec le budget du mois.'|trans }}</p>
+    {% for scope in [null]|merge(household.adultIds) %}
+    <h3 class="budget-scope">{{ scope is null ? 'Budget commun'|trans : 'Budget propre à %name%'|trans({'%name%': household.adultName(scope)}) }}</h3>
+    {%- set scope_categories = categories|filter(c => c.adult == scope) -%}
+    {% if scope_categories is empty %}
+    <p class="muted">{{ 'Aucune catégorie.'|trans }}</p>
+    {% endif %}
+    {% for category in scope_categories %}
+    <div class="budget-admin is-{{ category.group.value }}">
+        <h4><span class="group-dot" aria-hidden="true"></span>{{ category.name }} <span class="muted">· {{ category.group.label|trans }}</span>
+            <a class="btn-link" href="{{ path('app_budget_category_edit', {id: category.id}) }}" aria-label="{{ 'Modifier la catégorie %name%'|trans({'%name%': category.name}) }}">{{ 'Modifier'|trans }}</a></h4>
+        {{ include('budget/_move.html.twig', {route: 'app_budget_category_move', id: category.id, name: category.name, first: loop.first, last: loop.last}) }}
+        {% if lines[category.id] is defined %}
+        <ul class="budget-admin-lines">
+            {% for budget_line in lines[category.id] %}
+            <li>
+                <a href="{{ path('app_budget_line_edit', {id: budget_line.id}) }}">{{ budget_line.name }}</a>
+                {%- if budget_line.childId is not null and household.hasChild(budget_line.childId) %} <span class="muted small">· {{ 'pour %name%'|trans({'%name%': household.childName(budget_line.childId)}) }}</span>{% endif %}
+                {%- if budget_line.accountId is not null and accounts[budget_line.accountId] is defined %} <span class="muted small">· {{ 'vers %account%'|trans({'%account%': accounts[budget_line.accountId].name}) }}</span>{% endif %}
+                {{ include('budget/_move.html.twig', {route: 'app_budget_line_move', id: budget_line.id, name: budget_line.name, first: loop.first, last: loop.last}) }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {%- set line_errors = line_form and line_form.category == category.id ~ '' ? line_form.errors : {} -%}
+        <form method="post" action="{{ path('app_budget_line_create') }}" class="inline-form budget-add-line" novalidate>
+            <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+            <input type="hidden" name="category_id" value="{{ category.id }}">
+            <label for="new-line-{{ category.id }}" class="visually-hidden">{{ 'Nouveau poste dans %name%'|trans({'%name%': category.name}) }}</label>
+            <input type="text" id="new-line-{{ category.id }}" name="name" maxlength="60" autocomplete="off" placeholder="{{ 'Nouveau poste'|trans }}"
+                   value="{{ line_errors is not empty ? line_form.name : '' }}"{% if line_errors.name is defined %} aria-invalid="true" aria-describedby="err-line-{{ category.id }}"{% endif %}>
+            <button type="submit" class="btn btn-small">{{ 'Ajouter'|trans }}</button>
+            {% if line_errors.name is defined %}<p class="field-error" id="err-line-{{ category.id }}">{{ line_errors.name|trans }}</p>{% endif %}
+        </form>
+    </div>
+    {% endfor %}
+    {% endfor %}
+</section>
+
+<section class="sheet" aria-labelledby="new-category-title">
+    <h2 id="new-category-title">{{ 'Nouvelle catégorie'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_category_create') }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="field">
+            <label for="category-name">{{ 'Nom'|trans }}</label>
+            <input type="text" id="category-name" name="name" maxlength="60" required autocomplete="off" placeholder="{{ 'ex. Animaux, Voiture, Vacances'|trans }}"
+                   value="{{ category_form ? category_form.name : '' }}"{{ hh.invalid(new_category_errors, 'name') }}>
+            {{ hh.error(new_category_errors, 'name') }}
+        </div>
+        <div class="form-row">
+            {{ include('budget/_category_fields.html.twig', {household: household, group: category_form ? category_form.group : 'needs', adult: category_form ? category_form.adult : '', errors: new_category_errors}) }}
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn">{{ 'Créer la catégorie'|trans }}</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

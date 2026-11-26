@@ -1,0 +1,17 @@
+{{ 'Bonjour,'|trans }}
+
+{{ event|trans }}
+
+{#- access_lost: the action may have shut the user out (account deleted, password or authenticator app changed):
+    advising to change the password from My account would lead nowhere. -#}
+{% if access_lost ?? false %}
+{{ 'Si vous êtes à l\'origine de cette action, aucune autre démarche n\'est nécessaire. Sinon,
+prévenez sans attendre l\'administrateur du serveur en lui transmettant ce message.'|trans }}
+{% else %}
+{{ 'Si vous êtes à l\'origine de cette action, aucune autre démarche n\'est nécessaire. Sinon,
+changez votre mot de passe sans attendre depuis la page Mon compte et prévenez l\'administrateur
+du serveur.'|trans }}
+{% endif %}
+
+-- 
+Patrimeter

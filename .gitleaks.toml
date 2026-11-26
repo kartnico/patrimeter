@@ -1,0 +1,13 @@
+# Gitleaks ("gitleaks" job, docs/ci.md): the default rules, plus the tokens of Patrimeter's API and MCP service.
+# A token has a fixed prefix and length (Patrimeter\Security\Api\ApiTokens::PATTERN, checked by ApiTokenFormatTest):
+# "patrimeter_" + 24 hexadecimal characters + "_" + 43 base64url ones; the former format "pm1." is still recognized.
+title = "Patrimeter"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "patrimeter-api-token"
+description = "Patrimeter API or MCP token"
+regex = '''(?:patrimeter_[0-9a-f]{24}_|pm1\.[0-9a-f]{24}\.)[A-Za-z0-9_-]{43}'''
+keywords = ["patrimeter_", "pm1."]

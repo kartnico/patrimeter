@@ -1,0 +1,12 @@
+# Patrimeter — daily backup (docs/backup.md).
+# To copy into /etc/systemd/system/patrimeter-backup.timer.
+[Unit]
+Description=Sauvegarde quotidienne de la base Patrimeter
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+# Server off at that time: the backup runs at the next start.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

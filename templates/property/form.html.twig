@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{%- macro error(errors, field) -%}
+    {%- if errors[field] is defined %}<p class="field-error" id="err-{{ field|replace({'.': '-'}) }}">{{ errors[field]|trans }}</p>{% endif -%}
+{%- endmacro -%}
+
+{% block title %}{{ 'Nouveau bien'|trans }}{% endblock %}
+
+{% block body %}
+{% import _self as f %}
+<div class="page-head">
+    <h1>{{ 'Nouveau bien'|trans }}</h1>
+    <a class="btn btn-small" href="{{ path('app_properties') }}">‹ {{ 'Biens'|trans }}</a>
+</div>
+<form method="post" action="{{ path('app_property_create') }}" class="form" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+    <section class="sheet">
+        <h2>{{ 'Le bien'|trans }}</h2>
+        <div class="field">
+            <label for="name">{{ 'Nom'|trans }}</label>
+            <input type="text" id="name" name="name" value="{{ name }}" maxlength="80" required placeholder="{{ 'ex. Maison de Nantes'|trans }}">
+            {{ f.error(errors, 'name') }}
+        </div>
+        <div class="form-row">
+            <div class="field">
+                <label for="type_id">{{ 'Type'|trans }}</label>
+                {#- Typing list (app.js): typing filters the types; without JavaScript, the full list. -#}
+                <select id="type_id" name="type_id" required data-combobox
+                        data-combobox-placeholder="{{ 'Filtrer : SCPI, location, résidence…'|trans }}" data-status-none="{{ 'Aucun type ne correspond.'|trans }}" data-combobox-show-all="{{ 'Afficher toute la liste'|trans }}"
+                        data-status-one="{{ '%count% type'|trans }}" data-status-many="{{ '%count% types'|trans }}">
+                    <option value="">{{ '— Choisir —'|trans }}</option>
+                    {% for type in types %}
+                    <option value="{{ type.id }}" {{ type.id ~ '' == type_id ? 'selected' }}>{{ type.label|trans({}, 'account_types') }}</option>
+                    {% endfor %}
+                </select>
+                {{ f.error(errors, 'type_id') }}
+            </div>
+            <div class="field">
+                <label for="opened_on">{{ 'Date d\'acquisition'|trans }}</label>
+                <input type="date" id="opened_on" name="opened_on" value="{{ opened_on }}" required>
+                {{ f.error(errors, 'opened_on') }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="field">
+                <label for="value">{{ 'Valeur totale du bien (€)'|trans }}</label>
+                <input type="text" id="value" name="value" value="{{ value }}" inputmode="decimal" required aria-describedby="value-hint">
+                <p class="hint" id="value-hint">{{ 'Valeur en %month%, pour 100 % du bien.'|trans({'%month%': current_month|month_label}) }}</p>
+                {{ f.error(errors, 'value') }}
+            </div>
+            <div class="field">
+                <label for="share">{{ 'Votre part (%)'|trans }}</label>
+                <input type="text" id="share" name="share" value="{{ share }}" inputmode="decimal" required>
+                {{ f.error(errors, 'share') }}
+            </div>
+        </div>
+    </section>
+    <section class="sheet">
+        <h2>{{ 'Crédits'|trans }}</h2>
+        <p class="hint">{{ 'Laissez une ligne vide si elle ne sert pas.'|trans }}</p>
+        <div data-loan-rows>
+            {% for loan in loans %}
+            <fieldset class="loan-row" data-loan-row>
+                <legend>{{ 'Crédit'|trans }} <span data-loan-number>{{ loop.index }}</span></legend>
+                <div class="form-row">
+                    <div class="field">
+                        <label for="loan-name-{{ loop.index0 }}">{{ 'Nom'|trans }}</label>
+                        <input type="text" id="loan-name-{{ loop.index0 }}" name="loans[{{ loop.index0 }}][name]" value="{{ loan.name }}" maxlength="80">
+                    </div>
+                    <div class="field">
+                        <label for="loan-amount-{{ loop.index0 }}">{{ 'Capital restant dû (€)'|trans }}</label>
+                        <input type="text" id="loan-amount-{{ loop.index0 }}" name="loans[{{ loop.index0 }}][amount]" value="{{ loan.amount }}" inputmode="decimal">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="loan-mode-{{ loop.index0 }}">{{ 'Ce montant est'|trans }}</label>
+                    <select id="loan-mode-{{ loop.index0 }}" name="loans[{{ loop.index0 }}][mode]">
+                        <option value="prorata" {{ loan.mode != 'own' ? 'selected' }}>{{ 'Le total, compté selon ma part'|trans }}</option>
+                        <option value="own" {{ loan.mode == 'own' ? 'selected' }}>{{ 'Ma part, comptée telle quelle'|trans }}</option>
+                    </select>
+                </div>
+                {{ f.error(errors, 'loans.' ~ loop.index0) }}
+            </fieldset>
+            {% endfor %}
+        </div>
+        <p class="actions"><button type="button" class="btn btn-small" data-loan-add hidden>{{ 'Ajouter un crédit'|trans }}</button></p>
+    </section>
+    <p class="actions"><button type="submit" class="btn btn-primary">{{ 'Créer le bien'|trans }}</button></p>
+</form>
+{% endblock %}

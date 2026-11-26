@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Objectifs d\'épargne'|trans }}{% endblock %}
+
+{% block scripts %}
+{% if lines is not empty %}
+<script src="{{ asset('vendor/chart.js/chart.umd.min.js') }}" defer></script>
+<script src="{{ asset('js/goals.js') }}" defer></script>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ 'Objectifs d\'épargne'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+    <a class="btn btn-small" href="{{ path('app_goal_entry') }}">{{ lines is empty ? 'Voir vos objectifs'|trans : 'Gérer les objectifs'|trans }}</a>
+</div>
+
+{% if lines is empty %}
+<div class="card empty-state">
+    <p>{{ 'Aucun objectif pour l\'instant. Fixez un montant à atteindre et une date, sur votre patrimoine net, un niveau de la pyramide ou des comptes choisis : Patrimeter vous dit chaque mois si vous êtes sur la bonne voie.'|trans }}</p>
+    <a class="btn btn-primary" href="{{ path('app_goal_new') }}">+ {{ 'Nouvel objectif'|trans }}</a>
+</div>
+{% else %}
+<p class="sheet-lead">{{ 'Situation %of_month% : l\'effort encore nécessaire chaque mois, comparé à votre rythme des six derniers mois. Le statut se recalcule à chaque saisie.'|trans({'%of_month%': month|month_of}) }}</p>
+{% endif %}
+
+{% for line in lines %}
+{%- set goal = line.progress.goal -%}
+{%- set goal_chart_data = line.series|length > 1 ? goal_chart(line.progress, line.series) : null -%}
+<section class="sheet goal" aria-labelledby="goal-{{ goal.id }}">
+    <div class="goal-head">
+        {{ goal_gauge(line.progress) }}
+        <div class="goal-heading">
+            <h2 id="goal-{{ goal.id }}">{{ goal.name }}</h2>
+            <p class="muted small">
+                {%- if goal.scope.value == 'level' and goal.level is not null -%}
+                {{ 'Mesuré sur le niveau %level%'|trans({'%level%': goal.level.label|trans({}, 'levels')}) }}
+                {%- elseif goal.scope.value == 'accounts' -%}
+                {{ 'Mesuré sur %count% compte choisi|Mesuré sur %count% comptes choisis'|trans({'%count%': goal.accountIds|length}) }}
+                {%- else -%}
+                {{ 'Mesuré sur le patrimoine net'|trans }}
+                {%- endif %}
+                {%- if goal.spendingMonths is not null %} · {{ 'cible : %count% mois de dépenses du budget|cible : %count% mois de dépenses du budget'|trans({'%count%': goal.spendingMonths}) }}{% endif %} · {{ 'départ : %value% en %month%'|trans({'%value%': goal.startCents|money, '%month%': goal.startMonth|month_label}) }}
+            </p>
+            <p class="goal-status status-{{ line.progress.status.value }}">{{ line.progress.status.label|trans }}</p>
+        </div>
+    </div>
+    {{ include('goals/_progress.html.twig', {progress: line.progress}) }}
+    {% if goal_chart_data is not null %}
+    <figure class="goal-chart">
+        <div class="goal-chart-box">
+            <canvas data-goal-chart="{{ goal_chart_data|json_encode }}" role="img" aria-label="{{ goal_chart_data.title }}"></canvas>
+        </div>
+        <ul class="goal-chart-legend">
+            <li><span class="key key-actual" aria-hidden="true"></span>{{ 'Réalisé (trait plein)'|trans }}</li>
+            <li><span class="key key-plan" aria-hidden="true"></span>{{ 'Trajectoire prévue (tirets)'|trans }}</li>
+            <li><span class="key key-projection" aria-hidden="true"></span>{{ 'Au rythme actuel (pointillés)'|trans }}</li>
+            <li><span class="key key-target" aria-hidden="true"></span>{{ 'Cible (trait fin)'|trans }}</li>
+        </ul>
+        <figcaption class="goal-chart-summary">{{ goal_chart_data.description }}</figcaption>
+    </figure>
+    {% endif %}
+    {% if line.history|length > 1 %}
+    <h3 class="goal-history-title">{{ 'Les derniers mois'|trans }}</h3>
+    <ol class="goal-history">
+        {% for past in line.history %}
+        <li><span class="muted">{{ past.month|month_short }}</span> <span class="goal-status status-{{ past.status.value }}">{{ past.status.label|trans }}</span></li>
+        {% endfor %}
+    </ol>
+    {% endif %}
+</section>
+{% endfor %}
+{% endblock %}

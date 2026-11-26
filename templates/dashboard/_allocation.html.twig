@@ -1,0 +1,41 @@
+{#- Split of the investments compared with the allocation benchmark (Patrimeter\Domain\RecommendedAllocation). -#}
+<section class="allocation" aria-labelledby="allocation-title">
+    <h2 id="allocation-title" class="allocation-title">{{ 'Répartition de vos placements'|trans }}</h2>
+    <table class="allocation-table">
+        <caption class="visually-hidden">{{ 'Part de chaque niveau dans vos placements, comparée au repère'|trans }}</caption>
+        <thead><tr><th scope="col">{{ 'Niveau'|trans }}</th><th scope="col" class="num">{{ 'Vous'|trans }}</th><th scope="col" class="num">{{ 'Repère'|trans }}</th></tr></thead>
+        <tbody>
+            {% for row in allocation %}
+            <tr class="level-{{ row.level.value }}" data-level="{{ row.level.value }}">
+                <th scope="row"><span class="level-dot" aria-hidden="true"></span>{{ row.level.label|trans({}, 'levels') }}</th>
+                <td class="num">{{ row.actual|percent(0) }}</td>
+                <td class="num">{{ row.recommended|percent(0) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="muted small">{{ 'Placements hors résidence principale et épargne de précaution (comptez environ trois mois de dépenses). Repère indicatif, à adapter à votre horizon et à votre goût du risque : ce n\'est pas un conseil en investissement.'|trans }}</p>
+    <p class="muted small">{{ 'Source :'|trans }} <a href="{{ allocation_source_url }}" rel="noopener noreferrer external">{{ allocation_source|trans }}</a>.</p>
+    {% if year_to_date %}
+    {#- Savings of the year: change of each level since the end of the previous year (YearToDate). -#}
+    <h3 class="year-to-date-title" id="year-to-date-title">{{ 'Depuis le début de l\'année'|trans }}</h3>
+    <table class="allocation-table year-to-date" aria-labelledby="year-to-date-title">
+        <thead><tr><th scope="col">{{ 'Niveau'|trans }}</th><th scope="col" class="num">{{ year_to_date.endOfPreviousYear ? 'Depuis fin %month%'|trans({'%month%': year_to_date.reference|month_short}) : 'Depuis %month%'|trans({'%month%': year_to_date.reference|month_short}) }}</th></tr></thead>
+        <tbody>
+            {% for change_row in year_to_date.levels %}
+            <tr class="level-{{ change_row.level.value }}" data-level="{{ change_row.level.value }}">
+                <th scope="row"><span class="level-dot" aria-hidden="true"></span>{{ change_row.level.label|trans({}, 'levels') }}</th>
+                <td class="num {{ change_row.change|sign_class }}">{{ change_row.change|money(true) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row">{{ 'Patrimoine net'|trans }}</th>
+                <td class="num {{ year_to_date.total|sign_class }}">{{ year_to_date.total|money(true) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    <p class="muted small">{{ 'Sommes mises ou retirées dans chaque niveau, plus-values, moins-values et remboursements de crédit compris : un aperçu de l\'épargne de l\'année.'|trans }}</p>
+    {% endif %}
+</section>

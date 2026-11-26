@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{#- Report to share: a card that fills a phone screen, without navigation, to capture or share as a picture.
+    Pyramid levels only, never an account name; without amounts, the percentages alone. Stars and level of the
+    challenges on request (etoiles=1), never an amount. -#}
+
+{% block title %}{{ 'Rapport %of_month%'|trans({'%of_month%': month|month_of}) }}{% endblock %}
+{% block body_class %} is-report{% endblock %}
+{% block topbar %}{% endblock %}
+{% block scripts %}{% if snapshot.hasData %}<script src="{{ asset('js/report.js') }}" defer></script>{% endif %}{% endblock %}
+
+{% block body %}
+{% if not snapshot.hasData %}
+<div class="card empty-state">
+    <h1>{{ 'Rapport %of_month%'|trans({'%of_month%': month|month_of}) }}</h1>
+    <p>{{ 'Aucun solde connu pour %month%.'|trans({'%month%': month|month_label}) }}</p>
+    <a class="btn" href="{{ path('app_dashboard', {mois: month.toString}) }}">{{ 'Retour au patrimoine'|trans }}</a>
+</div>
+{% else %}
+<article class="report-card" aria-labelledby="report-title" data-report-card>
+    <header class="report-head">
+        <p class="report-brand"><svg class="brand-logo" viewBox="0 0 32 32" aria-hidden="true"><path class="brand-logo-base" d="M16 3 30 28H2z"/><path class="brand-logo-tip" d="M16 3 21.6 13H10.4z"/></svg>Patrimeter</p>
+        {#- Family account: net worth of the family or of a member, depending on the chosen perimeter. -#}
+        <h1 id="report-title">
+            {%- if perimeter and perimeter.key == 'famille' -%}{{ 'Patrimoine de la famille'|trans }}
+            {%- elseif perimeter and perimeter.name -%}{{ 'Patrimoine de %name%'|trans({'%name%': perimeter.name}) }}
+            {%- else -%}{{ 'Mon patrimoine'|trans }}
+            {%- endif %} <span>· {{ month|month_label|capitalize }}</span></h1>
+    </header>
+
+    {% if amounts %}
+    <p class="report-total num{{ snapshot.net < 0 ? ' negative' }}">{{ snapshot.net|money_rounded }}</p>
+    {% endif %}
+    <ul class="report-variations">
+        {% for comparison in comparisons %}
+        {% if comparison.variation is not null and (amounts or comparison.percent is not null) %}
+        <li class="{{ comparison.variation|sign_class }}">
+            {% if amounts %}<span class="num">{{ (comparison.variation > 0 ? '+' : '') ~ comparison.variation|money_rounded }}</span>{% endif %}
+            {% if comparison.percent is not null %}<span class="num">{{ amounts ? '(' }}{{ (comparison.percent > 0 ? '+' : '') ~ comparison.percent|percent }}{{ amounts ? ')' }}</span>{% endif %}
+            <span class="report-period">{{ loop.first ? 'sur 1 mois'|trans : 'sur 1 an'|trans }}</span>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+
+    {{ pyramid(snapshot, amounts) }}
+
+    {% if amounts %}
+    <dl class="report-figures">
+        <div><dt>{{ 'Actifs bruts'|trans }}</dt><dd class="num">{{ snapshot.assets|money_rounded }}</dd></div>
+        <div><dt>{{ 'Passifs'|trans }}</dt><dd class="num">{{ (-snapshot.liabilities)|money_rounded }}</dd></div>
+    </dl>
+    {% else %}
+    <p class="report-note">{{ 'Répartition du patrimoine net par niveau, en pourcentage.'|trans }}</p>
+    {% endif %}
+
+    {% if game %}
+    {%- set report_level = game.level -%}
+    <p class="report-stars"><span aria-hidden="true">★</span> {{ '%count% étoile · niveau %level% : %name%|%count% étoiles · niveau %level% : %name%'|trans({'%count%': game.totalStars, '%level%': report_level.number, '%name%': report_level.name|trans}) }}</p>
+    {% endif %}
+
+    <footer class="report-foot">
+        <p>{{ 'Établi avec Patrimeter le %date%'|trans({'%date%': today|date_fr}) }}</p>
+    </footer>
+</article>
+
+{#- Sharing the card as a picture (report.js draws it on a canvas): the phone's share sheet, a download, or a social
+    network. Hidden without JavaScript, where a screenshot remains the way (hint below). Nothing is sent by Patrimeter. -#}
+<section class="report-share" aria-labelledby="report-share-title" data-report-share hidden
+         data-share-text="{{ 'Ma pyramide du patrimoine, %month%, établie avec Patrimeter.'|trans({'%month%': month|month_label}) }}"
+         data-share-file="patrimeter-{{ month.toString }}{{ amounts ? '' : '-pourcentages' }}.png"
+         data-share-saved="{{ 'Image enregistrée : ajoutez-la à votre publication.'|trans }}"
+         data-share-failed="{{ 'L\'image n\'a pas pu être créée.'|trans }}"
+         data-share-invalid="{{ 'Indiquez l\'adresse de votre instance, par exemple mastodon.social.'|trans }}">
+    <h2 id="report-share-title" class="visually-hidden">{{ 'Partager l\'image du rapport'|trans }}</h2>
+    <div class="report-share-main">
+        <button type="button" class="btn btn-primary" data-share-native hidden>{{ 'Partager l\'image…'|trans }}</button>
+        <button type="button" class="btn" data-share-download>{{ 'Enregistrer l\'image'|trans }}</button>
+    </div>
+    {% if amounts %}
+    <p class="report-share-warning small">{{ 'Les montants figurent sur l\'image : publiée sur un réseau social, elle les rend publics.'|trans }}
+        <a href="{{ path('app_report', {mois: month.toString, montants: 0, etoiles: game ? 1 : null}) }}">{{ 'Masquer les montants'|trans }}</a></p>
+    {% endif %}
+    <p class="report-share-label small">{{ 'Publier sur'|trans }}</p>
+    <ul class="share-networks">
+        <li><button type="button" class="btn btn-small" data-share-network="mastodon" aria-controls="mastodon-form">Mastodon</button></li>
+        <li><button type="button" class="btn btn-small" data-share-network="x">X (Twitter)</button></li>
+        <li><button type="button" class="btn btn-small" data-share-network="facebook">Facebook</button></li>
+        <li><button type="button" class="btn btn-small" data-share-network="whatsapp">WhatsApp</button></li>
+        <li><button type="button" class="btn btn-small" data-share-network="instagram">Instagram</button></li>
+    </ul>
+    <form class="share-mastodon" id="mastodon-form" data-share-mastodon hidden>
+        <label for="mastodon-instance">{{ 'Votre instance Mastodon'|trans }}</label>
+        <span class="share-mastodon-row">
+            <input type="text" id="mastodon-instance" name="instance" inputmode="url" autocomplete="off" spellcheck="false" placeholder="mastodon.social" required>
+            <button type="submit" class="btn btn-small">{{ 'Publier'|trans }}</button>
+        </span>
+    </form>
+    <p class="report-share-status small" role="status" data-share-status></p>
+</section>
+
+<nav class="report-tools" aria-label="{{ 'Options du rapport'|trans }}">
+    <a class="btn btn-small" href="{{ path('app_report', {mois: month.toString, montants: amounts ? 0 : 1, etoiles: game ? 1 : null}) }}">{{ amounts ? 'Masquer les montants'|trans : 'Afficher les montants'|trans }}</a>
+    {% if stars_offered %}
+    <a class="btn btn-small" href="{{ path('app_report', {mois: month.toString, montants: amounts ? null : 0, etoiles: game ? null : 1}) }}">{{ game ? 'Masquer mes étoiles'|trans : 'Afficher mes étoiles'|trans }}</a>
+    {% endif %}
+    <a class="btn btn-small" href="{{ path('app_dashboard', {mois: month.toString}) }}">{{ 'Retour au patrimoine'|trans }}</a>
+</nav>
+<p class="report-hint muted small">{{ 'Faites une capture d\'écran de la carte pour l\'envoyer en image (WhatsApp, Signal, SMS, e-mail…). Seuls les niveaux de la pyramide y figurent, jamais le nom de vos comptes.'|trans }}</p>
+{% endif %}
+{% endblock %}

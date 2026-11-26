@@ -1,0 +1,12 @@
+{#-
+    YYYY-MM month field, usable without JavaScript; app.js shows it as the month picker of the page heads ("Oct. 2026"),
+    a button that opens a calendar of 12 months. Variables: id, name, value.
+-#}
+{%- set month_field_names = month_names() -%}
+<div class="month-field" data-month-field data-today="{{ current_month_value() }}"
+     data-short-names="{{ month_field_names.short|join('|') }}" data-long-names="{{ month_field_names.long|join('|') }}"
+     data-label-open="{{ 'Choisir le mois dans un calendrier'|trans }}" data-label-empty="{{ 'Choisir un mois'|trans }}"
+     data-label-previous="{{ 'Année précédente'|trans }}" data-label-next="{{ 'Année suivante'|trans }}">
+    <input type="text" id="{{ id }}" name="{{ name }}" value="{{ value }}" required inputmode="numeric" maxlength="7"
+           pattern="[0-9]{4}-(0[1-9]|1[0-2])" placeholder="{{ 'AAAA-MM'|trans }}" autocomplete="off">
+</div>

@@ -1,0 +1,36 @@
+{#- Form of an indicator (new or change). Variables: action, submit (translated label), fields (name, levels, accounts,
+    share), errors, levels, accounts. -#}
+{% import '_form_macros.html.twig' as f %}
+<form method="post" action="{{ action }}" class="form" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+
+    <div class="field">
+        <label for="indicator-name">{{ 'Nom'|trans }}</label>
+        <input type="text" id="indicator-name" name="name" value="{{ fields.name }}" maxlength="60" required placeholder="{{ 'Retraite'|trans }}"
+               {{- f.described(errors, 'name', null) }}>
+        {{ f.error(errors, 'name') }}
+    </div>
+
+    <fieldset class="field"{% if errors.perimeter is defined %} aria-describedby="err-perimeter"{% endif %}>
+        <legend>{{ 'Niveaux de la pyramide'|trans }}</legend>
+        {% for level in levels %}
+        <label class="choice"><input type="checkbox" name="levels[]" value="{{ level.value }}"{{ level.value in fields.levels ? ' checked' }}> {{ level.label|trans({}, 'levels') }}</label>
+        {% endfor %}
+    </fieldset>
+
+    <fieldset class="field"{% if errors.perimeter is defined %} aria-describedby="err-perimeter"{% endif %}>
+        <legend>{{ 'Comptes'|trans }} <span class="muted small">{{ '(comptés une fois, même dans un niveau choisi)'|trans }}</span></legend>
+        {% for account in accounts %}
+        <label class="choice"><input type="checkbox" name="accounts[]" value="{{ account.id }}"{{ (account.id ~ '') in fields.accounts ? ' checked' }}> {{ account.name }} <span class="muted small">· {{ account.level.label|trans({}, 'levels') }}</span></label>
+        {% else %}
+        <p class="muted small">{{ 'Aucun compte pour l\'instant.'|trans }}</p>
+        {% endfor %}
+    </fieldset>
+    {{ f.error(errors, 'perimeter') }}
+
+    <label class="choice"><input type="checkbox" name="share" value="1"{{ fields.share ? ' checked' }}> {{ 'Afficher aussi sa part du patrimoine net'|trans }}</label>
+
+    <div class="actions">
+        <button type="submit" class="btn btn-primary">{{ submit }}</button>
+    </div>
+</form>

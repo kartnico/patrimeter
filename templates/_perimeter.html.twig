@@ -1,0 +1,16 @@
+{#-
+    Choice of the perimeter of a family account (Patrimeter\Http\PerimeterSelection): the family, each member, this
+    account. The links keep the page's other parameters (month, period…). Variable: perimeters (empty without members).
+-#}
+{% if perimeters is not empty %}
+<div class="perimeter-bar">
+    <nav class="segmented perimeter-nav" aria-label="{{ 'Périmètre'|trans }}">
+        {% for choice in perimeters %}
+        <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({perimetre: choice.key})) }}"{% if choice.current %} aria-current="true"{% endif %}>
+            {%- if choice.key == 'famille' -%}{{ 'Toute la famille'|trans }}{%- elseif choice.key == 'compte' -%}{{ 'Ce compte'|trans }}{%- else -%}{{ choice.name }}{%- endif -%}
+        </a>
+        {% endfor %}
+    </nav>
+    <a class="perimeter-manage small" href="{{ path('app_family') }}">{{ 'Membres de la famille'|trans }}</a>
+</div>
+{% endif %}

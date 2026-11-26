@@ -1,0 +1,955 @@
+# Description OpenAPI de l'API REST de Patrimeter (docs/api.md). Écrite à la main : tests/Functional/OpenApiTest.php
+# vérifie qu'elle couvre exactement les routes /api/v1 et que les réponses réelles respectent ses schémas. Publiée
+# dans la documentation en ligne (page « Référence de l'API », générée par documentation/openapi_reference.py).
+openapi: 3.1.0
+info:
+  title: API de Patrimeter
+  version: "1"
+  summary: Patrimoine net mensuel, comptes, relevés et parts de biens.
+  description: |
+    API REST de Patrimeter : JSON, montants en **centimes** (entiers), mois au format `AAAA-MM`, dates au format
+    `AAAA-MM-JJ`. Les données sont celles de l'utilisateur du jeton, et de lui seul : le compte d'un autre
+    utilisateur répond `404`, comme un compte inexistant.
+
+    Authentification : jeton porteur (`Authorization: Bearer patrimeter_…`), jeton personnel créé sur la page « Mon compte »
+    ou jeton OAuth 2.1 (code d'autorisation avec PKCE). Portées : `patrimeter.read` (lecture) et `patrimeter.write`
+    (écriture, comprend la lecture). Débit : 120 requêtes d'affilée par jeton, puis une par seconde.
+
+    Les corps de requête sont en JSON (`Content-Type: application/json`, sinon `415`). Un nombre décimal là où un
+    entier est attendu est refusé, jamais tronqué. Erreurs au format `application/problem+json` (RFC 9457).
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: "{origin}/api/v1"
+    description: Votre installation de Patrimeter (DEFAULT_URI)
+    variables:
+      origin:
+        default: https://patrimeter.example.org
+        description: Adresse publique de Patrimeter, en HTTPS
+security:
+  - personalToken: []
+  - oauth: [patrimeter.read]
+tags:
+  - name: Utilisateur
+  - name: Patrimoine
+    description: Patrimoine net, par niveau de la pyramide, et biens immobiliers.
+  - name: Objectifs
+    description: Objectifs d'épargne et où en est chacun pour un mois.
+  - name: Budget
+    description: Budget du foyer en vigueur pour un mois.
+  - name: Défis
+    description: "Défis et étoiles du mois. Repères indicatifs, à adapter à votre situation : ce n'est pas un conseil en investissement."
+  - name: Comptes
+    description: Comptes (actifs et crédits), clôture, rattachement d'un crédit à un bien.
+  - name: Relevés
+    description: Solde d'un compte pour un mois. Un crédit a un montant positif, le capital restant dû.
+  - name: Parts
+    description: Part détenue d'un bien immobilier à partir d'un mois, en millionièmes (333 333 = 33,3333 %).
+
+paths:
+  /me:
+    get:
+      tags: [Utilisateur]
+      operationId: getMe
+      summary: Utilisateur du jeton
+      responses:
+        "200":
+          description: Utilisateur et droit d'écriture du jeton.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /account-types:
+    get:
+      tags: [Comptes]
+      operationId: listAccountTypes
+      summary: Types de comptes
+      description: Types de comptes, avec leur niveau et leur nature par défaut (à utiliser pour `type_id`).
+      responses:
+        "200":
+          description: Types de comptes.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [account_types]
+                properties:
+                  account_types:
+                    type: array
+                    items: { $ref: "#/components/schemas/AccountType" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /net-worth:
+    get:
+      tags: [Patrimoine]
+      operationId: getNetWorth
+      summary: Patrimoine net d'un mois
+      description: Patrimoine net, actifs et passifs, au total et par niveau de la pyramide (part des biens appliquée).
+      parameters:
+        - name: month
+          in: query
+          description: Mois voulu ; le mois courant par défaut.
+          schema: { $ref: "#/components/schemas/Month" }
+      responses:
+        "200":
+          description: Patrimoine du mois.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NetWorth" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /history:
+    get:
+      tags: [Patrimoine]
+      operationId: getHistory
+      summary: Patrimoine net mois par mois
+      parameters:
+        - name: from
+          in: query
+          description: Premier mois ; celui du premier relevé par défaut.
+          schema: { $ref: "#/components/schemas/Month" }
+        - name: to
+          in: query
+          description: Dernier mois ; le mois courant par défaut.
+          schema: { $ref: "#/components/schemas/Month" }
+      responses:
+        "200":
+          description: Un patrimoine par mois, du plus ancien au plus récent (liste vide sans relevé).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [months]
+                properties:
+                  months:
+                    type: array
+                    items: { $ref: "#/components/schemas/NetWorth" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /properties:
+    get:
+      tags: [Patrimoine]
+      operationId: listProperties
+      summary: Biens immobiliers
+      description: Valeur de chaque bien, part détenue, crédits rattachés et valeur nette retenue.
+      parameters:
+        - name: month
+          in: query
+          description: Mois voulu ; le mois courant par défaut.
+          schema: { $ref: "#/components/schemas/Month" }
+      responses:
+        "200":
+          description: Biens du mois.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [properties]
+                properties:
+                  properties:
+                    type: array
+                    items: { $ref: "#/components/schemas/Property" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /goals:
+    get:
+      tags: [Objectifs]
+      operationId: listGoals
+      summary: Objectifs d'épargne
+      description: "Chaque objectif et où il en est pour le mois : valeur atteinte, effort encore nécessaire par mois, rythme des six derniers mois, statut et mois projeté."
+      parameters:
+        - name: month
+          in: query
+          description: Mois voulu ; le mois courant par défaut.
+          schema: { $ref: "#/components/schemas/Month" }
+      responses:
+        "200":
+          description: Objectifs du mois.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [goals]
+                properties:
+                  goals:
+                    type: array
+                    items: { $ref: "#/components/schemas/Goal" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /challenges:
+    get:
+      tags: [Défis]
+      operationId: getChallenges
+      summary: Défis et étoiles
+      description: "Défis et étoiles du mois en cours : total des étoiles et niveau, stade du profil d'épargnant, style déclaré, série de saisies, et pour chaque défi ses meilleures étoiles (jamais baissées), la valeur mesurée et ses paliers. Des habitudes et de la sécurité, jamais un rendement ni une part de niveau. Défis désactivés (instance ou utilisateur) : `enabled` vaut `false` et rien d'autre n'est donné."
+      responses:
+        "200":
+          description: Défis du mois.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Challenges" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /budget:
+    get:
+      tags: [Budget]
+      operationId: getBudget
+      summary: Budget du foyer
+      description: "Budget en vigueur pour le mois (celui du mois, sinon le dernier enregistré avant) : foyer, totaux, catégories et postes avec leur montant. `household` vaut `null` si le budget n'est pas encore créé."
+      parameters:
+        - name: month
+          in: query
+          description: Mois voulu ; le mois courant par défaut.
+          schema: { $ref: "#/components/schemas/Month" }
+      responses:
+        "200":
+          description: Budget du mois.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Budget" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts:
+    get:
+      tags: [Comptes]
+      operationId: listAccounts
+      summary: Comptes
+      description: Tous les comptes, clôturés compris, avec leur valeur au mois courant.
+      responses:
+        "200":
+          description: Comptes.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [accounts]
+                properties:
+                  accounts:
+                    type: array
+                    items: { $ref: "#/components/schemas/AccountListItem" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+    post:
+      tags: [Comptes]
+      operationId: createAccount
+      summary: Créer un compte
+      description: |
+        Niveau et nature absents : ceux du type. `initial_amount_cents` enregistre un premier relevé, au mois courant
+        (ou au mois d'ouverture s'il est plus tard).
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AccountInput" }
+            example: { name: Livret A, type_id: 4, opened_on: "2020-01-01", initial_amount_cents: 2295000 }
+      responses:
+        "201":
+          description: Compte créé.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts/{id}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+    get:
+      tags: [Comptes]
+      operationId: getAccount
+      summary: Détail d'un compte
+      responses:
+        "200":
+          description: Compte, avec ses relevés et ses parts.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+    put:
+      tags: [Comptes]
+      operationId: updateAccount
+      summary: Modifier un compte
+      description: Mêmes champs qu'à la création (`initial_amount_cents` ignoré).
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AccountInput" }
+      responses:
+        "200":
+          description: Compte modifié.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+    delete:
+      tags: [Comptes]
+      operationId: deleteAccount
+      summary: Supprimer un compte
+      description: Supprime le compte et ses relevés. Pour garder l'historique, préférer la clôture (`archive`).
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      responses:
+        "204": { description: "Compte supprimé." }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts/{id}/archive:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+    post:
+      tags: [Comptes]
+      operationId: archiveAccount
+      summary: Clôturer un compte
+      description: Le compte ne compte plus à partir du mois de clôture ; son historique est conservé.
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CloseInput" }
+      responses:
+        "200":
+          description: Compte clôturé.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts/{id}/unarchive:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+    post:
+      tags: [Comptes]
+      operationId: unarchiveAccount
+      summary: Réactiver un compte clôturé
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      responses:
+        "200":
+          description: Compte réactivé.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts/{id}/loan-link:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+    put:
+      tags: [Comptes]
+      operationId: linkLoan
+      summary: Rattacher un crédit à un bien
+      description: Rattache le crédit `id` au bien `asset_id`, ou le détache avec `asset_id` nul.
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LoanLinkInput" }
+            example: { asset_id: 7, loan_mode: prorata }
+      responses:
+        "204": { description: "Rattachement enregistré." }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts/{id}/statements:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+    get:
+      tags: [Relevés]
+      operationId: listStatements
+      summary: Relevés d'un compte
+      responses:
+        "200":
+          description: Relevés, du plus ancien au plus récent.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [statements]
+                properties:
+                  statements:
+                    type: array
+                    items: { $ref: "#/components/schemas/Statement" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts/{id}/statements/{month}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+      - $ref: "#/components/parameters/MonthPath"
+    put:
+      tags: [Relevés]
+      operationId: saveStatement
+      summary: Enregistrer le relevé d'un mois
+      description: Crée ou remplace le relevé. Le compte doit être ouvert ce mois-là.
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StatementInput" }
+            example: { amount_cents: 1234567 }
+      responses:
+        "204": { description: "Relevé enregistré." }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+    delete:
+      tags: [Relevés]
+      operationId: deleteStatement
+      summary: Supprimer le relevé d'un mois
+      description: Le dernier relevé antérieur est alors reporté sur ce mois.
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      responses:
+        "204": { description: "Relevé supprimé." }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts/{id}/shares:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+    get:
+      tags: [Parts]
+      operationId: listShares
+      summary: Parts d'un bien
+      description: Historique des parts ; sans part enregistrée, le bien est détenu à 100 %.
+      responses:
+        "200":
+          description: Parts, par mois d'effet.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [shares]
+                properties:
+                  shares:
+                    type: array
+                    items: { $ref: "#/components/schemas/Share" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /accounts/{id}/shares/{month}:
+    parameters:
+      - $ref: "#/components/parameters/AccountId"
+      - $ref: "#/components/parameters/MonthPath"
+    put:
+      tags: [Parts]
+      operationId: saveShare
+      summary: Enregistrer une part à partir d'un mois
+      description: Réservé aux biens immobiliers.
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ShareInput" }
+            example: { share_millionths: 500000 }
+      responses:
+        "204": { description: "Part enregistrée." }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+    delete:
+      tags: [Parts]
+      operationId: deleteShare
+      summary: Supprimer la part d'un mois
+      security:
+        - personalToken: []
+        - oauth: [patrimeter.write]
+      responses:
+        "204": { description: "Part supprimée." }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/Invalid" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+components:
+  securitySchemes:
+    personalToken:
+      type: http
+      scheme: bearer
+      description: |
+        Jeton personnel (`patrimeter_…`), créé sur la page « Mon compte », section « API et applications », en lecture
+        seule ou en lecture et écriture, pour 30, 90 ou 365 jours.
+    oauth:
+      type: oauth2
+      description: |
+        OAuth 2.1 : code d'autorisation avec PKCE (S256), client public, destinataire `<DEFAULT_URI>/api`
+        (RFC 8707). Découverte : `/.well-known/oauth-protected-resource/api`, puis
+        `/.well-known/oauth-authorization-server`.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/token
+          refreshUrl: /oauth/token
+          scopes:
+            patrimeter.read: Lire le patrimoine, les comptes, les relevés et les parts.
+            patrimeter.write: Créer, modifier et supprimer (comprend la lecture).
+
+  parameters:
+    AccountId:
+      name: id
+      in: path
+      required: true
+      description: Identifiant du compte.
+      schema: { type: integer, minimum: 1, maximum: 999999999 }
+    MonthPath:
+      name: month
+      in: path
+      required: true
+      description: Mois, au format AAAA-MM.
+      schema: { $ref: "#/components/schemas/Month" }
+
+  responses:
+    Unauthorized:
+      description: Jeton absent, invalide ou expiré. `WWW-Authenticate` indique où trouver le serveur d'autorisation.
+      headers:
+        WWW-Authenticate:
+          schema: { type: string }
+          example: Bearer resource_metadata="https://patrimeter.example.org/.well-known/oauth-protected-resource/api", scope="patrimeter.read"
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/OAuthError" }
+    Forbidden:
+      description: Jeton en lecture seule pour une opération d'écriture (`insufficient_scope`).
+      headers:
+        WWW-Authenticate:
+          schema: { type: string }
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/OAuthError" }
+    NotFound:
+      description: Compte inexistant, ou appartenant à un autre utilisateur.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    UnsupportedMediaType:
+      description: Corps de requête qui n'est pas du JSON.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    Invalid:
+      description: Données refusées ; `errors` donne un message par champ.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+          example: { title: Données invalides, status: 422, errors: { amount_cents: Montant en centimes attendu. } }
+    TooManyRequests:
+      description: Débit dépassé ; réessayer après `Retry-After` secondes.
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+
+  schemas:
+    Month:
+      type: string
+      pattern: '^\d{4}-(0[1-9]|1[0-2])$'
+      description: Mois, au format AAAA-MM.
+      examples: ["2026-11"]
+    Date:
+      type: string
+      format: date
+      description: Date, au format AAAA-MM-JJ.
+      examples: ["2026-11-15"]
+    Cents:
+      type: integer
+      minimum: -999999999999999
+      maximum: 999999999999999
+      description: Montant en centimes d'euro.
+    Level:
+      type: string
+      enum: [residence, precaution, fonds_euros, actions, immobilier, exotique]
+      description: Niveau de la pyramide, de la base au sommet.
+    Nature:
+      type: string
+      enum: [asset, liability]
+      description: "`asset` : actif ; `liability` : passif (crédit), soustrait de son niveau."
+    LoanMode:
+      type: string
+      enum: [prorata, own]
+      description: "`prorata` : le crédit total, compté selon la part du bien ; `own` : votre part, comptée telle quelle."
+
+    Me:
+      type: object
+      required: [id, email, can_write]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        can_write: { type: boolean, description: "Le jeton permet l'écriture." }
+
+    AccountType:
+      type: object
+      required: [id, code, label, default_level, nature]
+      properties:
+        id: { type: integer }
+        code: { type: string, examples: [livret_a] }
+        label: { type: string, examples: [Livret A] }
+        default_level: { $ref: "#/components/schemas/Level" }
+        nature: { $ref: "#/components/schemas/Nature" }
+
+    LevelTotal:
+      type: object
+      required: [code, label, net_cents, assets_cents, liabilities_cents]
+      properties:
+        code: { $ref: "#/components/schemas/Level" }
+        label: { type: string, description: "Nom du niveau, en français." }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        assets_cents: { $ref: "#/components/schemas/Cents" }
+        liabilities_cents: { $ref: "#/components/schemas/Cents" }
+
+    NetWorth:
+      type: object
+      required: [month, has_data, net_cents, assets_cents, liabilities_cents, levels]
+      properties:
+        month: { $ref: "#/components/schemas/Month" }
+        has_data: { type: boolean, description: "Au moins un compte a une valeur ce mois-là (saisie ou reportée)." }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        assets_cents: { $ref: "#/components/schemas/Cents" }
+        liabilities_cents: { $ref: "#/components/schemas/Cents" }
+        levels:
+          type: array
+          description: Les six niveaux, de la base au sommet de la pyramide.
+          items: { $ref: "#/components/schemas/LevelTotal" }
+
+    Property:
+      type: object
+      required: [account_id, name, total_cents, share_millionths, retained_cents, owed_cents, net_cents, loans]
+      properties:
+        account_id: { type: integer }
+        name: { type: string }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        share_millionths: { type: integer, minimum: 1, maximum: 1000000 }
+        retained_cents: { $ref: "#/components/schemas/Cents" }
+        owed_cents: { $ref: "#/components/schemas/Cents" }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        loans:
+          type: array
+          items:
+            type: object
+            required: [account_id, name, total_cents, retained_cents]
+            properties:
+              account_id: { type: integer }
+              name: { type: string }
+              total_cents: { $ref: "#/components/schemas/Cents" }
+              retained_cents: { $ref: "#/components/schemas/Cents" }
+
+    Challenges:
+      type: object
+      required: [enabled, notice]
+      properties:
+        enabled: { type: boolean, description: "Défis et étoiles proposés à l'utilisateur (instance et réglage de l'utilisateur)." }
+        notice: { type: string, description: "Rappel : repères indicatifs, pas un conseil en investissement." }
+        month: { $ref: "#/components/schemas/Month", description: "Mois mesuré (le mois en cours)." }
+        stars: { type: integer, minimum: 0, description: "Total des meilleures étoiles de chaque défi." }
+        max_stars: { type: integer, minimum: 1, description: "Étoiles possibles en tout." }
+        level:
+          type: object
+          description: "Niveau atteint (`number` sur `levels`) et étoiles du niveau suivant (`next_at`, `null` au dernier)."
+          required: [number, levels, next_at]
+          properties:
+            number: { type: integer, minimum: 1 }
+            levels: { type: integer, minimum: 1 }
+            next_at: { type: [integer, "null"] }
+        stage: { type: [string, "null"], enum: [discovery, organized, protected, serene, builder, null], description: "Stade du profil d'épargnant, `null` avant le premier mois saisi." }
+        style: { type: [string, "null"], enum: [ant, project, home, horizon, null], description: "Style déclaré, `null` sans style." }
+        streak:
+          type: object
+          description: "Mois de saisie de suite (un mois oublié par an pardonné) et joker de l'année encore disponible."
+          required: [months, joker_available]
+          properties:
+            months: { type: integer, minimum: 0 }
+            joker_available: { type: boolean }
+        challenges:
+          type: array
+          description: "Défis, dans l'ordre du style."
+          items:
+            type: object
+            required: [id, stars, max_stars, value, thresholds, available]
+            properties:
+              id: { type: string, enum: [first_steps, streak, up_to_date, precaution, no_consumer_credit, goal, budget, security, savings_rate], description: "Défi." }
+              stars: { type: integer, minimum: 0, description: "Meilleures étoiles atteintes (jamais baissées)." }
+              max_stars: { type: integer, minimum: 1 }
+              value: { type: integer, description: "Valeur mesurée ce mois-ci, dans l'unité des paliers." }
+              thresholds: { type: array, items: { type: integer }, description: "Valeur de chaque étoile, croissante." }
+              available: { type: boolean, description: "`false` si une donnée manque (pas de budget, pas d'objectif)." }
+    Goal:
+      type: object
+      required: [id, name, target_cents, target_month, spending_months, scope, level, account_ids, start_month, start_cents, month, value_cents, status, required_cents, pace_cents, pace_months, projected_month, planned_cents, overdue]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        target_cents:
+          $ref: "#/components/schemas/Cents"
+          description: "Montant à atteindre ; pour un objectif en mois de dépenses, celui du mois."
+        target_month: { $ref: "#/components/schemas/Month" }
+        spending_months: { type: [integer, "null"], minimum: 1, maximum: 36, description: "Cible en mois de dépenses du budget, ou `null` pour un montant." }
+        scope: { type: string, enum: [net, level, accounts], description: "`net` : patrimoine net ; `level` : un niveau (`level`) ; `accounts` : des comptes (`account_ids`)." }
+        level:
+          oneOf:
+            - { $ref: "#/components/schemas/Level" }
+            - { type: "null" }
+        account_ids: { type: array, items: { type: integer } }
+        start_month: { $ref: "#/components/schemas/Month" }
+        start_cents: { $ref: "#/components/schemas/Cents" }
+        month: { $ref: "#/components/schemas/Month" }
+        value_cents: { $ref: "#/components/schemas/Cents" }
+        status: { type: string, enum: [reached, ahead, on_track, watch, late, too_early], description: "`reached` atteint, `ahead` en avance, `on_track` sur la bonne voie, `watch` à surveiller, `late` en retard, `too_early` trop tôt pour juger." }
+        required_cents: { type: [integer, "null"], description: "Effort encore nécessaire par mois, ou ce qui manque si l'échéance est passée ; `null` une fois atteint." }
+        pace_cents: { type: [integer, "null"], description: "Progression moyenne par mois sur `pace_months` mois ; `null` sans historique." }
+        pace_months: { type: integer, minimum: 0, maximum: 6 }
+        projected_month:
+          oneOf:
+            - { $ref: "#/components/schemas/Month" }
+            - { type: "null" }
+          description: "Mois où l'objectif serait atteint au rythme actuel ; `null` s'il est atteint ou ne le serait jamais."
+        planned_cents: { type: [integer, "null"], description: "Épargne prévue par mois par les postes du budget rattachés aux comptes de l'objectif ; `null` sans tel poste." }
+        overdue: { type: boolean }
+
+    Budget:
+      type: object
+      required: [month, household, entered_month, totals, categories]
+      properties:
+        month: { $ref: "#/components/schemas/Month" }
+        household:
+          oneOf:
+            - type: object
+              required: [adults, children, precaution_months]
+              properties:
+                adults: { type: array, items: { type: string } }
+                children: { type: array, items: { type: string } }
+                precaution_months: { type: integer, minimum: 0 }
+            - { type: "null" }
+        entered_month:
+          oneOf:
+            - { $ref: "#/components/schemas/Month" }
+            - { type: "null" }
+          description: "Mois dont les montants s'appliquent (le mois demandé ou le dernier enregistré avant)."
+        totals:
+          oneOf:
+            - type: object
+              required: [income_cents, needs_cents, wants_cents, savings_cents, available_cents, joint_cents]
+              properties:
+                income_cents: { $ref: "#/components/schemas/Cents" }
+                needs_cents: { $ref: "#/components/schemas/Cents" }
+                wants_cents: { $ref: "#/components/schemas/Cents" }
+                savings_cents: { $ref: "#/components/schemas/Cents" }
+                available_cents: { $ref: "#/components/schemas/Cents" }
+                joint_cents: { $ref: "#/components/schemas/Cents" }
+            - { type: "null" }
+        categories:
+          type: array
+          items:
+            type: object
+            required: [id, name, group, adult, total_cents, lines]
+            properties:
+              id: { type: integer }
+              name: { type: string }
+              group: { type: string, enum: [needs, wants, savings], description: "`needs` besoins, `wants` envies, `savings` épargne (règle 50/30/20)." }
+              adult: { type: [integer, "null"], description: "`null` pour le budget commun, sinon le numéro de l'adulte (1 ou 2)." }
+              total_cents: { $ref: "#/components/schemas/Cents" }
+              lines:
+                type: array
+                items:
+                  type: object
+                  required: [id, name, amount_cents, account_id]
+                  properties:
+                    id: { type: integer }
+                    name: { type: string }
+                    amount_cents: { $ref: "#/components/schemas/Cents" }
+                    account_id: { type: [integer, "null"], description: "Compte vers lequel va ce poste d'épargne, ou `null`." }
+
+    Account:
+      type: object
+      required: [id, name, type_id, type, level, nature, opened_on, closed_on, linked_asset_id, loan_mode]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        type_id: { type: integer }
+        type: { type: string, description: "Libellé du type." }
+        level: { $ref: "#/components/schemas/Level" }
+        nature: { $ref: "#/components/schemas/Nature" }
+        opened_on: { $ref: "#/components/schemas/Date" }
+        closed_on:
+          oneOf:
+            - { $ref: "#/components/schemas/Date" }
+            - { type: "null" }
+        linked_asset_id: { type: [integer, "null"], description: "Bien auquel ce crédit est rattaché." }
+        loan_mode:
+          oneOf:
+            - { $ref: "#/components/schemas/LoanMode" }
+            - { type: "null" }
+
+    AccountValue:
+      type: object
+      required: [amount_cents, month, carried]
+      properties:
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        month: { $ref: "#/components/schemas/Month" }
+        carried: { type: boolean, description: "Dernier relevé connu, reporté d'un mois antérieur." }
+
+    AccountListItem:
+      allOf:
+        - { $ref: "#/components/schemas/Account" }
+        - type: object
+          required: [value]
+          properties:
+            value:
+              oneOf:
+                - { $ref: "#/components/schemas/AccountValue" }
+                - { type: "null" }
+
+    AccountDetail:
+      allOf:
+        - { $ref: "#/components/schemas/Account" }
+        - type: object
+          required: [statements, shares]
+          properties:
+            statements:
+              type: array
+              items: { $ref: "#/components/schemas/Statement" }
+            shares:
+              type: array
+              items: { $ref: "#/components/schemas/Share" }
+
+    Statement:
+      type: object
+      required: [month, amount_cents]
+      properties:
+        month: { $ref: "#/components/schemas/Month" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+
+    Share:
+      type: object
+      required: [month, share_millionths]
+      properties:
+        month: { $ref: "#/components/schemas/Month" }
+        share_millionths: { type: integer, minimum: 1, maximum: 1000000 }
+
+    AccountInput:
+      type: object
+      required: [name, type_id, opened_on]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        type_id: { type: integer, minimum: 1, description: "Voir `GET /account-types`." }
+        level: { $ref: "#/components/schemas/Level" }
+        nature: { $ref: "#/components/schemas/Nature" }
+        opened_on: { $ref: "#/components/schemas/Date" }
+        initial_amount_cents: { $ref: "#/components/schemas/Cents" }
+
+    CloseInput:
+      type: object
+      required: [closed_on]
+      properties:
+        closed_on: { $ref: "#/components/schemas/Date" }
+
+    LoanLinkInput:
+      type: object
+      properties:
+        asset_id: { type: [integer, "null"], minimum: 1, description: "Bien ; nul pour détacher le crédit." }
+        loan_mode: { $ref: "#/components/schemas/LoanMode" }
+
+    StatementInput:
+      type: object
+      required: [amount_cents]
+      properties:
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+
+    ShareInput:
+      type: object
+      required: [share_millionths]
+      properties:
+        share_millionths: { type: integer, minimum: 1, maximum: 1000000 }
+
+    Problem:
+      type: object
+      description: Erreur (RFC 9457).
+      required: [title, status]
+      properties:
+        title: { type: string }
+        status: { type: integer }
+        errors:
+          type: object
+          description: Message par champ refusé.
+          additionalProperties: { type: string }
+        retry_after: { type: integer, description: "Secondes à attendre (429)." }
+
+    OAuthError:
+      type: object
+      required: [error, error_description]
+      properties:
+        error: { type: string, enum: [invalid_token, insufficient_scope] }
+        error_description: { type: string }

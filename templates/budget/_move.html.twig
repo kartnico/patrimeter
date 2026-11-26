@@ -1,0 +1,9 @@
+{#- Buttons that move a category or an item one place up or down (BudgetSetupController). Variables: route, id, name,
+    first, last (nothing above, nothing below). -#}
+{% if not (first and last) %}
+<form method="post" action="{{ path(route, {id: id}) }}" class="move-form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+    {% if not first %}<button type="submit" name="sens" value="haut" class="btn-icon" aria-label="{{ 'Monter %name%'|trans({'%name%': name}) }}" title="{{ 'Monter'|trans }}">↑</button>{% endif %}
+    {% if not last %}<button type="submit" name="sens" value="bas" class="btn-icon" aria-label="{{ 'Descendre %name%'|trans({'%name%': name}) }}" title="{{ 'Descendre'|trans }}">↓</button>{% endif %}
+</form>
+{% endif %}

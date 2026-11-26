@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Saisie des objectifs'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ 'Saisie'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+    {% if not full %}<a class="btn btn-small btn-primary" href="{{ path('app_goal_new') }}">+ {{ 'Nouvel objectif'|trans }}</a>{% endif %}
+</div>
+{{ include('_entry_parts.html.twig') }}
+
+{% if goals is empty %}
+<div class="card empty-state">
+    <p>{{ 'Aucun objectif pour l\'instant. Fixez un montant à atteindre et une date, sur votre patrimoine net, un niveau de la pyramide ou des comptes choisis : Patrimeter vous dit chaque mois si vous êtes sur la bonne voie.'|trans }}</p>
+</div>
+{% else %}
+<p class="sheet-lead">{{ 'Le nom d\'un objectif ouvre sa fiche : montant, date, ce qu\'il mesure. Où en est chacun : page Objectifs.'|trans }}</p>
+<section class="sheet" aria-labelledby="goal-list-title">
+    <h2 id="goal-list-title" class="visually-hidden">{{ 'Objectifs d\'épargne'|trans }}</h2>
+    <table class="ledger goal-list">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Objectif'|trans }}</th>
+                <th scope="col" class="num">{{ 'Cible'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for goal in goals %}
+            <tr>
+                <th scope="row">
+                    <a class="ledger-name" href="{{ path('app_goal_edit', {id: goal.id}) }}">{{ goal.name }}</a>
+                    <span class="ledger-sub">{{ 'objectif %month%'|trans({'%month%': goal.targetMonth|month_label}) }}</span>
+                </th>
+                <td class="num">
+                    {%- if goal.spendingMonths is not null -%}
+                    {{ '%count% mois de dépenses|%count% mois de dépenses'|trans({'%count%': goal.spendingMonths}) }}
+                    {%- else -%}
+                    {{ goal.targetCents|money }}
+                    {%- endif -%}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+{% if full %}<p class="flash">{{ 'Vous avez atteint le maximum de %count% objectifs.'|trans({'%count%': max}) }}</p>{% endif %}
+{% endblock %}

@@ -1,0 +1,4937 @@
+[
+    {
+        "month": "2022-11",
+        "hasData": false,
+        "net": 0,
+        "assets": 0,
+        "liabilities": 0,
+        "enteredCount": 0,
+        "carriedCount": 0,
+        "levels": {
+            "residence": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "precaution": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "fonds_euros": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "actions": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "immobilier": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            }
+        }
+    },
+    {
+        "month": "2022-12",
+        "hasData": true,
+        "net": -1200000,
+        "assets": 0,
+        "liabilities": 1200000,
+        "enteredCount": 1,
+        "carriedCount": 0,
+        "levels": {
+            "residence": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "precaution": {
+                "assets": 0,
+                "liabilities": 1200000,
+                "net": -1200000,
+                "share": null,
+                "lines": [
+                    {
+                        "account": 6,
+                        "cents": 1200000,
+                        "sourceMonth": "2022-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "actions": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "immobilier": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": null,
+                "lines": []
+            }
+        }
+    },
+    {
+        "month": "2023-01",
+        "hasData": true,
+        "net": 16345000,
+        "assets": 36995000,
+        "liabilities": 20650000,
+        "enteredCount": 10,
+        "carriedCount": 0,
+        "levels": {
+            "residence": {
+                "assets": 32000000,
+                "liabilities": 19500000,
+                "net": 12500000,
+                "share": 76.475987,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32000000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 19500000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1290000,
+                "liabilities": 1150000,
+                "net": 140000,
+                "share": 0.856531,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 90000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1200000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 1150000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 900000,
+                "liabilities": 0,
+                "net": 900000,
+                "share": 5.506271,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 900000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1855000,
+                "liabilities": 0,
+                "net": 1855000,
+                "share": 11.349036,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1355000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 500000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 800000,
+                "liabilities": 0,
+                "net": 800000,
+                "share": 4.894463,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 150000,
+                "liabilities": 0,
+                "net": 150000,
+                "share": 0.917712,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 150000,
+                        "sourceMonth": "2023-01",
+                        "carried": false
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-02",
+        "hasData": true,
+        "net": 16698252,
+        "assets": 37212018,
+        "liabilities": 20513766,
+        "enteredCount": 8,
+        "carriedCount": 2,
+        "levels": {
+            "residence": {
+                "assets": 32025000,
+                "liabilities": 19418766,
+                "net": 12606234,
+                "share": 75.494333,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32025000,
+                        "sourceMonth": "2023-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 19418766,
+                        "sourceMonth": "2023-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1327337,
+                "liabilities": 1095000,
+                "net": 232337,
+                "share": 1.391385,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 127337,
+                        "sourceMonth": "2023-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1200000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 1095000,
+                        "sourceMonth": "2023-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 912833,
+                "liabilities": 0,
+                "net": 912833,
+                "share": 5.466638,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 912833,
+                        "sourceMonth": "2023-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1892119,
+                "liabilities": 0,
+                "net": 1892119,
+                "share": 11.33124,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1388119,
+                        "sourceMonth": "2023-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 504000,
+                        "sourceMonth": "2023-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 800000,
+                "liabilities": 0,
+                "net": 800000,
+                "share": 4.790921,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 254729,
+                "liabilities": 0,
+                "net": 254729,
+                "share": 1.525483,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 254729,
+                        "sourceMonth": "2023-02",
+                        "carried": false
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-03",
+        "hasData": true,
+        "net": 16946775,
+        "assets": 37324307,
+        "liabilities": 20377532,
+        "enteredCount": 7,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32050000,
+                "liabilities": 19337532,
+                "net": 12712468,
+                "share": 75.014084,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32050000,
+                        "sourceMonth": "2023-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 19337532,
+                        "sourceMonth": "2023-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1364674,
+                "liabilities": 1040000,
+                "net": 324674,
+                "share": 1.915845,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 164674,
+                        "sourceMonth": "2023-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1200000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 1040000,
+                        "sourceMonth": "2023-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 925666,
+                "liabilities": 0,
+                "net": 925666,
+                "share": 5.462196,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 925666,
+                        "sourceMonth": "2023-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1929238,
+                "liabilities": 0,
+                "net": 1929238,
+                "share": 11.384101,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1421238,
+                        "sourceMonth": "2023-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 508000,
+                        "sourceMonth": "2023-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 800000,
+                "liabilities": 0,
+                "net": 800000,
+                "share": 4.720662,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 254729,
+                "liabilities": 0,
+                "net": 254729,
+                "share": 1.503112,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 254729,
+                        "sourceMonth": "2023-02",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-04",
+        "hasData": true,
+        "net": 17260298,
+        "assets": 37501596,
+        "liabilities": 20241298,
+        "enteredCount": 7,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32050000,
+                "liabilities": 19256298,
+                "net": 12793702,
+                "share": 74.122139,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32050000,
+                        "sourceMonth": "2023-03",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 19256298,
+                        "sourceMonth": "2023-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1492011,
+                "liabilities": 985000,
+                "net": 507011,
+                "share": 2.937441,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 202011,
+                        "sourceMonth": "2023-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1290000,
+                        "sourceMonth": "2023-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 985000,
+                        "sourceMonth": "2023-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 938499,
+                "liabilities": 0,
+                "net": 938499,
+                "share": 5.437328,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 938499,
+                        "sourceMonth": "2023-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1966357,
+                "liabilities": 0,
+                "net": 1966357,
+                "share": 11.39237,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1454357,
+                        "sourceMonth": "2023-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 512000,
+                        "sourceMonth": "2023-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 800000,
+                "liabilities": 0,
+                "net": 800000,
+                "share": 4.634914,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 254729,
+                "liabilities": 0,
+                "net": 254729,
+                "share": 1.475809,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 254729,
+                        "sourceMonth": "2023-02",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-05",
+        "hasData": true,
+        "net": 17533821,
+        "assets": 37638885,
+        "liabilities": 20105064,
+        "enteredCount": 7,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32100000,
+                "liabilities": 19175064,
+                "net": 12924936,
+                "share": 73.714315,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32100000,
+                        "sourceMonth": "2023-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 19175064,
+                        "sourceMonth": "2023-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1529348,
+                "liabilities": 930000,
+                "net": 599348,
+                "share": 3.41824,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 239348,
+                        "sourceMonth": "2023-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1290000,
+                        "sourceMonth": "2023-04",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 930000,
+                        "sourceMonth": "2023-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 951332,
+                "liabilities": 0,
+                "net": 951332,
+                "share": 5.425697,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 951332,
+                        "sourceMonth": "2023-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2003476,
+                "liabilities": 0,
+                "net": 2003476,
+                "share": 11.426351,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1487476,
+                        "sourceMonth": "2023-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 516000,
+                        "sourceMonth": "2023-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 800000,
+                "liabilities": 0,
+                "net": 800000,
+                "share": 4.562611,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 254729,
+                "liabilities": 0,
+                "net": 254729,
+                "share": 1.452787,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 254729,
+                        "sourceMonth": "2023-02",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-06",
+        "hasData": true,
+        "net": 17747560,
+        "assets": 37716390,
+        "liabilities": 19968830,
+        "enteredCount": 6,
+        "carriedCount": 4,
+        "levels": {
+            "residence": {
+                "assets": 32125000,
+                "liabilities": 19093830,
+                "net": 13031170,
+                "share": 73.425136,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32125000,
+                        "sourceMonth": "2023-06",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 19093830,
+                        "sourceMonth": "2023-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1566685,
+                "liabilities": 875000,
+                "net": 691685,
+                "share": 3.897353,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 276685,
+                        "sourceMonth": "2023-06",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1290000,
+                        "sourceMonth": "2023-04",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 875000,
+                        "sourceMonth": "2023-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 962500,
+                "liabilities": 0,
+                "net": 962500,
+                "share": 5.423281,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 962500,
+                        "sourceMonth": "2023-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2007476,
+                "liabilities": 0,
+                "net": 2007476,
+                "share": 11.311279,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1487476,
+                        "sourceMonth": "2023-05",
+                        "carried": true
+                    },
+                    {
+                        "account": 9,
+                        "cents": 520000,
+                        "sourceMonth": "2023-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 800000,
+                "liabilities": 0,
+                "net": 800000,
+                "share": 4.507662,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 254729,
+                "liabilities": 0,
+                "net": 254729,
+                "share": 1.43529,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 254729,
+                        "sourceMonth": "2023-02",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-07",
+        "hasData": true,
+        "net": 18269202,
+        "assets": 38101798,
+        "liabilities": 19832596,
+        "enteredCount": 9,
+        "carriedCount": 2,
+        "levels": {
+            "residence": {
+                "assets": 32150000,
+                "liabilities": 19012596,
+                "net": 13137404,
+                "share": 71.910114,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32150000,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 19012596,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1844022,
+                "liabilities": 820000,
+                "net": 1024022,
+                "share": 5.605182,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 104022,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1380000,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 360000,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 820000,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 975333,
+                "liabilities": 0,
+                "net": 975333,
+                "share": 5.338673,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 975333,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2077714,
+                "liabilities": 0,
+                "net": 2077714,
+                "share": 11.372768,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1553714,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 524000,
+                        "sourceMonth": "2023-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 800000,
+                "liabilities": 0,
+                "net": 800000,
+                "share": 4.378954,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 254729,
+                "liabilities": 0,
+                "net": 254729,
+                "share": 1.394308,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 254729,
+                        "sourceMonth": "2023-02",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-08",
+        "hasData": true,
+        "net": 18721099,
+        "assets": 38417461,
+        "liabilities": 19696362,
+        "enteredCount": 7,
+        "carriedCount": 4,
+        "levels": {
+            "residence": {
+                "assets": 32150000,
+                "liabilities": 18931362,
+                "net": 13218638,
+                "share": 70.608237,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32150000,
+                        "sourceMonth": "2023-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18931362,
+                        "sourceMonth": "2023-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1881359,
+                "liabilities": 765000,
+                "net": 1116359,
+                "share": 5.963106,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 141359,
+                        "sourceMonth": "2023-08",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1380000,
+                        "sourceMonth": "2023-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 360000,
+                        "sourceMonth": "2023-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 765000,
+                        "sourceMonth": "2023-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 988166,
+                "liabilities": 0,
+                "net": 988166,
+                "share": 5.278355,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 988166,
+                        "sourceMonth": "2023-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2114833,
+                "liabilities": 0,
+                "net": 2114833,
+                "share": 11.296522,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1586833,
+                        "sourceMonth": "2023-08",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 528000,
+                        "sourceMonth": "2023-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 800000,
+                "liabilities": 0,
+                "net": 800000,
+                "share": 4.273253,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 483103,
+                "liabilities": 0,
+                "net": 483103,
+                "share": 2.580527,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 483103,
+                        "sourceMonth": "2023-08",
+                        "carried": false
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-09",
+        "hasData": true,
+        "net": 17819351,
+        "assets": 59399479,
+        "liabilities": 41580128,
+        "enteredCount": 11,
+        "carriedCount": 2,
+        "levels": {
+            "residence": {
+                "assets": 32200000,
+                "liabilities": 18850128,
+                "net": 13349872,
+                "share": 74.917835,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32200000,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18850128,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 1938696,
+                "liabilities": 710000,
+                "net": 1228696,
+                "share": 6.89529,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 178696,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1380000,
+                        "sourceMonth": "2023-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 380000,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 710000,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1000999,
+                "liabilities": 0,
+                "net": 1000999,
+                "share": 5.617483,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1000999,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2151952,
+                "liabilities": 0,
+                "net": 2151952,
+                "share": 12.076489,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1619952,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 532000,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 21920000,
+                "liabilities": 22020000,
+                "net": -100000,
+                "share": -0.561188,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21120000,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 22020000,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 187832,
+                "liabilities": 0,
+                "net": 187832,
+                "share": 1.05409,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 187832,
+                        "sourceMonth": "2023-09",
+                        "carried": false
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-10",
+        "hasData": true,
+        "net": 18232874,
+        "assets": 59616768,
+        "liabilities": 41383894,
+        "enteredCount": 10,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32225000,
+                "liabilities": 18768894,
+                "net": 13456106,
+                "share": 73.801344,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32225000,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18768894,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2066033,
+                "liabilities": 655000,
+                "net": 1411033,
+                "share": 7.73895,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 216033,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1470000,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 380000,
+                        "sourceMonth": "2023-09",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 655000,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1013832,
+                "liabilities": 0,
+                "net": 1013832,
+                "share": 5.560462,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1013832,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2189071,
+                "liabilities": 0,
+                "net": 2189071,
+                "share": 12.006176,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1653071,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 536000,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 21935000,
+                "liabilities": 21960000,
+                "net": -25000,
+                "share": -0.137115,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21135000,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21960000,
+                        "sourceMonth": "2023-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 187832,
+                "liabilities": 0,
+                "net": 187832,
+                "share": 1.030183,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 187832,
+                        "sourceMonth": "2023-09",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-11",
+        "hasData": true,
+        "net": 18574732,
+        "assets": 59762392,
+        "liabilities": 41187660,
+        "enteredCount": 10,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32250000,
+                "liabilities": 18687660,
+                "net": 13562340,
+                "share": 73.014997,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32250000,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18687660,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2123370,
+                "liabilities": 600000,
+                "net": 1523370,
+                "share": 8.201303,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 253370,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1470000,
+                        "sourceMonth": "2023-10",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 400000,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 600000,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1025000,
+                "liabilities": 0,
+                "net": 1025000,
+                "share": 5.518249,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1025000,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2226190,
+                "liabilities": 0,
+                "net": 2226190,
+                "share": 11.985045,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1686190,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 540000,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 21950000,
+                "liabilities": 21900000,
+                "net": 50000,
+                "share": 0.269183,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21150000,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21900000,
+                        "sourceMonth": "2023-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 187832,
+                "liabilities": 0,
+                "net": 187832,
+                "share": 1.011223,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 187832,
+                        "sourceMonth": "2023-09",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2023-12",
+        "hasData": true,
+        "net": 18840136,
+        "assets": 59831562,
+        "liabilities": 40991426,
+        "enteredCount": 7,
+        "carriedCount": 6,
+        "levels": {
+            "residence": {
+                "assets": 32250000,
+                "liabilities": 18606426,
+                "net": 13643574,
+                "share": 72.417598,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32250000,
+                        "sourceMonth": "2023-11",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18606426,
+                        "sourceMonth": "2023-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2160707,
+                "liabilities": 545000,
+                "net": 1615707,
+                "share": 8.575878,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 290707,
+                        "sourceMonth": "2023-12",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1470000,
+                        "sourceMonth": "2023-10",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 400000,
+                        "sourceMonth": "2023-11",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 545000,
+                        "sourceMonth": "2023-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1037833,
+                "liabilities": 0,
+                "net": 1037833,
+                "share": 5.508628,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1037833,
+                        "sourceMonth": "2023-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2230190,
+                "liabilities": 0,
+                "net": 2230190,
+                "share": 11.837441,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1686190,
+                        "sourceMonth": "2023-11",
+                        "carried": true
+                    },
+                    {
+                        "account": 9,
+                        "cents": 544000,
+                        "sourceMonth": "2023-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 21965000,
+                "liabilities": 21840000,
+                "net": 125000,
+                "share": 0.663477,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 800000,
+                        "sourceMonth": "2023-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21165000,
+                        "sourceMonth": "2023-12",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21840000,
+                        "sourceMonth": "2023-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 187832,
+                "liabilities": 0,
+                "net": 187832,
+                "share": 0.996978,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 187832,
+                        "sourceMonth": "2023-09",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-01",
+        "hasData": true,
+        "net": 19019778,
+        "assets": 59814970,
+        "liabilities": 40795192,
+        "enteredCount": 12,
+        "carriedCount": 1,
+        "levels": {
+            "residence": {
+                "assets": 32300000,
+                "liabilities": 18525192,
+                "net": 13774808,
+                "share": 72.4236,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32300000,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18525192,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2098044,
+                "liabilities": 490000,
+                "net": 1608044,
+                "share": 8.454589,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 118044,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1560000,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 420000,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 490000,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1050666,
+                "liabilities": 0,
+                "net": 1050666,
+                "share": 5.524071,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1050666,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2210428,
+                "liabilities": 0,
+                "net": 2210428,
+                "share": 11.621734,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1662428,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 548000,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 21968000,
+                "liabilities": 21780000,
+                "net": 188000,
+                "share": 0.988445,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21180000,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21780000,
+                        "sourceMonth": "2024-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 187832,
+                "liabilities": 0,
+                "net": 187832,
+                "share": 0.987561,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 187832,
+                        "sourceMonth": "2023-09",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-02",
+        "hasData": true,
+        "net": 19343301,
+        "assets": 59942259,
+        "liabilities": 40598958,
+        "enteredCount": 9,
+        "carriedCount": 4,
+        "levels": {
+            "residence": {
+                "assets": 32325000,
+                "liabilities": 18443958,
+                "net": 13881042,
+                "share": 71.761495,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32325000,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18443958,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2135381,
+                "liabilities": 435000,
+                "net": 1700381,
+                "share": 8.790542,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 155381,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1560000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 420000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 435000,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1063499,
+                "liabilities": 0,
+                "net": 1063499,
+                "share": 5.498022,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1063499,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2247547,
+                "liabilities": 0,
+                "net": 2247547,
+                "share": 11.619253,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1695547,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 9,
+                        "cents": 552000,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 21983000,
+                "liabilities": 21720000,
+                "net": 263000,
+                "share": 1.359644,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21195000,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21720000,
+                        "sourceMonth": "2024-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 187832,
+                "liabilities": 0,
+                "net": 187832,
+                "share": 0.971044,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 187832,
+                        "sourceMonth": "2023-09",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-03",
+        "hasData": true,
+        "net": 19130824,
+        "assets": 59533548,
+        "liabilities": 40402724,
+        "enteredCount": 9,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32350000,
+                "liabilities": 18362724,
+                "net": 13987276,
+                "share": 73.113819,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32350000,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18362724,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2192718,
+                "liabilities": 380000,
+                "net": 1812718,
+                "share": 9.475379,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 192718,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1560000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 440000,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 380000,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1076332,
+                "liabilities": 0,
+                "net": 1076332,
+                "share": 5.626166,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1076332,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1728666,
+                "liabilities": 0,
+                "net": 1728666,
+                "share": 9.036025,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1728666,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 21998000,
+                "liabilities": 21660000,
+                "net": 338000,
+                "share": 1.766782,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21210000,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21660000,
+                        "sourceMonth": "2024-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 187832,
+                "liabilities": 0,
+                "net": 187832,
+                "share": 0.981829,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 187832,
+                        "sourceMonth": "2023-09",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-04",
+        "hasData": true,
+        "net": 19325850,
+        "assets": 59532340,
+        "liabilities": 40206490,
+        "enteredCount": 9,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32350000,
+                "liabilities": 18281490,
+                "net": 14068510,
+                "share": 72.796332,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32350000,
+                        "sourceMonth": "2024-03",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18281490,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2320055,
+                "liabilities": 325000,
+                "net": 1995055,
+                "share": 10.323246,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 230055,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1650000,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 440000,
+                        "sourceMonth": "2024-03",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 325000,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1087500,
+                "liabilities": 0,
+                "net": 1087500,
+                "share": 5.627178,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1087500,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1761785,
+                "liabilities": 0,
+                "net": 1761785,
+                "share": 9.11621,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1761785,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22013000,
+                "liabilities": 21600000,
+                "net": 413000,
+                "share": 2.137034,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21225000,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21600000,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": 0,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 0,
+                        "sourceMonth": "2024-04",
+                        "carried": false
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-05",
+        "hasData": true,
+        "net": 19690373,
+        "assets": 59700629,
+        "liabilities": 40010256,
+        "enteredCount": 9,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32400000,
+                "liabilities": 18200256,
+                "net": 14199744,
+                "share": 72.11516,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32400000,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18200256,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2377392,
+                "liabilities": 270000,
+                "net": 2107392,
+                "share": 10.702651,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 267392,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1650000,
+                        "sourceMonth": "2024-04",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 460000,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 270000,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1100333,
+                "liabilities": 0,
+                "net": 1100333,
+                "share": 5.588178,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1100333,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1794904,
+                "liabilities": 0,
+                "net": 1794904,
+                "share": 9.115642,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1794904,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22028000,
+                "liabilities": 21540000,
+                "net": 488000,
+                "share": 2.478368,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21240000,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21540000,
+                        "sourceMonth": "2024-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": 0,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 0,
+                        "sourceMonth": "2024-04",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-06",
+        "hasData": true,
+        "net": 19766777,
+        "assets": 59580799,
+        "liabilities": 39814022,
+        "enteredCount": 7,
+        "carriedCount": 5,
+        "levels": {
+            "residence": {
+                "assets": 32425000,
+                "liabilities": 18119022,
+                "net": 14305978,
+                "share": 72.373852,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32425000,
+                        "sourceMonth": "2024-06",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18119022,
+                        "sourceMonth": "2024-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2204729,
+                "liabilities": 215000,
+                "net": 1989729,
+                "share": 10.066026,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 94729,
+                        "sourceMonth": "2024-06",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1650000,
+                        "sourceMonth": "2024-04",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 460000,
+                        "sourceMonth": "2024-05",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 215000,
+                        "sourceMonth": "2024-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1113166,
+                "liabilities": 0,
+                "net": 1113166,
+                "share": 5.6315,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1113166,
+                        "sourceMonth": "2024-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1794904,
+                "liabilities": 0,
+                "net": 1794904,
+                "share": 9.080408,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1794904,
+                        "sourceMonth": "2024-05",
+                        "carried": true
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22043000,
+                "liabilities": 21480000,
+                "net": 563000,
+                "share": 2.848213,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21255000,
+                        "sourceMonth": "2024-06",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21480000,
+                        "sourceMonth": "2024-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": 0,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 0,
+                        "sourceMonth": "2024-04",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-07",
+        "hasData": true,
+        "net": 20229419,
+        "assets": 59847207,
+        "liabilities": 39617788,
+        "enteredCount": 10,
+        "carriedCount": 2,
+        "levels": {
+            "residence": {
+                "assets": 32450000,
+                "liabilities": 18037788,
+                "net": 14412212,
+                "share": 71.243826,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32450000,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 18037788,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2352066,
+                "liabilities": 160000,
+                "net": 2192066,
+                "share": 10.83603,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 132066,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1740000,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 480000,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 6,
+                        "cents": 160000,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1125999,
+                "liabilities": 0,
+                "net": 1125999,
+                "share": 5.566146,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1125999,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1861142,
+                "liabilities": 0,
+                "net": 1861142,
+                "share": 9.200175,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1861142,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22058000,
+                "liabilities": 21420000,
+                "net": 638000,
+                "share": 3.153823,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21270000,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21420000,
+                        "sourceMonth": "2024-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": 0,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 0,
+                        "sourceMonth": "2024-04",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-08",
+        "hasData": true,
+        "net": 20523942,
+        "assets": 59945496,
+        "liabilities": 39421554,
+        "enteredCount": 7,
+        "carriedCount": 5,
+        "levels": {
+            "residence": {
+                "assets": 32450000,
+                "liabilities": 17956554,
+                "net": 14493446,
+                "share": 70.617263,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32450000,
+                        "sourceMonth": "2024-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17956554,
+                        "sourceMonth": "2024-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2389403,
+                "liabilities": 105000,
+                "net": 2284403,
+                "share": 11.13043,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 169403,
+                        "sourceMonth": "2024-08",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1740000,
+                        "sourceMonth": "2024-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 480000,
+                        "sourceMonth": "2024-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 6,
+                        "cents": 105000,
+                        "sourceMonth": "2024-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1138832,
+                "liabilities": 0,
+                "net": 1138832,
+                "share": 5.548798,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1138832,
+                        "sourceMonth": "2024-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1894261,
+                "liabilities": 0,
+                "net": 1894261,
+                "share": 9.229518,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1894261,
+                        "sourceMonth": "2024-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22073000,
+                "liabilities": 21360000,
+                "net": 713000,
+                "share": 3.473991,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21285000,
+                        "sourceMonth": "2024-08",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21360000,
+                        "sourceMonth": "2024-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": 0,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 0,
+                        "sourceMonth": "2024-04",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-09",
+        "hasData": true,
+        "net": 20936800,
+        "assets": 60112120,
+        "liabilities": 39175320,
+        "enteredCount": 8,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32500000,
+                "liabilities": 17875320,
+                "net": 14624680,
+                "share": 69.851553,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32500000,
+                        "sourceMonth": "2024-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17875320,
+                        "sourceMonth": "2024-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2446740,
+                "liabilities": 0,
+                "net": 2446740,
+                "share": 11.686313,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 206740,
+                        "sourceMonth": "2024-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1740000,
+                        "sourceMonth": "2024-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 500000,
+                        "sourceMonth": "2024-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1150000,
+                "liabilities": 0,
+                "net": 1150000,
+                "share": 5.492721,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1150000,
+                        "sourceMonth": "2024-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1927380,
+                "liabilities": 0,
+                "net": 1927380,
+                "share": 9.205705,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1927380,
+                        "sourceMonth": "2024-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22088000,
+                "liabilities": 21300000,
+                "net": 788000,
+                "share": 3.763708,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21300000,
+                        "sourceMonth": "2024-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21300000,
+                        "sourceMonth": "2024-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": 0,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 0,
+                        "sourceMonth": "2024-04",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-10",
+        "hasData": true,
+        "net": 21291323,
+        "assets": 60325409,
+        "liabilities": 39034086,
+        "enteredCount": 8,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32525000,
+                "liabilities": 17794086,
+                "net": 14730914,
+                "share": 69.187406,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32525000,
+                        "sourceMonth": "2024-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17794086,
+                        "sourceMonth": "2024-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2574077,
+                "liabilities": 0,
+                "net": 2574077,
+                "share": 12.089794,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 244077,
+                        "sourceMonth": "2024-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1830000,
+                        "sourceMonth": "2024-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 500000,
+                        "sourceMonth": "2024-09",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1162833,
+                "liabilities": 0,
+                "net": 1162833,
+                "share": 5.461535,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1162833,
+                        "sourceMonth": "2024-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1960499,
+                "liabilities": 0,
+                "net": 1960499,
+                "share": 9.207972,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1960499,
+                        "sourceMonth": "2024-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22103000,
+                "liabilities": 21240000,
+                "net": 863000,
+                "share": 4.053294,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21315000,
+                        "sourceMonth": "2024-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21240000,
+                        "sourceMonth": "2024-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 0,
+                "liabilities": 0,
+                "net": 0,
+                "share": 0,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 0,
+                        "sourceMonth": "2024-04",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-11",
+        "hasData": true,
+        "net": 22029884,
+        "assets": 60922736,
+        "liabilities": 38892852,
+        "enteredCount": 9,
+        "carriedCount": 2,
+        "levels": {
+            "residence": {
+                "assets": 32550000,
+                "liabilities": 17712852,
+                "net": 14837148,
+                "share": 67.350096,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32550000,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17712852,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2631414,
+                "liabilities": 0,
+                "net": 2631414,
+                "share": 11.944747,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 281414,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1830000,
+                        "sourceMonth": "2024-10",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 520000,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1175666,
+                "liabilities": 0,
+                "net": 1175666,
+                "share": 5.336687,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1175666,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1993618,
+                "liabilities": 0,
+                "net": 1993618,
+                "share": 9.049607,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1993618,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22118000,
+                "liabilities": 21180000,
+                "net": 938000,
+                "share": 4.257853,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21330000,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21180000,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 454038,
+                "liabilities": 0,
+                "net": 454038,
+                "share": 2.061009,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 454038,
+                        "sourceMonth": "2024-11",
+                        "carried": false
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2024-12",
+        "hasData": true,
+        "net": 21731017,
+        "assets": 60482635,
+        "liabilities": 38751618,
+        "enteredCount": 6,
+        "carriedCount": 5,
+        "levels": {
+            "residence": {
+                "assets": 32550000,
+                "liabilities": 17631618,
+                "net": 14918382,
+                "share": 68.650179,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32550000,
+                        "sourceMonth": "2024-11",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17631618,
+                        "sourceMonth": "2024-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2458751,
+                "liabilities": 0,
+                "net": 2458751,
+                "share": 11.314477,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 108751,
+                        "sourceMonth": "2024-12",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1830000,
+                        "sourceMonth": "2024-10",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 520000,
+                        "sourceMonth": "2024-11",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1188499,
+                "liabilities": 0,
+                "net": 1188499,
+                "share": 5.469137,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1188499,
+                        "sourceMonth": "2024-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1993618,
+                "liabilities": 0,
+                "net": 1993618,
+                "share": 9.174067,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1993618,
+                        "sourceMonth": "2024-11",
+                        "carried": true
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22133000,
+                "liabilities": 21120000,
+                "net": 1013000,
+                "share": 4.66154,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 788000,
+                        "sourceMonth": "2024-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21345000,
+                        "sourceMonth": "2024-12",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21120000,
+                        "sourceMonth": "2024-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 158767,
+                "liabilities": 0,
+                "net": 158767,
+                "share": 0.730601,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 158767,
+                        "sourceMonth": "2024-12",
+                        "carried": false
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-01",
+        "hasData": true,
+        "net": 22061659,
+        "assets": 60672043,
+        "liabilities": 38610384,
+        "enteredCount": 10,
+        "carriedCount": 1,
+        "levels": {
+            "residence": {
+                "assets": 32600000,
+                "liabilities": 17550384,
+                "net": 15049616,
+                "share": 68.216157,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32600000,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17550384,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2606088,
+                "liabilities": 0,
+                "net": 2606088,
+                "share": 11.812747,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 146088,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1920000,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 540000,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1201332,
+                "liabilities": 0,
+                "net": 1201332,
+                "share": 5.445338,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1201332,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 1969856,
+                "liabilities": 0,
+                "net": 1969856,
+                "share": 8.928866,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 1969856,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22136000,
+                "liabilities": 21060000,
+                "net": 1076000,
+                "share": 4.87724,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21360000,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21060000,
+                        "sourceMonth": "2025-01",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 158767,
+                "liabilities": 0,
+                "net": 158767,
+                "share": 0.719651,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 158767,
+                        "sourceMonth": "2024-12",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-02",
+        "hasData": true,
+        "net": 22324517,
+        "assets": 60793667,
+        "liabilities": 38469150,
+        "enteredCount": 7,
+        "carriedCount": 4,
+        "levels": {
+            "residence": {
+                "assets": 32625000,
+                "liabilities": 17469150,
+                "net": 15155850,
+                "share": 67.888815,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32625000,
+                        "sourceMonth": "2025-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17469150,
+                        "sourceMonth": "2025-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2643425,
+                "liabilities": 0,
+                "net": 2643425,
+                "share": 11.840906,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 183425,
+                        "sourceMonth": "2025-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1920000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 540000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1212500,
+                "liabilities": 0,
+                "net": 1212500,
+                "share": 5.431249,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1212500,
+                        "sourceMonth": "2025-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2002975,
+                "liabilities": 0,
+                "net": 2002975,
+                "share": 8.972087,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2002975,
+                        "sourceMonth": "2025-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22151000,
+                "liabilities": 21000000,
+                "net": 1151000,
+                "share": 5.155767,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21375000,
+                        "sourceMonth": "2025-02",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 21000000,
+                        "sourceMonth": "2025-02",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 158767,
+                "liabilities": 0,
+                "net": 158767,
+                "share": 0.711178,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 158767,
+                        "sourceMonth": "2024-12",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-03",
+        "hasData": true,
+        "net": 22609040,
+        "assets": 60936956,
+        "liabilities": 38327916,
+        "enteredCount": 8,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32650000,
+                "liabilities": 17387916,
+                "net": 15262084,
+                "share": 67.504343,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32650000,
+                        "sourceMonth": "2025-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17387916,
+                        "sourceMonth": "2025-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2700762,
+                "liabilities": 0,
+                "net": 2700762,
+                "share": 11.945496,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 220762,
+                        "sourceMonth": "2025-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 1920000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 560000,
+                        "sourceMonth": "2025-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1225333,
+                "liabilities": 0,
+                "net": 1225333,
+                "share": 5.41966,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1225333,
+                        "sourceMonth": "2025-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2036094,
+                "liabilities": 0,
+                "net": 2036094,
+                "share": 9.005663,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2036094,
+                        "sourceMonth": "2025-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22166000,
+                "liabilities": 20940000,
+                "net": 1226000,
+                "share": 5.42261,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21390000,
+                        "sourceMonth": "2025-03",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20940000,
+                        "sourceMonth": "2025-03",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 158767,
+                "liabilities": 0,
+                "net": 158767,
+                "share": 0.702228,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 158767,
+                        "sourceMonth": "2024-12",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-04",
+        "hasData": true,
+        "net": 22938563,
+        "assets": 61125245,
+        "liabilities": 38186682,
+        "enteredCount": 7,
+        "carriedCount": 4,
+        "levels": {
+            "residence": {
+                "assets": 32650000,
+                "liabilities": 17306682,
+                "net": 15343318,
+                "share": 66.88875,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32650000,
+                        "sourceMonth": "2025-03",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17306682,
+                        "sourceMonth": "2025-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2828099,
+                "liabilities": 0,
+                "net": 2828099,
+                "share": 12.329016,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 258099,
+                        "sourceMonth": "2025-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2010000,
+                        "sourceMonth": "2025-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 560000,
+                        "sourceMonth": "2025-03",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1238166,
+                "liabilities": 0,
+                "net": 1238166,
+                "share": 5.397749,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1238166,
+                        "sourceMonth": "2025-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2069213,
+                "liabilities": 0,
+                "net": 2069213,
+                "share": 9.020674,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2069213,
+                        "sourceMonth": "2025-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22181000,
+                "liabilities": 20880000,
+                "net": 1301000,
+                "share": 5.671672,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21405000,
+                        "sourceMonth": "2025-04",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20880000,
+                        "sourceMonth": "2025-04",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 158767,
+                "liabilities": 0,
+                "net": 158767,
+                "share": 0.69214,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 158767,
+                        "sourceMonth": "2024-12",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-05",
+        "hasData": true,
+        "net": 23248086,
+        "assets": 61293534,
+        "liabilities": 38045448,
+        "enteredCount": 8,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32700000,
+                "liabilities": 17225448,
+                "net": 15474552,
+                "share": 66.562693,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32700000,
+                        "sourceMonth": "2025-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17225448,
+                        "sourceMonth": "2025-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2885436,
+                "liabilities": 0,
+                "net": 2885436,
+                "share": 12.411499,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 295436,
+                        "sourceMonth": "2025-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2010000,
+                        "sourceMonth": "2025-04",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 580000,
+                        "sourceMonth": "2025-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1250999,
+                "liabilities": 0,
+                "net": 1250999,
+                "share": 5.381084,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1250999,
+                        "sourceMonth": "2025-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2102332,
+                "liabilities": 0,
+                "net": 2102332,
+                "share": 9.043033,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2102332,
+                        "sourceMonth": "2025-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22196000,
+                "liabilities": 20820000,
+                "net": 1376000,
+                "share": 5.918767,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21420000,
+                        "sourceMonth": "2025-05",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20820000,
+                        "sourceMonth": "2025-05",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 158767,
+                "liabilities": 0,
+                "net": 158767,
+                "share": 0.682925,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 158767,
+                        "sourceMonth": "2024-12",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-06",
+        "hasData": true,
+        "net": 23269490,
+        "assets": 61173704,
+        "liabilities": 37904214,
+        "enteredCount": 6,
+        "carriedCount": 5,
+        "levels": {
+            "residence": {
+                "assets": 32725000,
+                "liabilities": 17144214,
+                "net": 15580786,
+                "share": 66.958004,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32725000,
+                        "sourceMonth": "2025-06",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17144214,
+                        "sourceMonth": "2025-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2712773,
+                "liabilities": 0,
+                "net": 2712773,
+                "share": 11.658068,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 122773,
+                        "sourceMonth": "2025-06",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2010000,
+                        "sourceMonth": "2025-04",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 580000,
+                        "sourceMonth": "2025-05",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1263832,
+                "liabilities": 0,
+                "net": 1263832,
+                "share": 5.431284,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1263832,
+                        "sourceMonth": "2025-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2102332,
+                "liabilities": 0,
+                "net": 2102332,
+                "share": 9.034715,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2102332,
+                        "sourceMonth": "2025-05",
+                        "carried": true
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22211000,
+                "liabilities": 20760000,
+                "net": 1451000,
+                "share": 6.235633,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21435000,
+                        "sourceMonth": "2025-06",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20760000,
+                        "sourceMonth": "2025-06",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 158767,
+                "liabilities": 0,
+                "net": 158767,
+                "share": 0.682297,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 158767,
+                        "sourceMonth": "2024-12",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-07",
+        "hasData": true,
+        "net": 24008570,
+        "assets": 61771550,
+        "liabilities": 37762980,
+        "enteredCount": 10,
+        "carriedCount": 1,
+        "levels": {
+            "residence": {
+                "assets": 32750000,
+                "liabilities": 17062980,
+                "net": 15687020,
+                "share": 65.339252,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32750000,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 17062980,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2860110,
+                "liabilities": 0,
+                "net": 2860110,
+                "share": 11.912871,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 160110,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2100000,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 600000,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1275000,
+                "liabilities": 0,
+                "net": 1275000,
+                "share": 5.310604,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1275000,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2168570,
+                "liabilities": 0,
+                "net": 2168570,
+                "share": 9.032483,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2168570,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22226000,
+                "liabilities": 20700000,
+                "net": 1526000,
+                "share": 6.356064,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21450000,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20700000,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 491870,
+                "liabilities": 0,
+                "net": 491870,
+                "share": 2.048727,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 491870,
+                        "sourceMonth": "2025-07",
+                        "carried": false
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-08",
+        "hasData": true,
+        "net": 24248093,
+        "assets": 61869839,
+        "liabilities": 37621746,
+        "enteredCount": 6,
+        "carriedCount": 5,
+        "levels": {
+            "residence": {
+                "assets": 32750000,
+                "liabilities": 16981746,
+                "net": 15768254,
+                "share": 65.028842,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32750000,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 16981746,
+                        "sourceMonth": "2025-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2897447,
+                "liabilities": 0,
+                "net": 2897447,
+                "share": 11.949175,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 197447,
+                        "sourceMonth": "2025-08",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2100000,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 600000,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1287833,
+                "liabilities": 0,
+                "net": 1287833,
+                "share": 5.311069,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1287833,
+                        "sourceMonth": "2025-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2201689,
+                "liabilities": 0,
+                "net": 2201689,
+                "share": 9.079844,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2201689,
+                        "sourceMonth": "2025-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22241000,
+                "liabilities": 20640000,
+                "net": 1601000,
+                "share": 6.602581,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21465000,
+                        "sourceMonth": "2025-08",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20640000,
+                        "sourceMonth": "2025-08",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 491870,
+                "liabilities": 0,
+                "net": 491870,
+                "share": 2.028489,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 491870,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-09",
+        "hasData": true,
+        "net": 24557616,
+        "assets": 62038128,
+        "liabilities": 37480512,
+        "enteredCount": 8,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32800000,
+                "liabilities": 16900512,
+                "net": 15899488,
+                "share": 64.743614,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32800000,
+                        "sourceMonth": "2025-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 16900512,
+                        "sourceMonth": "2025-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2954784,
+                "liabilities": 0,
+                "net": 2954784,
+                "share": 12.032047,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 234784,
+                        "sourceMonth": "2025-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2100000,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 620000,
+                        "sourceMonth": "2025-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1300666,
+                "liabilities": 0,
+                "net": 1300666,
+                "share": 5.296385,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1300666,
+                        "sourceMonth": "2025-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2234808,
+                "liabilities": 0,
+                "net": 2234808,
+                "share": 9.100264,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2234808,
+                        "sourceMonth": "2025-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22256000,
+                "liabilities": 20580000,
+                "net": 1676000,
+                "share": 6.824767,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21480000,
+                        "sourceMonth": "2025-09",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20580000,
+                        "sourceMonth": "2025-09",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 491870,
+                "liabilities": 0,
+                "net": 491870,
+                "share": 2.002922,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 491870,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-10",
+        "hasData": true,
+        "net": 24912139,
+        "assets": 62251417,
+        "liabilities": 37339278,
+        "enteredCount": 8,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32825000,
+                "liabilities": 16819278,
+                "net": 16005722,
+                "share": 64.248686,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32825000,
+                        "sourceMonth": "2025-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 16819278,
+                        "sourceMonth": "2025-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 3082121,
+                "liabilities": 0,
+                "net": 3082121,
+                "share": 12.371965,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 272121,
+                        "sourceMonth": "2025-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2190000,
+                        "sourceMonth": "2025-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 5,
+                        "cents": 620000,
+                        "sourceMonth": "2025-09",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1313499,
+                "liabilities": 0,
+                "net": 1313499,
+                "share": 5.272526,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1313499,
+                        "sourceMonth": "2025-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2267927,
+                "liabilities": 0,
+                "net": 2267927,
+                "share": 9.103702,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2267927,
+                        "sourceMonth": "2025-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22271000,
+                "liabilities": 20520000,
+                "net": 1751000,
+                "share": 7.028702,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21495000,
+                        "sourceMonth": "2025-10",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20520000,
+                        "sourceMonth": "2025-10",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 491870,
+                "liabilities": 0,
+                "net": 491870,
+                "share": 1.974419,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 491870,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-11",
+        "hasData": true,
+        "net": 24986662,
+        "assets": 62184706,
+        "liabilities": 37198044,
+        "enteredCount": 8,
+        "carriedCount": 3,
+        "levels": {
+            "residence": {
+                "assets": 32850000,
+                "liabilities": 16738044,
+                "net": 16111956,
+                "share": 64.482227,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32850000,
+                        "sourceMonth": "2025-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 2,
+                        "cents": 16738044,
+                        "sourceMonth": "2025-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2929458,
+                "liabilities": 0,
+                "net": 2929458,
+                "share": 11.724087,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 99458,
+                        "sourceMonth": "2025-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2190000,
+                        "sourceMonth": "2025-10",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 640000,
+                        "sourceMonth": "2025-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1326332,
+                "liabilities": 0,
+                "net": 1326332,
+                "share": 5.30816,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1326332,
+                        "sourceMonth": "2025-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2301046,
+                "liabilities": 0,
+                "net": 2301046,
+                "share": 9.209097,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2301046,
+                        "sourceMonth": "2025-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22286000,
+                "liabilities": 20460000,
+                "net": 1826000,
+                "share": 7.307899,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21510000,
+                        "sourceMonth": "2025-11",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20460000,
+                        "sourceMonth": "2025-11",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 491870,
+                "liabilities": 0,
+                "net": 491870,
+                "share": 1.96853,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 491870,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2025-12",
+        "hasData": true,
+        "net": 25191401,
+        "assets": 62248211,
+        "liabilities": 37056810,
+        "enteredCount": 5,
+        "carriedCount": 6,
+        "levels": {
+            "residence": {
+                "assets": 32850000,
+                "liabilities": 16656810,
+                "net": 16193190,
+                "share": 64.280625,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32850000,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 16656810,
+                        "sourceMonth": "2025-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2966795,
+                "liabilities": 0,
+                "net": 2966795,
+                "share": 11.777015,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 136795,
+                        "sourceMonth": "2025-12",
+                        "carried": false
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2190000,
+                        "sourceMonth": "2025-10",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 640000,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1337500,
+                "liabilities": 0,
+                "net": 1337500,
+                "share": 5.309351,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1337500,
+                        "sourceMonth": "2025-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2301046,
+                "liabilities": 0,
+                "net": 2301046,
+                "share": 9.134252,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2301046,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22301000,
+                "liabilities": 20400000,
+                "net": 1901000,
+                "share": 7.546226,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21525000,
+                        "sourceMonth": "2025-12",
+                        "carried": false
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20400000,
+                        "sourceMonth": "2025-12",
+                        "carried": false
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 491870,
+                "liabilities": 0,
+                "net": 491870,
+                "share": 1.952531,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 491870,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2026-01",
+        "hasData": true,
+        "net": 25191401,
+        "assets": 62248211,
+        "liabilities": 37056810,
+        "enteredCount": 0,
+        "carriedCount": 11,
+        "levels": {
+            "residence": {
+                "assets": 32850000,
+                "liabilities": 16656810,
+                "net": 16193190,
+                "share": 64.280625,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32850000,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 16656810,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2966795,
+                "liabilities": 0,
+                "net": 2966795,
+                "share": 11.777015,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 136795,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2190000,
+                        "sourceMonth": "2025-10",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 640000,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1337500,
+                "liabilities": 0,
+                "net": 1337500,
+                "share": 5.309351,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1337500,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2301046,
+                "liabilities": 0,
+                "net": 2301046,
+                "share": 9.134252,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2301046,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22301000,
+                "liabilities": 20400000,
+                "net": 1901000,
+                "share": 7.546226,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21525000,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20400000,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 491870,
+                "liabilities": 0,
+                "net": 491870,
+                "share": 1.952531,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 491870,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "month": "2026-02",
+        "hasData": true,
+        "net": 25191401,
+        "assets": 62248211,
+        "liabilities": 37056810,
+        "enteredCount": 0,
+        "carriedCount": 11,
+        "levels": {
+            "residence": {
+                "assets": 32850000,
+                "liabilities": 16656810,
+                "net": 16193190,
+                "share": 64.280625,
+                "lines": [
+                    {
+                        "account": 1,
+                        "cents": 32850000,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    },
+                    {
+                        "account": 2,
+                        "cents": 16656810,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    }
+                ]
+            },
+            "precaution": {
+                "assets": 2966795,
+                "liabilities": 0,
+                "net": 2966795,
+                "share": 11.777015,
+                "lines": [
+                    {
+                        "account": 3,
+                        "cents": 136795,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    },
+                    {
+                        "account": 4,
+                        "cents": 2190000,
+                        "sourceMonth": "2025-10",
+                        "carried": true
+                    },
+                    {
+                        "account": 5,
+                        "cents": 640000,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    }
+                ]
+            },
+            "fonds_euros": {
+                "assets": 1337500,
+                "liabilities": 0,
+                "net": 1337500,
+                "share": 5.309351,
+                "lines": [
+                    {
+                        "account": 7,
+                        "cents": 1337500,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    }
+                ]
+            },
+            "actions": {
+                "assets": 2301046,
+                "liabilities": 0,
+                "net": 2301046,
+                "share": 9.134252,
+                "lines": [
+                    {
+                        "account": 8,
+                        "cents": 2301046,
+                        "sourceMonth": "2025-11",
+                        "carried": true
+                    }
+                ]
+            },
+            "immobilier": {
+                "assets": 22301000,
+                "liabilities": 20400000,
+                "net": 1901000,
+                "share": 7.546226,
+                "lines": [
+                    {
+                        "account": 10,
+                        "cents": 776000,
+                        "sourceMonth": "2025-01",
+                        "carried": true
+                    },
+                    {
+                        "account": 11,
+                        "cents": 21525000,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    },
+                    {
+                        "account": 12,
+                        "cents": 20400000,
+                        "sourceMonth": "2025-12",
+                        "carried": true
+                    }
+                ]
+            },
+            "exotique": {
+                "assets": 491870,
+                "liabilities": 0,
+                "net": 491870,
+                "share": 1.952531,
+                "lines": [
+                    {
+                        "account": 13,
+                        "cents": 491870,
+                        "sourceMonth": "2025-07",
+                        "carried": true
+                    }
+                ]
+            }
+        }
+    }
+]

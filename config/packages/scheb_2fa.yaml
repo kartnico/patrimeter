@@ -1,0 +1,18 @@
+# Second authentication factor: https://symfony.com/bundles/SchebTwoFactorBundle/7.x/
+scheb_two_factor:
+    security_tokens:
+        - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken
+    # Not after a passkey (two factors already), nor on a trusted browser (TrustedBrowsers).
+    two_factor_condition: Patrimeter\Security\TwoFactor\SecondFactorCondition
+    totp:
+        enabled: true
+        issuer: Patrimeter
+        # Code accepted up to 15 s before or after its 30 s period (clock drift of the phone).
+        leeway: 15
+        template: security/two_factor.html.twig
+    backup_codes:
+        enabled: true
+        manager: Patrimeter\Security\TwoFactor\BackupCodes
+    # A TOTP code already accepted is refused if presented again (replay).
+    code_reuse_cache: cache.security
+    code_reuse_cache_duration: 90

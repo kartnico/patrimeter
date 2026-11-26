@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{%- set is_new = goal is null -%}
+{%- set action = is_new ? path('app_goal_create') : path('app_goal_update', {id: goal.id}) -%}
+
+{%- macro error(errors, field) -%}
+    {%- if errors[field] is defined %}<p class="field-error" id="err-{{ field }}">{{ errors[field]|trans }}</p>{% endif -%}
+{%- endmacro -%}
+
+{%- macro invalid(errors, field) -%}
+    {%- if errors[field] is defined %} aria-invalid="true" aria-describedby="err-{{ field }}"{% endif -%}
+{%- endmacro -%}
+
+{% block title %}{{ is_new ? 'Nouvel objectif'|trans : goal.name }}{% endblock %}
+
+{% block body %}
+{% import _self as f %}
+<div class="page-head">
+    <h1>{{ is_new ? 'Nouvel objectif'|trans : goal.name }}</h1>
+    <a class="btn btn-small" href="{{ path('app_goal_entry') }}">‹ {{ 'Saisie des objectifs'|trans }}</a>
+</div>
+
+<section class="sheet">
+    <h2 class="visually-hidden">{{ 'Objectif'|trans }}</h2>
+    <form method="post" action="{{ action }}" class="form" novalidate data-goal-form>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+
+        <div class="field">
+            <label for="name">{{ 'Nom'|trans }}</label>
+            <input type="text" id="name" name="name" value="{{ values.name }}" maxlength="60" required
+                   placeholder="{{ 'ex. Apport pour la maison'|trans }}"{{ f.invalid(errors, 'name') }}>
+            {{ f.error(errors, 'name') }}
+        </div>
+
+        {#- The two choices are lists, and the fields below follow them (app.js, data-goal-when); without JavaScript,
+            all the fields are shown, with the case each one is for. -#}
+        <div class="field">
+            <label for="kind">{{ 'Cible'|trans }}</label>
+            <select id="kind" name="kind">
+                <option value="amount"{{ values.kind != 'spending' ? ' selected' }}>{{ 'Un montant'|trans }}</option>
+                <option value="spending"{{ values.kind == 'spending' ? ' selected' }}>{{ 'Des mois de dépenses du budget'|trans }}</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <div class="field" data-goal-when="kind" data-goal-value="amount">
+                <label for="target">{{ 'Montant à atteindre'|trans }} <span class="muted small goal-condition">{{ '(si la cible est un montant)'|trans }}</span></label>
+                <div class="amount-field">
+                    <input type="text" id="target" name="target" value="{{ values.target }}" inputmode="decimal" autocomplete="off"
+                           placeholder="{{ 0|money_input }}"{{ f.invalid(errors, 'target') }}>
+                    <span class="amount-unit" aria-hidden="true">€</span>
+                </div>
+                {{ f.error(errors, 'target') }}
+            </div>
+            <div class="field" data-goal-when="kind" data-goal-value="spending">
+                <label for="spending_months">{{ 'Nombre de mois de dépenses'|trans }} <span class="muted small goal-condition">{{ '(si la cible suit le budget)'|trans }}</span></label>
+                <input type="text" id="spending_months" name="spending_months" value="{{ values.spending_months }}" inputmode="numeric" maxlength="2" autocomplete="off"{{ f.invalid(errors, 'spending_months') }}>
+                {{ f.error(errors, 'spending_months') }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="field">
+                <label for="start_month">{{ 'Mois de départ'|trans }} <span class="muted small">{{ '(AAAA-MM)'|trans }}</span></label>
+                {{ include('_month_field.html.twig', {id: 'start_month', name: 'start_month', value: values.start_month}) }}
+                {{ f.error(errors, 'start_month') }}
+                <p class="hint">{{ 'La valeur mesurée ce mois-là est le point de départ ; %month% au plus tard.'|trans({'%month%': latest_start|month_label}) }}</p>
+            </div>
+            <div class="field">
+                <label for="target_month">{{ 'À atteindre en'|trans }} <span class="muted small">{{ '(AAAA-MM)'|trans }}</span></label>
+                {{ include('_month_field.html.twig', {id: 'target_month', name: 'target_month', value: values.target_month}) }}
+                {{ f.error(errors, 'target_month') }}
+                <p class="hint">{{ 'À partir de %month%.'|trans({'%month%': earliest|month_label}) }}</p>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="scope">{{ 'Ce que l\'objectif mesure'|trans }}</label>
+            <select id="scope" name="scope"{{ f.invalid(errors, 'scope') }}>
+                {% for scope in scopes %}
+                <option value="{{ scope.value }}"{{ values.scope == scope.value ? ' selected' }}>{{ scope.label|trans }}</option>
+                {% endfor %}
+            </select>
+            {{ f.error(errors, 'scope') }}
+        </div>
+
+        <div class="field" data-goal-when="scope" data-goal-value="level">
+            <label for="level">{{ 'Niveau de la pyramide'|trans }} <span class="muted small goal-condition">{{ '(si l\'objectif mesure un niveau)'|trans }}</span></label>
+            <select id="level" name="level"{{ f.invalid(errors, 'level') }}>
+                {% for level in levels() %}
+                <option value="{{ level.value }}"{{ values.level == level.value ? ' selected' }}>{{ level.label|trans({}, 'levels') }}</option>
+                {% endfor %}
+            </select>
+            {{ f.error(errors, 'level') }}
+        </div>
+
+        <fieldset class="field goal-accounts" data-goal-when="scope" data-goal-value="accounts">
+            <legend>{{ 'Comptes'|trans }} <span class="muted small goal-condition">{{ '(si l\'objectif mesure des comptes choisis)'|trans }}</span></legend>
+            {% for account in accounts %}
+            <label class="choice"><input type="checkbox" name="accounts[]" value="{{ account.id }}"{{ (account.id ~ '') in values.accounts ? ' checked' }}> {{ account.name }} <span class="muted small">· {{ account.level.label|trans({}, 'levels') }}</span></label>
+            {% else %}
+            <p class="muted small">{{ 'Aucun compte pour l\'instant.'|trans }}</p>
+            {% endfor %}
+            {{ f.error(errors, 'accounts') }}
+        </fieldset>
+
+        {% if is_new %}
+        <p class="hint">{{ 'Chaque mois, Patrimeter compare votre rythme depuis le mois de départ à l\'effort encore nécessaire.'|trans }}</p>
+        {% endif %}
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">{{ is_new ? 'Créer l\'objectif'|trans : 'Enregistrer'|trans }}</button>
+        </div>
+    </form>
+</section>
+
+{% if not is_new %}
+<form method="post" action="{{ path('app_goal_delete', {id: goal.id}) }}" data-confirm="{{ 'Supprimer l\'objectif « %name% » ?'|trans({'%name%': goal.name}) }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+    <button type="submit" class="btn btn-danger btn-small">{{ 'Supprimer l\'objectif'|trans }}</button>
+</form>
+{% endif %}
+{% endblock %}

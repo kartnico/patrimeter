@@ -1,0 +1,13 @@
+# hadolint ("hadolint" job, docs/ci.md): any warning, even of style, makes the job fail.
+failure-threshold: info
+ignored:
+  # apt package versions not pinned, on purpose: each build takes the security fixes of Debian and of the Surý
+  # repository; the base image, for its part, is pinned by its digest.
+  - DL3008
+# Mandatory OCI labels: the image says where it comes from, under which license and in which version.
+label-schema:
+  org.opencontainers.image.title: text
+  org.opencontainers.image.source: url
+  org.opencontainers.image.licenses: spdx
+  org.opencontainers.image.version: text
+strict-labels: false

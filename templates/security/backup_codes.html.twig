@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Codes de secours'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card setup-card">
+    <h1>{{ 'Codes de secours'|trans }}</h1>
+    {% if first_setup %}
+    <p class="flash flash-success" role="status">{{ 'Application d\'authentification activée.'|trans }}</p>
+    {% endif %}
+    <p>{{ 'Si vous perdez votre téléphone, chacun de ces codes remplace <strong>une fois</strong> le code de l\'application. Notez-les ou imprimez-les maintenant et rangez-les en lieu sûr : <strong>ils ne seront plus jamais affichés</strong>.'|trans|raw }}</p>
+    <ul class="backup-codes" id="backup-codes">
+        {% for code in codes %}
+        <li><code>{{ code }}</code></li>
+        {% endfor %}
+    </ul>
+    {#- Copy button (app.js): shown only when the browser lets the page write to the clipboard; one code per line. -#}
+    <p class="copy-actions"><button type="button" class="btn btn-small copy-button" data-copy="backup-codes" data-copied="{{ 'Copié'|trans }}" hidden>{{ 'Copier les codes'|trans }}</button></p>
+    <p class="visually-hidden" role="status" data-copy-status data-copied-message="{{ 'Codes copiés dans le presse-papiers.'|trans }}"></p>
+    {% if not first_setup %}
+    <p class="hint">{{ 'Les codes précédents ne fonctionnent plus.'|trans }}</p>
+    {% endif %}
+    <p class="actions">
+        <a class="btn btn-primary" href="{{ first_setup ? path('app_dashboard') : path('app_security_signin') }}">{{ 'J\'ai noté mes codes'|trans }}</a>
+    </p>
+</section>
+{% endblock %}

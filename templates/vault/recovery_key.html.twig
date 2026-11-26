@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Clé de récupération'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card setup-card">
+    <h1>{{ 'Clé de récupération'|trans }}</h1>
+    <p>{{ 'Vos données sont chiffrées avec votre mot de passe, et personne, pas même l\'administrateur, ne peut les récupérer pour vous. <strong>Cette clé est le seul moyen de les retrouver si vous oubliez votre mot de passe.</strong> Notez-la ou imprimez-la et rangez-la en lieu sûr : elle ne sera plus jamais affichée.'|trans|raw }}</p>
+    {% if replacing %}
+    <p class="hint">{{ 'Elle remplacera votre clé actuelle, qui reste valable jusqu\'à la confirmation.'|trans }}</p>
+    {% endif %}
+    <p class="secret-key"><code id="recovery-key">{{ recovery_key }}</code></p>
+    {#- Copy button (app.js): shown only when the browser lets the page write to the clipboard. -#}
+    <p class="copy-actions"><button type="button" class="btn btn-small copy-button" data-copy="recovery-key" data-copied="{{ 'Copié'|trans }}" hidden>{{ 'Copier la clé'|trans }}</button></p>
+    <p class="visually-hidden" role="status" data-copy-status data-copied-message="{{ 'Clé copiée dans le presse-papiers.'|trans }}"></p>
+    {% if error %}
+    <p class="flash flash-error" role="alert">{{ error|trans }}</p>
+    {% endif %}
+    <form method="post" action="{{ path('app_recovery_key_confirm') }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <label for="confirmation">{{ 'Pour confirmer, saisissez les deux derniers groupes de la clé'|trans }}</label>
+        <input type="text" id="confirmation" name="confirmation" autocomplete="off" maxlength="12" required>
+        <button type="submit" class="btn btn-primary btn-block">{{ 'J\'ai noté ma clé'|trans }}</button>
+    </form>
+</section>
+{% endblock %}

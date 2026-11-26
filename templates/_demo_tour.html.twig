@@ -1,0 +1,19 @@
+{#- Guided tour of a demonstration account (Patrimeter\Http\DemoTour): card of the current step, on its page, kept at
+    the bottom of the screen; app.js highlights the element given by data-tour-target. Buttons in a form: works
+    without JavaScript. -#}
+<aside class="tour-card" aria-labelledby="tour-title"{% if tour.target is not null %} data-tour-target="{{ tour.target }}"{% endif %}>
+    <p class="tour-step">{{ 'Visite guidée · étape %number% sur %total%'|trans({'%number%': tour.number, '%total%': tour.total}) }}</p>
+    <h2 id="tour-title">{{ tour.title|trans }}</h2>
+    <p>{{ tour.text|trans }}</p>
+    <form method="post" action="{{ path('app_demo_tour') }}" class="tour-actions">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        {#- Always there (disabled at the first step): "Next" stays at the same place from one step to the next. -#}
+        <button type="submit" name="action" value="previous" class="btn btn-small"{% if tour.first %} disabled{% endif %}>{{ 'Précédent'|trans }}</button>
+        {% if tour.last %}
+        <button type="submit" name="action" value="stop" class="btn btn-small btn-primary">{{ 'Terminer la visite'|trans }}</button>
+        {% else %}
+        <button type="submit" name="action" value="next" class="btn btn-small btn-primary">{{ 'Suivant'|trans }}</button>
+        <button type="submit" name="action" value="stop" class="btn-link">{{ 'Arrêter la visite'|trans }}</button>
+        {% endif %}
+    </form>
+</aside>

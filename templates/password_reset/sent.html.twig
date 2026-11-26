@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Vérifiez vos e-mails'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card login-card">
+    <h1>{{ 'Vérifiez vos e-mails'|trans }}</h1>
+    <p>{{ 'Si cette adresse correspond à un compte, un lien valable 30 minutes vient d\'y être envoyé.'|trans }}</p>
+    <p class="login-alt"><a href="{{ path('app_login') }}">{{ 'Retour à la connexion'|trans }}</a></p>
+</section>
+{% endblock %}

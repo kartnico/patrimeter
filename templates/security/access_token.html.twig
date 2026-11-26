@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Jeton d\'API'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card setup-card">
+    <h1>{{ 'Jeton d\'API'|trans }}</h1>
+    <p>{{ 'Voici le jeton « %name% ». Copiez-le maintenant et rangez-le en lieu sûr : <strong>il ne sera plus jamais affiché</strong>. Il donne accès à vos données en clair à qui le détient.'|trans({'%name%': name|e})|raw }}</p>
+    <p class="secret-key"><code>{{ token }}</code></p>
+    <p class="actions"><a class="btn btn-primary" href="{{ path('app_security_agents') }}">{{ 'J\'ai noté mon jeton'|trans }}</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{%- set category_errors = form ? form.errors : {} -%}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ category.name }}</h1>
+    <a class="btn btn-small" href="{{ path('app_budget_household') }}">‹ {{ 'Foyer fiscal et catégories'|trans }}</a>
+</div>
+<p class="sheet-lead">{{ 'Catégorie du budget : %count% poste.|Catégorie du budget : %count% postes.'|trans({'%count%': line_count}) }}</p>
+
+{% if form %}
+<p class="flash flash-error" role="alert">{{ 'Certains champs sont invalides : rien n\'a été enregistré. Corrigez les champs signalés.'|trans }}</p>
+{% endif %}
+
+<section class="sheet" aria-labelledby="category-edit-title">
+    <h2 id="category-edit-title">{{ 'Catégorie'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_category_update', {id: category.id}) }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="field">
+            <label for="category-name">{{ 'Nom'|trans }}</label>
+            <input type="text" id="category-name" name="name" maxlength="60" required autocomplete="off"
+                   value="{{ form ? form.name : category.name }}"{% if category_errors.name is defined %} aria-invalid="true" aria-describedby="err-name"{% endif %}>
+            {% if category_errors.name is defined %}<p class="field-error" id="err-name">{{ category_errors.name|trans }}</p>{% endif %}
+        </div>
+        <div class="form-row">
+            {{ include('budget/_category_fields.html.twig', {household: household, group: form ? form.group : category.group.value, adult: form ? form.adult : (category.adult ?? '') ~ '', errors: category_errors}) }}
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">{{ 'Enregistrer'|trans }}</button>
+        </div>
+    </form>
+</section>
+
+<section class="sheet danger-zone" aria-labelledby="category-delete-title">
+    <h2 id="category-delete-title">{{ 'Supprimer la catégorie'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_category_delete', {id: category.id}) }}"
+          data-confirm="{{ 'Supprimer la catégorie « %name% » et ses postes ? Leurs montants disparaissent de tous les mois.'|trans({'%name%': category.name}) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <p class="hint">{{ 'Ses postes sont supprimés avec elle, et leurs montants disparaissent de tous les mois du budget.'|trans }}</p>
+        <button type="submit" class="btn btn-danger">{{ 'Supprimer la catégorie'|trans }}</button>
+    </form>
+</section>
+{% endblock %}

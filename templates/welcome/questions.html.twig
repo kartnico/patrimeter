@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{#- Simple questions for beginners: one question per account type, answered by "no", a range or an exact amount, then
+    the saver style (optional). Without JavaScript every question shows; app.js shows them one at a time. -#}
+{% block title %}{{ 'Questions simples'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ 'Questions simples'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+</div>
+<p class="page-intro">{{ 'Quelques questions en mots courants pour dessiner votre pyramide. Un ordre de grandeur suffit : ces montants seront marqués « à affiner » dans la saisie du mois.'|trans }}</p>
+
+{% if errors is not empty %}
+<p class="flash flash-error" role="alert">{{ 'Certains montants sont invalides : rien n\'a été créé. Corrigez les questions signalées.'|trans }}</p>
+{% endif %}
+
+<form method="post" action="{{ path('app_welcome_questions_save') }}" class="card questions-form" novalidate
+      data-questions data-progress-label="{{ 'Question %number% sur %total%'|trans }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+    <p class="questions-progress" data-questions-progress hidden></p>
+    {#- Euro symbol on the language's side, as in the monthly entry. -#}
+    {% set euro_first = app.request.locale == 'en' %}
+    {% for question in questions %}
+    {%- set q_code = question.code -%}
+    {%- set q_given = answers[q_code] is defined and answers[q_code] is not iterable ? answers[q_code] : '' -%}
+    {%- set q_typed = amounts[q_code] is defined and amounts[q_code] is not iterable ? amounts[q_code] : '' -%}
+    {%- set q_error = errors[q_code] ?? null -%}
+    <fieldset class="question" data-question{% if q_error %} data-question-error{% endif %}>
+        <legend>{{ question.question|trans }}</legend>
+        <div class="question-choices">
+            <label class="question-choice"><input type="radio" name="reponses[{{ q_code }}]" value=""{% if q_given == '' and q_typed == '' %} checked{% endif %}> {{ 'Non, ou je ne sais pas'|trans }}</label>
+            {% for range in question.ranges %}
+            <label class="question-choice"><input type="radio" name="reponses[{{ q_code }}]" value="{{ range.key }}"{% if q_given == range.key %} checked{% endif %}>
+                {{ range.from == 0
+                    ? 'moins de %to%'|trans({'%to%': (range.to * 100)|money_rounded})
+                    : 'de %from% à %to%'|trans({'%from%': (range.from * 100)|money_rounded, '%to%': (range.to * 100)|money_rounded}) }}</label>
+            {% endfor %}
+            <label class="question-choice"><input type="radio" name="reponses[{{ q_code }}]" value="{{ exact }}" data-question-exact{% if q_given == exact or (q_given == '' and q_typed != '') %} checked{% endif %}> {{ 'Montant exact'|trans }}</label>
+            <div class="amount-field question-amount">
+                <label class="visually-hidden" for="exact-{{ q_code }}">{{ 'Montant exact'|trans }}</label>
+                {%- if euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                <input type="text" id="exact-{{ q_code }}" name="montants[{{ q_code }}]" value="{{ q_typed }}" inputmode="decimal" autocomplete="off" data-question-amount
+                    {%- if q_error %} aria-invalid="true" aria-describedby="err-{{ q_code }}"{% endif %}>
+                {%- if not euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+            </div>
+        </div>
+        {% if q_error %}<p class="field-error" id="err-{{ q_code }}">{{ q_error|trans }}</p>{% endif %}
+        <details class="question-why">
+            <summary>{{ 'Pourquoi cette question ?'|trans }}</summary>
+            <p>{{ question.why|trans }}</p>
+        </details>
+    </fieldset>
+    {% endfor %}
+
+    {%- set given_style = answers.style is defined and answers.style is not iterable ? answers.style : '' -%}
+    <fieldset class="question" data-question>
+        <legend>{{ 'Pour finir, ce qui vous ressemble le plus ?'|trans }} <span class="muted small">{{ '(facultatif)'|trans }}</span></legend>
+        <div class="question-choices">
+            {% for style in styles %}
+            <label class="question-choice"><input type="radio" name="reponses[style]" value="{{ style.value }}"{% if given_style == style.value %} checked{% endif %}>
+                <span><strong>{{ style.label|trans }}</strong> · {{ style.description|trans }}</span></label>
+            {% endfor %}
+            <label class="question-choice"><input type="radio" name="reponses[style]" value=""{% if given_style == '' %} checked{% endif %}> {{ 'Je ne sais pas encore'|trans }}</label>
+        </div>
+        <details class="question-why">
+            <summary>{{ 'Pourquoi cette question ?'|trans }}</summary>
+            <p>{{ 'Votre style d\'épargnant ne change que l\'ordre des défis proposés ; il se modifie à tout moment dans Défis.'|trans }}</p>
+        </details>
+    </fieldset>
+
+    <div class="actions questions-actions">
+        <button type="button" class="btn" data-questions-back hidden>{{ 'Précédent'|trans }}</button>
+        <button type="button" class="btn btn-primary" data-questions-next hidden>{{ 'Suivant'|trans }}</button>
+        <button type="submit" class="btn btn-primary" data-questions-submit>{{ 'Créer mes comptes'|trans }}</button>
+        <a class="btn" href="{{ path('app_dashboard') }}">{{ 'Annuler'|trans }}</a>
+    </div>
+</form>
+{% endblock %}

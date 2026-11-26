@@ -1,0 +1,13 @@
+{#- Departure to another site after a form: an ordinary navigation, which the CSP form-action does not cover. -#}
+{% extends 'oauth/_bare.html.twig' %}
+
+{% block title %}{{ title|trans }}{% endblock %}
+
+{% block head_extra %}<meta http-equiv="refresh" content="0; url={{ url }}">{% endblock %}
+
+{% block body %}
+<section class="card login-card">
+    <h1>{{ title|trans }}</h1>
+    <p><a class="btn btn-primary btn-block" href="{{ url }}">{{ 'Continuer vers %provider%'|trans({'%provider%': provider}) }}</a></p>
+</section>
+{% endblock %}

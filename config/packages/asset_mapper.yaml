@@ -1,0 +1,12 @@
+framework:
+    asset_mapper:
+        # CSS and JS files served with a versioned name (hash of the content).
+        # No importmap: it would require an inline script, incompatible with the strict CSP.
+        paths:
+            - assets/
+        missing_import_mode: strict
+
+when@prod:
+    framework:
+        asset_mapper:
+            missing_import_mode: warn

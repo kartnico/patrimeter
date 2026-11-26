@@ -1,0 +1,11 @@
+# LF line endings in the repository and in the working copies, whatever the system: the shell scripts, the systemd
+# units and the configuration files are run or copied as they are on Debian.
+* text=auto eol=lf
+
+# Binary files: neither conversion nor text diff.
+*.gpg binary
+*.png binary
+*.ico binary
+
+# Third-party code copied into the repository (Chart.js): out of GitLab's language statistics.
+/assets/vendor/** linguist-vendored

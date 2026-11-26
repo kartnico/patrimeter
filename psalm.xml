@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+    Psalm: type checking and taint analysis (SQL injections, XSS, open redirects…). PHPStan remains the main type
+    analyser; Psalm mostly serves to follow the data coming from the user up to the sensitive outputs.
+-->
+<psalm
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    errorLevel="1"
+    phpVersion="8.3"
+    cacheDirectory="var/cache/psalm"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="false"
+    ensureOverrideAttribute="true"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+</psalm>

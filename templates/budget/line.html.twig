@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{%- set line_errors = form ? form.errors : {} -%}
+{%- set selected_category = form ? form.category : line.categoryId ~ '' -%}
+{%- set selected_child = form ? form.child : (line.childId ?? '') ~ '' -%}
+{%- set selected_account = form ? form.account : (line.accountId ?? '') ~ '' -%}
+{%- macro error(errors, field) -%}
+    {%- if errors[field] is defined %}<p class="field-error" id="err-{{ field }}">{{ errors[field]|trans }}</p>{% endif -%}
+{%- endmacro -%}
+{%- macro invalid(errors, field) -%}
+    {%- if errors[field] is defined %} aria-invalid="true" aria-describedby="err-{{ field }}"{% endif -%}
+{%- endmacro -%}
+
+{% block title %}{{ line.name }}{% endblock %}
+
+{% block body %}
+{% import _self as lf %}
+<div class="page-head">
+    <h1>{{ line.name }}</h1>
+    <a class="btn btn-small" href="{{ path('app_budget_household') }}">‹ {{ 'Foyer fiscal et catégories'|trans }}</a>
+</div>
+<p class="sheet-lead">{{ 'Poste du budget : son montant se saisit chaque mois avec le budget.'|trans }}</p>
+
+{% if form %}
+<p class="flash flash-error" role="alert">{{ 'Certains champs sont invalides : rien n\'a été enregistré. Corrigez les champs signalés.'|trans }}</p>
+{% endif %}
+
+<section class="sheet" aria-labelledby="line-edit-title">
+    <h2 id="line-edit-title">{{ 'Poste'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_line_update', {id: line.id}) }}" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <div class="field">
+            <label for="line-name">{{ 'Nom'|trans }}</label>
+            <input type="text" id="line-name" name="name" maxlength="60" required autocomplete="off"
+                   value="{{ form ? form.name : line.name }}"{{ lf.invalid(line_errors, 'name') }}>
+            {{ lf.error(line_errors, 'name') }}
+        </div>
+        <div class="form-row">
+            <div class="field">
+                <label for="line-category">{{ 'Catégorie'|trans }}</label>
+                <select id="line-category" name="category_id"{{ lf.invalid(line_errors, 'category') }}>
+                    {% for scope in [null]|merge(household.adultIds) %}
+                    <optgroup label="{{ scope is null ? 'Budget commun'|trans : 'Budget propre à %name%'|trans({'%name%': household.adultName(scope)}) }}">
+                        {% for category in categories|filter(c => c.adult == scope) %}
+                        <option value="{{ category.id }}"{{ category.id ~ '' == selected_category ? ' selected' }}>{{ category.name }} ({{ category.group.label|trans }})</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endfor %}
+                </select>
+                {{ lf.error(line_errors, 'category') }}
+            </div>
+            <div class="field">
+                <label for="line-child">{{ 'Pour un enfant'|trans }}</label>
+                <select id="line-child" name="child"{{ lf.invalid(line_errors, 'child') }}>
+                    <option value="">{{ 'Aucun'|trans }}</option>
+                    {% for child_id, child_name in household.children %}
+                    <option value="{{ child_id }}"{{ child_id ~ '' == selected_child ? ' selected' }}>{{ child_name }}</option>
+                    {% endfor %}
+                </select>
+                {{ lf.error(line_errors, 'child') }}
+                <p class="hint">{{ 'Compté dans le coût de cet enfant.'|trans }}</p>
+            </div>
+        </div>
+        <div class="field">
+            <label for="line-account">{{ 'Compte qui reçoit l\'épargne'|trans }}</label>
+            <select id="line-account" name="account"{{ lf.invalid(line_errors, 'account') }}>
+                <option value="">{{ 'Aucun'|trans }}</option>
+                {% for account in accounts %}
+                <option value="{{ account.id }}"{{ account.id ~ '' == selected_account ? ' selected' }}>{{ account.name }}</option>
+                {% endfor %}
+            </select>
+            {{ lf.error(line_errors, 'account') }}
+            <p class="hint">{{ 'Pour un poste d\'épargne : son versement prévu est comparé chaque mois à l\'évolution du solde de ce compte.'|trans }}</p>
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">{{ 'Enregistrer'|trans }}</button>
+        </div>
+    </form>
+</section>
+
+<section class="sheet danger-zone" aria-labelledby="line-delete-title">
+    <h2 id="line-delete-title">{{ 'Supprimer le poste'|trans }}</h2>
+    <form method="post" action="{{ path('app_budget_line_delete', {id: line.id}) }}"
+          data-confirm="{{ 'Supprimer le poste « %name% » ? Son montant disparaît de tous les mois.'|trans({'%name%': line.name}) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <p class="hint">{{ 'Son montant disparaît de tous les mois du budget.'|trans }}</p>
+        <button type="submit" class="btn btn-danger">{{ 'Supprimer le poste'|trans }}</button>
+    </form>
+</section>
+{% endblock %}

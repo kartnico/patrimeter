@@ -1,0 +1,46 @@
+# Static analysis at the maximum level, with the strict rules, for every supported PHP version (8.3 to 8.5): a
+# call that does not exist in 8.3 or is removed in 8.5 is reported.
+parameters:
+    level: max
+    phpVersion:
+        min: 80300
+        max: 80599
+    paths:
+        - bin/console
+        - config
+        - migrations
+        - public
+        - src
+        - tests
+        - tools
+    excludePaths:
+        - config/reference.php
+    tmpDir: var/cache/phpstan
+    symfony:
+        # Test container (bin/console cache:warmup --env=test): it is the one the tests use.
+        containerXmlPath: var/cache/test/Patrimeter_KernelTestDebugContainer.xml
+    checkUninitializedProperties: true
+    checkImplicitMixed: true
+    checkBenevolentUnionTypes: true
+    reportUnmatchedIgnoredErrors: true
+    # PHP 8.3: any method that overrides another carries #[\Override] (a renamed or removed parent method becomes an
+    # error instead of an orphan method).
+    checkMissingOverrideMethodAttribute: true
+    ignoreErrors:
+        # Migrations published before #[\Override] was required: never modified (AGENTS.md), hence left without the
+        # attribute. Frozen list: any new migration carries it.
+        -
+            identifier: method.missingOverride
+            paths:
+                - migrations/Version20261108000000.php
+                - migrations/Version20261108120000.php
+                - migrations/Version20261109090000.php
+                - migrations/Version20261109120000.php
+                - migrations/Version20261109150000.php
+                - migrations/Version20261109170000.php
+                - migrations/Version20261110090000.php
+                - migrations/Version20261110120000.php
+
+rules:
+    # SQL confined to src/Infrastructure/Persistence (isolation of the data per user).
+    - Patrimeter\Tools\PHPStan\NoSqlOutsidePersistenceRule

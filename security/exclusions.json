@@ -1,0 +1,110 @@
+{
+    "description": "Exclusions de la barrière de sécurité (tools/security-gate.php). Chacune : tool, id, path facultatif, reason obligatoire, expires (AAAA-MM-JJ). Passée sa date, l'exclusion ne s'applique plus.",
+    "exclusions": [
+        {
+            "tool": "gitlab",
+            "id": "Password in URL",
+            "path": "tests/Functional/OAuthServerTest.php",
+            "reason": "Faux positif : adresse factice avec identifiant et mot de passe, qu'un test d'inscription OAuth devait voir refusée. Retirée du fichier (commit 5005a41), elle reste dans le commit 669c290 de la branche feat/api-mcp, que la détection de secrets d'une merge request relit. Aucun vrai secret.",
+            "expires": "2026-12-31"
+        },
+        {
+            "tool": "gitlab",
+            "id": "Password in URL",
+            "path": "security/exclusions.json",
+            "reason": "Faux positif : la première version de l'exclusion ci-dessus (commit 058006a) citait cette même adresse factice. Le texte ne la contient plus ; l'historique de la branche, si. Aucun vrai secret.",
+            "expires": "2026-12-31"
+        },
+        {
+            "tool": "gitlab",
+            "id": "Password in URL",
+            "path": "tests/Unit/Application/CarbureLinkTest.php",
+            "reason": "Faux positif : adresse factice avec identifiant et mot de passe, qu'un test de CarbureLink doit voir refusée. Assemblée par sprintf depuis le commit qui ajoute cette exclusion ; l'adresse littérale reste dans le commit 17225b8, que la détection de secrets d'une merge request relit. Aucun vrai secret.",
+            "expires": "2026-12-31"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "fast-glob",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "fdir",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "globby",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "micromatch",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "picomatch",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "stylelint",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "stylelint-config-recommended",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "stylelint-config-standard",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "tinyglobby",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "vite",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "vitest",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        },
+        {
+            "tool": "npm-audit",
+            "id": "markdownlint-cli2",
+            "path": "package-lock.json",
+            "reason": "GHSA-fc5q-39xc-vjpf (picomatch <= 4.0.7, ReDoS sur des motifs glob à extglob répétés) : aucune version corrigée publiée au 17/11/2026, toutes les versions de picomatch sont concernées. Outils de développement seulement (Stylelint, Vitest, Vite, markdownlint-cli2), jamais en production ; les motifs glob sont ceux de notre configuration, jamais fournis par un tiers. À retirer dès qu'une version corrigée sort (MR de dépendances du lundi).",
+            "expires": "2026-12-01"
+        }
+    ]
+}

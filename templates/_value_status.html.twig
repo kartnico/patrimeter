@@ -1,0 +1,9 @@
+{#- Status of a balance (monthly entry, list of accounts): dot and label, never colour alone; "carried over" as a
+    badge, with its original month (hidden on a phone). Variable: value (AccountValue or null). -#}
+{% if value is null %}
+<span class="status status-empty">{{ 'aucun solde'|trans }}</span>
+{%- elseif value.carried %}
+<span class="status status-carried"><span class="status-dot" aria-hidden="true"></span><span class="badge badge-carried" title="{{ 'Dernier solde connu, reporté'|trans }}">{{ 'reporté'|trans }}<span class="status-source"> · {{ value.sourceMonth|month_short }}</span></span></span>
+{%- else %}
+<span class="status status-entered"><span class="status-dot" aria-hidden="true"></span>{{ 'saisi'|trans }}</span>
+{%- endif %}

@@ -1,0 +1,1628 @@
+{
+    "description": "Jeu de référence de non-régression (v1). Montants en centimes, mois AAAA-MM.",
+    "accounts": [
+        {
+            "id": 1,
+            "name": "Maison",
+            "type": "residence_principale",
+            "level": "residence",
+            "nature": "asset",
+            "openedOn": "2020-03-15",
+            "closedOn": null
+        },
+        {
+            "id": 2,
+            "name": "Prêt immo RP",
+            "type": "credit_immo_rp",
+            "level": "residence",
+            "nature": "liability",
+            "openedOn": "2020-03-15",
+            "closedOn": null
+        },
+        {
+            "id": 3,
+            "name": "Compte courant",
+            "type": "compte_courant",
+            "level": "precaution",
+            "nature": "asset",
+            "openedOn": "2015-01-01",
+            "closedOn": null
+        },
+        {
+            "id": 4,
+            "name": "Livret A",
+            "type": "livret_a",
+            "level": "precaution",
+            "nature": "asset",
+            "openedOn": "2015-01-01",
+            "closedOn": null
+        },
+        {
+            "id": 5,
+            "name": "LDDS",
+            "type": "ldds",
+            "level": "precaution",
+            "nature": "asset",
+            "openedOn": "2023-06-10",
+            "closedOn": null
+        },
+        {
+            "id": 6,
+            "name": "Crédit auto",
+            "type": "credit_conso",
+            "level": "precaution",
+            "nature": "liability",
+            "openedOn": "2022-12-01",
+            "closedOn": "2024-09-30"
+        },
+        {
+            "id": 7,
+            "name": "AV fonds euros",
+            "type": "fonds_euros",
+            "level": "fonds_euros",
+            "nature": "asset",
+            "openedOn": "2018-01-01",
+            "closedOn": null
+        },
+        {
+            "id": 8,
+            "name": "PEA",
+            "type": "pea",
+            "level": "actions",
+            "nature": "asset",
+            "openedOn": "2019-05-01",
+            "closedOn": null
+        },
+        {
+            "id": 9,
+            "name": "CTO",
+            "type": "cto",
+            "level": "actions",
+            "nature": "asset",
+            "openedOn": "2021-01-01",
+            "closedOn": "2024-03-31"
+        },
+        {
+            "id": 10,
+            "name": "SCPI",
+            "type": "scpi",
+            "level": "immobilier",
+            "nature": "asset",
+            "openedOn": "2022-01-01",
+            "closedOn": null
+        },
+        {
+            "id": 11,
+            "name": "Appartement locatif",
+            "type": "location_nue",
+            "level": "immobilier",
+            "nature": "asset",
+            "openedOn": "2023-09-01",
+            "closedOn": null
+        },
+        {
+            "id": 12,
+            "name": "Crédit locatif",
+            "type": "credit_immo_locatif",
+            "level": "immobilier",
+            "nature": "liability",
+            "openedOn": "2023-09-01",
+            "closedOn": null
+        },
+        {
+            "id": 13,
+            "name": "Bitcoin",
+            "type": "crypto",
+            "level": "exotique",
+            "nature": "asset",
+            "openedOn": "2021-01-01",
+            "closedOn": null
+        },
+        {
+            "id": 14,
+            "name": "Or",
+            "type": "or",
+            "level": "exotique",
+            "nature": "asset",
+            "openedOn": "2025-01-01",
+            "closedOn": null
+        }
+    ],
+    "statements": [
+        {
+            "account": 6,
+            "month": "2022-12",
+            "cents": 1200000
+        },
+        {
+            "account": 6,
+            "month": "2023-01",
+            "cents": 1150000
+        },
+        {
+            "account": 6,
+            "month": "2023-02",
+            "cents": 1095000
+        },
+        {
+            "account": 6,
+            "month": "2023-03",
+            "cents": 1040000
+        },
+        {
+            "account": 6,
+            "month": "2023-04",
+            "cents": 985000
+        },
+        {
+            "account": 6,
+            "month": "2023-05",
+            "cents": 930000
+        },
+        {
+            "account": 6,
+            "month": "2023-06",
+            "cents": 875000
+        },
+        {
+            "account": 6,
+            "month": "2023-07",
+            "cents": 820000
+        },
+        {
+            "account": 6,
+            "month": "2023-08",
+            "cents": 765000
+        },
+        {
+            "account": 6,
+            "month": "2023-09",
+            "cents": 710000
+        },
+        {
+            "account": 6,
+            "month": "2023-10",
+            "cents": 655000
+        },
+        {
+            "account": 6,
+            "month": "2023-11",
+            "cents": 600000
+        },
+        {
+            "account": 6,
+            "month": "2023-12",
+            "cents": 545000
+        },
+        {
+            "account": 6,
+            "month": "2024-01",
+            "cents": 490000
+        },
+        {
+            "account": 6,
+            "month": "2024-02",
+            "cents": 435000
+        },
+        {
+            "account": 6,
+            "month": "2024-03",
+            "cents": 380000
+        },
+        {
+            "account": 6,
+            "month": "2024-04",
+            "cents": 325000
+        },
+        {
+            "account": 6,
+            "month": "2024-05",
+            "cents": 270000
+        },
+        {
+            "account": 6,
+            "month": "2024-06",
+            "cents": 215000
+        },
+        {
+            "account": 6,
+            "month": "2024-07",
+            "cents": 160000
+        },
+        {
+            "account": 6,
+            "month": "2024-08",
+            "cents": 105000
+        },
+        {
+            "account": 6,
+            "month": "2024-09",
+            "cents": 50000
+        },
+        {
+            "account": 6,
+            "month": "2024-10",
+            "cents": 0
+        },
+        {
+            "account": 1,
+            "month": "2023-01",
+            "cents": 32000000
+        },
+        {
+            "account": 1,
+            "month": "2023-02",
+            "cents": 32025000
+        },
+        {
+            "account": 1,
+            "month": "2023-03",
+            "cents": 32050000
+        },
+        {
+            "account": 1,
+            "month": "2023-05",
+            "cents": 32100000
+        },
+        {
+            "account": 1,
+            "month": "2023-06",
+            "cents": 32125000
+        },
+        {
+            "account": 1,
+            "month": "2023-07",
+            "cents": 32150000
+        },
+        {
+            "account": 1,
+            "month": "2023-09",
+            "cents": 32200000
+        },
+        {
+            "account": 1,
+            "month": "2023-10",
+            "cents": 32225000
+        },
+        {
+            "account": 1,
+            "month": "2023-11",
+            "cents": 32250000
+        },
+        {
+            "account": 1,
+            "month": "2024-01",
+            "cents": 32300000
+        },
+        {
+            "account": 1,
+            "month": "2024-02",
+            "cents": 32325000
+        },
+        {
+            "account": 1,
+            "month": "2024-03",
+            "cents": 32350000
+        },
+        {
+            "account": 1,
+            "month": "2024-05",
+            "cents": 32400000
+        },
+        {
+            "account": 1,
+            "month": "2024-06",
+            "cents": 32425000
+        },
+        {
+            "account": 1,
+            "month": "2024-07",
+            "cents": 32450000
+        },
+        {
+            "account": 1,
+            "month": "2024-09",
+            "cents": 32500000
+        },
+        {
+            "account": 1,
+            "month": "2024-10",
+            "cents": 32525000
+        },
+        {
+            "account": 1,
+            "month": "2024-11",
+            "cents": 32550000
+        },
+        {
+            "account": 1,
+            "month": "2025-01",
+            "cents": 32600000
+        },
+        {
+            "account": 1,
+            "month": "2025-02",
+            "cents": 32625000
+        },
+        {
+            "account": 1,
+            "month": "2025-03",
+            "cents": 32650000
+        },
+        {
+            "account": 1,
+            "month": "2025-05",
+            "cents": 32700000
+        },
+        {
+            "account": 1,
+            "month": "2025-06",
+            "cents": 32725000
+        },
+        {
+            "account": 1,
+            "month": "2025-07",
+            "cents": 32750000
+        },
+        {
+            "account": 1,
+            "month": "2025-09",
+            "cents": 32800000
+        },
+        {
+            "account": 1,
+            "month": "2025-10",
+            "cents": 32825000
+        },
+        {
+            "account": 1,
+            "month": "2025-11",
+            "cents": 32850000
+        },
+        {
+            "account": 2,
+            "month": "2023-01",
+            "cents": 19500000
+        },
+        {
+            "account": 2,
+            "month": "2023-02",
+            "cents": 19418766
+        },
+        {
+            "account": 2,
+            "month": "2023-03",
+            "cents": 19337532
+        },
+        {
+            "account": 2,
+            "month": "2023-04",
+            "cents": 19256298
+        },
+        {
+            "account": 2,
+            "month": "2023-05",
+            "cents": 19175064
+        },
+        {
+            "account": 2,
+            "month": "2023-06",
+            "cents": 19093830
+        },
+        {
+            "account": 2,
+            "month": "2023-07",
+            "cents": 19012596
+        },
+        {
+            "account": 2,
+            "month": "2023-08",
+            "cents": 18931362
+        },
+        {
+            "account": 2,
+            "month": "2023-09",
+            "cents": 18850128
+        },
+        {
+            "account": 2,
+            "month": "2023-10",
+            "cents": 18768894
+        },
+        {
+            "account": 2,
+            "month": "2023-11",
+            "cents": 18687660
+        },
+        {
+            "account": 2,
+            "month": "2023-12",
+            "cents": 18606426
+        },
+        {
+            "account": 2,
+            "month": "2024-01",
+            "cents": 18525192
+        },
+        {
+            "account": 2,
+            "month": "2024-02",
+            "cents": 18443958
+        },
+        {
+            "account": 2,
+            "month": "2024-03",
+            "cents": 18362724
+        },
+        {
+            "account": 2,
+            "month": "2024-04",
+            "cents": 18281490
+        },
+        {
+            "account": 2,
+            "month": "2024-05",
+            "cents": 18200256
+        },
+        {
+            "account": 2,
+            "month": "2024-06",
+            "cents": 18119022
+        },
+        {
+            "account": 2,
+            "month": "2024-07",
+            "cents": 18037788
+        },
+        {
+            "account": 2,
+            "month": "2024-08",
+            "cents": 17956554
+        },
+        {
+            "account": 2,
+            "month": "2024-09",
+            "cents": 17875320
+        },
+        {
+            "account": 2,
+            "month": "2024-10",
+            "cents": 17794086
+        },
+        {
+            "account": 2,
+            "month": "2024-11",
+            "cents": 17712852
+        },
+        {
+            "account": 2,
+            "month": "2024-12",
+            "cents": 17631618
+        },
+        {
+            "account": 2,
+            "month": "2025-01",
+            "cents": 17550384
+        },
+        {
+            "account": 2,
+            "month": "2025-02",
+            "cents": 17469150
+        },
+        {
+            "account": 2,
+            "month": "2025-03",
+            "cents": 17387916
+        },
+        {
+            "account": 2,
+            "month": "2025-04",
+            "cents": 17306682
+        },
+        {
+            "account": 2,
+            "month": "2025-05",
+            "cents": 17225448
+        },
+        {
+            "account": 2,
+            "month": "2025-06",
+            "cents": 17144214
+        },
+        {
+            "account": 2,
+            "month": "2025-07",
+            "cents": 17062980
+        },
+        {
+            "account": 2,
+            "month": "2025-08",
+            "cents": 16981746
+        },
+        {
+            "account": 2,
+            "month": "2025-09",
+            "cents": 16900512
+        },
+        {
+            "account": 2,
+            "month": "2025-10",
+            "cents": 16819278
+        },
+        {
+            "account": 2,
+            "month": "2025-11",
+            "cents": 16738044
+        },
+        {
+            "account": 2,
+            "month": "2025-12",
+            "cents": 16656810
+        },
+        {
+            "account": 3,
+            "month": "2023-01",
+            "cents": 90000
+        },
+        {
+            "account": 3,
+            "month": "2023-02",
+            "cents": 127337
+        },
+        {
+            "account": 3,
+            "month": "2023-03",
+            "cents": 164674
+        },
+        {
+            "account": 3,
+            "month": "2023-04",
+            "cents": 202011
+        },
+        {
+            "account": 3,
+            "month": "2023-05",
+            "cents": 239348
+        },
+        {
+            "account": 3,
+            "month": "2023-06",
+            "cents": 276685
+        },
+        {
+            "account": 3,
+            "month": "2023-07",
+            "cents": 104022
+        },
+        {
+            "account": 3,
+            "month": "2023-08",
+            "cents": 141359
+        },
+        {
+            "account": 3,
+            "month": "2023-09",
+            "cents": 178696
+        },
+        {
+            "account": 3,
+            "month": "2023-10",
+            "cents": 216033
+        },
+        {
+            "account": 3,
+            "month": "2023-11",
+            "cents": 253370
+        },
+        {
+            "account": 3,
+            "month": "2023-12",
+            "cents": 290707
+        },
+        {
+            "account": 3,
+            "month": "2024-01",
+            "cents": 118044
+        },
+        {
+            "account": 3,
+            "month": "2024-02",
+            "cents": 155381
+        },
+        {
+            "account": 3,
+            "month": "2024-03",
+            "cents": 192718
+        },
+        {
+            "account": 3,
+            "month": "2024-04",
+            "cents": 230055
+        },
+        {
+            "account": 3,
+            "month": "2024-05",
+            "cents": 267392
+        },
+        {
+            "account": 3,
+            "month": "2024-06",
+            "cents": 94729
+        },
+        {
+            "account": 3,
+            "month": "2024-07",
+            "cents": 132066
+        },
+        {
+            "account": 3,
+            "month": "2024-08",
+            "cents": 169403
+        },
+        {
+            "account": 3,
+            "month": "2024-09",
+            "cents": 206740
+        },
+        {
+            "account": 3,
+            "month": "2024-10",
+            "cents": 244077
+        },
+        {
+            "account": 3,
+            "month": "2024-11",
+            "cents": 281414
+        },
+        {
+            "account": 3,
+            "month": "2024-12",
+            "cents": 108751
+        },
+        {
+            "account": 3,
+            "month": "2025-01",
+            "cents": 146088
+        },
+        {
+            "account": 3,
+            "month": "2025-02",
+            "cents": 183425
+        },
+        {
+            "account": 3,
+            "month": "2025-03",
+            "cents": 220762
+        },
+        {
+            "account": 3,
+            "month": "2025-04",
+            "cents": 258099
+        },
+        {
+            "account": 3,
+            "month": "2025-05",
+            "cents": 295436
+        },
+        {
+            "account": 3,
+            "month": "2025-06",
+            "cents": 122773
+        },
+        {
+            "account": 3,
+            "month": "2025-07",
+            "cents": 160110
+        },
+        {
+            "account": 3,
+            "month": "2025-08",
+            "cents": 197447
+        },
+        {
+            "account": 3,
+            "month": "2025-09",
+            "cents": 234784
+        },
+        {
+            "account": 3,
+            "month": "2025-10",
+            "cents": 272121
+        },
+        {
+            "account": 3,
+            "month": "2025-11",
+            "cents": 99458
+        },
+        {
+            "account": 3,
+            "month": "2025-12",
+            "cents": 136795
+        },
+        {
+            "account": 4,
+            "month": "2023-01",
+            "cents": 1200000
+        },
+        {
+            "account": 4,
+            "month": "2023-04",
+            "cents": 1290000
+        },
+        {
+            "account": 4,
+            "month": "2023-07",
+            "cents": 1380000
+        },
+        {
+            "account": 4,
+            "month": "2023-10",
+            "cents": 1470000
+        },
+        {
+            "account": 4,
+            "month": "2024-01",
+            "cents": 1560000
+        },
+        {
+            "account": 4,
+            "month": "2024-04",
+            "cents": 1650000
+        },
+        {
+            "account": 4,
+            "month": "2024-07",
+            "cents": 1740000
+        },
+        {
+            "account": 4,
+            "month": "2024-10",
+            "cents": 1830000
+        },
+        {
+            "account": 4,
+            "month": "2025-01",
+            "cents": 1920000
+        },
+        {
+            "account": 4,
+            "month": "2025-04",
+            "cents": 2010000
+        },
+        {
+            "account": 4,
+            "month": "2025-07",
+            "cents": 2100000
+        },
+        {
+            "account": 4,
+            "month": "2025-10",
+            "cents": 2190000
+        },
+        {
+            "account": 7,
+            "month": "2023-01",
+            "cents": 900000
+        },
+        {
+            "account": 7,
+            "month": "2023-02",
+            "cents": 912833
+        },
+        {
+            "account": 7,
+            "month": "2023-03",
+            "cents": 925666
+        },
+        {
+            "account": 7,
+            "month": "2023-04",
+            "cents": 938499
+        },
+        {
+            "account": 7,
+            "month": "2023-05",
+            "cents": 951332
+        },
+        {
+            "account": 7,
+            "month": "2023-06",
+            "cents": 962500
+        },
+        {
+            "account": 7,
+            "month": "2023-07",
+            "cents": 975333
+        },
+        {
+            "account": 7,
+            "month": "2023-08",
+            "cents": 988166
+        },
+        {
+            "account": 7,
+            "month": "2023-09",
+            "cents": 1000999
+        },
+        {
+            "account": 7,
+            "month": "2023-10",
+            "cents": 1013832
+        },
+        {
+            "account": 7,
+            "month": "2023-11",
+            "cents": 1025000
+        },
+        {
+            "account": 7,
+            "month": "2023-12",
+            "cents": 1037833
+        },
+        {
+            "account": 7,
+            "month": "2024-01",
+            "cents": 1050666
+        },
+        {
+            "account": 7,
+            "month": "2024-02",
+            "cents": 1063499
+        },
+        {
+            "account": 7,
+            "month": "2024-03",
+            "cents": 1076332
+        },
+        {
+            "account": 7,
+            "month": "2024-04",
+            "cents": 1087500
+        },
+        {
+            "account": 7,
+            "month": "2024-05",
+            "cents": 1100333
+        },
+        {
+            "account": 7,
+            "month": "2024-06",
+            "cents": 1113166
+        },
+        {
+            "account": 7,
+            "month": "2024-07",
+            "cents": 1125999
+        },
+        {
+            "account": 7,
+            "month": "2024-08",
+            "cents": 1138832
+        },
+        {
+            "account": 7,
+            "month": "2024-09",
+            "cents": 1150000
+        },
+        {
+            "account": 7,
+            "month": "2024-10",
+            "cents": 1162833
+        },
+        {
+            "account": 7,
+            "month": "2024-11",
+            "cents": 1175666
+        },
+        {
+            "account": 7,
+            "month": "2024-12",
+            "cents": 1188499
+        },
+        {
+            "account": 7,
+            "month": "2025-01",
+            "cents": 1201332
+        },
+        {
+            "account": 7,
+            "month": "2025-02",
+            "cents": 1212500
+        },
+        {
+            "account": 7,
+            "month": "2025-03",
+            "cents": 1225333
+        },
+        {
+            "account": 7,
+            "month": "2025-04",
+            "cents": 1238166
+        },
+        {
+            "account": 7,
+            "month": "2025-05",
+            "cents": 1250999
+        },
+        {
+            "account": 7,
+            "month": "2025-06",
+            "cents": 1263832
+        },
+        {
+            "account": 7,
+            "month": "2025-07",
+            "cents": 1275000
+        },
+        {
+            "account": 7,
+            "month": "2025-08",
+            "cents": 1287833
+        },
+        {
+            "account": 7,
+            "month": "2025-09",
+            "cents": 1300666
+        },
+        {
+            "account": 7,
+            "month": "2025-10",
+            "cents": 1313499
+        },
+        {
+            "account": 7,
+            "month": "2025-11",
+            "cents": 1326332
+        },
+        {
+            "account": 7,
+            "month": "2025-12",
+            "cents": 1337500
+        },
+        {
+            "account": 8,
+            "month": "2023-01",
+            "cents": 1355000
+        },
+        {
+            "account": 8,
+            "month": "2023-02",
+            "cents": 1388119
+        },
+        {
+            "account": 8,
+            "month": "2023-03",
+            "cents": 1421238
+        },
+        {
+            "account": 8,
+            "month": "2023-04",
+            "cents": 1454357
+        },
+        {
+            "account": 8,
+            "month": "2023-05",
+            "cents": 1487476
+        },
+        {
+            "account": 8,
+            "month": "2023-07",
+            "cents": 1553714
+        },
+        {
+            "account": 8,
+            "month": "2023-08",
+            "cents": 1586833
+        },
+        {
+            "account": 8,
+            "month": "2023-09",
+            "cents": 1619952
+        },
+        {
+            "account": 8,
+            "month": "2023-10",
+            "cents": 1653071
+        },
+        {
+            "account": 8,
+            "month": "2023-11",
+            "cents": 1686190
+        },
+        {
+            "account": 8,
+            "month": "2024-01",
+            "cents": 1662428
+        },
+        {
+            "account": 8,
+            "month": "2024-02",
+            "cents": 1695547
+        },
+        {
+            "account": 8,
+            "month": "2024-03",
+            "cents": 1728666
+        },
+        {
+            "account": 8,
+            "month": "2024-04",
+            "cents": 1761785
+        },
+        {
+            "account": 8,
+            "month": "2024-05",
+            "cents": 1794904
+        },
+        {
+            "account": 8,
+            "month": "2024-07",
+            "cents": 1861142
+        },
+        {
+            "account": 8,
+            "month": "2024-08",
+            "cents": 1894261
+        },
+        {
+            "account": 8,
+            "month": "2024-09",
+            "cents": 1927380
+        },
+        {
+            "account": 8,
+            "month": "2024-10",
+            "cents": 1960499
+        },
+        {
+            "account": 8,
+            "month": "2024-11",
+            "cents": 1993618
+        },
+        {
+            "account": 8,
+            "month": "2025-01",
+            "cents": 1969856
+        },
+        {
+            "account": 8,
+            "month": "2025-02",
+            "cents": 2002975
+        },
+        {
+            "account": 8,
+            "month": "2025-03",
+            "cents": 2036094
+        },
+        {
+            "account": 8,
+            "month": "2025-04",
+            "cents": 2069213
+        },
+        {
+            "account": 8,
+            "month": "2025-05",
+            "cents": 2102332
+        },
+        {
+            "account": 8,
+            "month": "2025-07",
+            "cents": 2168570
+        },
+        {
+            "account": 8,
+            "month": "2025-08",
+            "cents": 2201689
+        },
+        {
+            "account": 8,
+            "month": "2025-09",
+            "cents": 2234808
+        },
+        {
+            "account": 8,
+            "month": "2025-10",
+            "cents": 2267927
+        },
+        {
+            "account": 8,
+            "month": "2025-11",
+            "cents": 2301046
+        },
+        {
+            "account": 9,
+            "month": "2023-01",
+            "cents": 500000
+        },
+        {
+            "account": 9,
+            "month": "2023-02",
+            "cents": 504000
+        },
+        {
+            "account": 9,
+            "month": "2023-03",
+            "cents": 508000
+        },
+        {
+            "account": 9,
+            "month": "2023-04",
+            "cents": 512000
+        },
+        {
+            "account": 9,
+            "month": "2023-05",
+            "cents": 516000
+        },
+        {
+            "account": 9,
+            "month": "2023-06",
+            "cents": 520000
+        },
+        {
+            "account": 9,
+            "month": "2023-07",
+            "cents": 524000
+        },
+        {
+            "account": 9,
+            "month": "2023-08",
+            "cents": 528000
+        },
+        {
+            "account": 9,
+            "month": "2023-09",
+            "cents": 532000
+        },
+        {
+            "account": 9,
+            "month": "2023-10",
+            "cents": 536000
+        },
+        {
+            "account": 9,
+            "month": "2023-11",
+            "cents": 540000
+        },
+        {
+            "account": 9,
+            "month": "2023-12",
+            "cents": 544000
+        },
+        {
+            "account": 9,
+            "month": "2024-01",
+            "cents": 548000
+        },
+        {
+            "account": 9,
+            "month": "2024-02",
+            "cents": 552000
+        },
+        {
+            "account": 9,
+            "month": "2024-03",
+            "cents": 556000
+        },
+        {
+            "account": 9,
+            "month": "2024-04",
+            "cents": 560000
+        },
+        {
+            "account": 10,
+            "month": "2023-01",
+            "cents": 800000
+        },
+        {
+            "account": 10,
+            "month": "2024-01",
+            "cents": 788000
+        },
+        {
+            "account": 10,
+            "month": "2025-01",
+            "cents": 776000
+        },
+        {
+            "account": 13,
+            "month": "2023-01",
+            "cents": 150000
+        },
+        {
+            "account": 13,
+            "month": "2023-02",
+            "cents": 254729
+        },
+        {
+            "account": 13,
+            "month": "2023-08",
+            "cents": 483103
+        },
+        {
+            "account": 13,
+            "month": "2023-09",
+            "cents": 187832
+        },
+        {
+            "account": 13,
+            "month": "2024-04",
+            "cents": 0
+        },
+        {
+            "account": 13,
+            "month": "2024-11",
+            "cents": 454038
+        },
+        {
+            "account": 13,
+            "month": "2024-12",
+            "cents": 158767
+        },
+        {
+            "account": 13,
+            "month": "2025-07",
+            "cents": 491870
+        },
+        {
+            "account": 5,
+            "month": "2023-07",
+            "cents": 360000
+        },
+        {
+            "account": 5,
+            "month": "2023-09",
+            "cents": 380000
+        },
+        {
+            "account": 5,
+            "month": "2023-11",
+            "cents": 400000
+        },
+        {
+            "account": 5,
+            "month": "2024-01",
+            "cents": 420000
+        },
+        {
+            "account": 5,
+            "month": "2024-03",
+            "cents": 440000
+        },
+        {
+            "account": 5,
+            "month": "2024-05",
+            "cents": 460000
+        },
+        {
+            "account": 5,
+            "month": "2024-07",
+            "cents": 480000
+        },
+        {
+            "account": 5,
+            "month": "2024-09",
+            "cents": 500000
+        },
+        {
+            "account": 5,
+            "month": "2024-11",
+            "cents": 520000
+        },
+        {
+            "account": 5,
+            "month": "2025-01",
+            "cents": 540000
+        },
+        {
+            "account": 5,
+            "month": "2025-03",
+            "cents": 560000
+        },
+        {
+            "account": 5,
+            "month": "2025-05",
+            "cents": 580000
+        },
+        {
+            "account": 5,
+            "month": "2025-07",
+            "cents": 600000
+        },
+        {
+            "account": 5,
+            "month": "2025-09",
+            "cents": 620000
+        },
+        {
+            "account": 5,
+            "month": "2025-11",
+            "cents": 640000
+        },
+        {
+            "account": 11,
+            "month": "2023-07",
+            "cents": 20000000
+        },
+        {
+            "account": 11,
+            "month": "2023-09",
+            "cents": 21120000
+        },
+        {
+            "account": 11,
+            "month": "2023-10",
+            "cents": 21135000
+        },
+        {
+            "account": 11,
+            "month": "2023-11",
+            "cents": 21150000
+        },
+        {
+            "account": 11,
+            "month": "2023-12",
+            "cents": 21165000
+        },
+        {
+            "account": 11,
+            "month": "2024-01",
+            "cents": 21180000
+        },
+        {
+            "account": 11,
+            "month": "2024-02",
+            "cents": 21195000
+        },
+        {
+            "account": 11,
+            "month": "2024-03",
+            "cents": 21210000
+        },
+        {
+            "account": 11,
+            "month": "2024-04",
+            "cents": 21225000
+        },
+        {
+            "account": 11,
+            "month": "2024-05",
+            "cents": 21240000
+        },
+        {
+            "account": 11,
+            "month": "2024-06",
+            "cents": 21255000
+        },
+        {
+            "account": 11,
+            "month": "2024-07",
+            "cents": 21270000
+        },
+        {
+            "account": 11,
+            "month": "2024-08",
+            "cents": 21285000
+        },
+        {
+            "account": 11,
+            "month": "2024-09",
+            "cents": 21300000
+        },
+        {
+            "account": 11,
+            "month": "2024-10",
+            "cents": 21315000
+        },
+        {
+            "account": 11,
+            "month": "2024-11",
+            "cents": 21330000
+        },
+        {
+            "account": 11,
+            "month": "2024-12",
+            "cents": 21345000
+        },
+        {
+            "account": 11,
+            "month": "2025-01",
+            "cents": 21360000
+        },
+        {
+            "account": 11,
+            "month": "2025-02",
+            "cents": 21375000
+        },
+        {
+            "account": 11,
+            "month": "2025-03",
+            "cents": 21390000
+        },
+        {
+            "account": 11,
+            "month": "2025-04",
+            "cents": 21405000
+        },
+        {
+            "account": 11,
+            "month": "2025-05",
+            "cents": 21420000
+        },
+        {
+            "account": 11,
+            "month": "2025-06",
+            "cents": 21435000
+        },
+        {
+            "account": 11,
+            "month": "2025-07",
+            "cents": 21450000
+        },
+        {
+            "account": 11,
+            "month": "2025-08",
+            "cents": 21465000
+        },
+        {
+            "account": 11,
+            "month": "2025-09",
+            "cents": 21480000
+        },
+        {
+            "account": 11,
+            "month": "2025-10",
+            "cents": 21495000
+        },
+        {
+            "account": 11,
+            "month": "2025-11",
+            "cents": 21510000
+        },
+        {
+            "account": 11,
+            "month": "2025-12",
+            "cents": 21525000
+        },
+        {
+            "account": 12,
+            "month": "2023-09",
+            "cents": 22020000
+        },
+        {
+            "account": 12,
+            "month": "2023-10",
+            "cents": 21960000
+        },
+        {
+            "account": 12,
+            "month": "2023-11",
+            "cents": 21900000
+        },
+        {
+            "account": 12,
+            "month": "2023-12",
+            "cents": 21840000
+        },
+        {
+            "account": 12,
+            "month": "2024-01",
+            "cents": 21780000
+        },
+        {
+            "account": 12,
+            "month": "2024-02",
+            "cents": 21720000
+        },
+        {
+            "account": 12,
+            "month": "2024-03",
+            "cents": 21660000
+        },
+        {
+            "account": 12,
+            "month": "2024-04",
+            "cents": 21600000
+        },
+        {
+            "account": 12,
+            "month": "2024-05",
+            "cents": 21540000
+        },
+        {
+            "account": 12,
+            "month": "2024-06",
+            "cents": 21480000
+        },
+        {
+            "account": 12,
+            "month": "2024-07",
+            "cents": 21420000
+        },
+        {
+            "account": 12,
+            "month": "2024-08",
+            "cents": 21360000
+        },
+        {
+            "account": 12,
+            "month": "2024-09",
+            "cents": 21300000
+        },
+        {
+            "account": 12,
+            "month": "2024-10",
+            "cents": 21240000
+        },
+        {
+            "account": 12,
+            "month": "2024-11",
+            "cents": 21180000
+        },
+        {
+            "account": 12,
+            "month": "2024-12",
+            "cents": 21120000
+        },
+        {
+            "account": 12,
+            "month": "2025-01",
+            "cents": 21060000
+        },
+        {
+            "account": 12,
+            "month": "2025-02",
+            "cents": 21000000
+        },
+        {
+            "account": 12,
+            "month": "2025-03",
+            "cents": 20940000
+        },
+        {
+            "account": 12,
+            "month": "2025-04",
+            "cents": 20880000
+        },
+        {
+            "account": 12,
+            "month": "2025-05",
+            "cents": 20820000
+        },
+        {
+            "account": 12,
+            "month": "2025-06",
+            "cents": 20760000
+        },
+        {
+            "account": 12,
+            "month": "2025-07",
+            "cents": 20700000
+        },
+        {
+            "account": 12,
+            "month": "2025-08",
+            "cents": 20640000
+        },
+        {
+            "account": 12,
+            "month": "2025-09",
+            "cents": 20580000
+        },
+        {
+            "account": 12,
+            "month": "2025-10",
+            "cents": 20520000
+        },
+        {
+            "account": 12,
+            "month": "2025-11",
+            "cents": 20460000
+        },
+        {
+            "account": 12,
+            "month": "2025-12",
+            "cents": 20400000
+        }
+    ]
+}

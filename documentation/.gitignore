@@ -1,0 +1,14 @@
+# Produced by the build (prepare.sh, build.sh, Zensical, "captures" CI job), in each language.
+/site/
+/fr/exploitation/
+/en/exploitation/
+/fr/CHANGELOG.md
+/en/CHANGELOG.md
+/fr/SECURITY.md
+/en/SECURITY.md
+/fr/.env.example
+/en/.env.example
+/fr/assets/
+/en/assets/
+/fr/captures/*.png
+/en/captures/*.png

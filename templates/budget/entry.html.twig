@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{%- set household = view.household -%}
+{%- macro error(errors, field) -%}
+    {%- if errors[field] is defined %}<p class="field-error" id="err-{{ field|replace({'.': '-'}) }}">{{ errors[field]|trans }}</p>{% endif -%}
+{%- endmacro -%}
+{%- macro invalid(errors, field) -%}
+    {%- if errors[field] is defined %} aria-invalid="true" aria-describedby="err-{{ field|replace({'.': '-'}) }}"{% endif -%}
+{%- endmacro -%}
+
+{% block title %}{{ 'Saisie du budget %of_month%'|trans({'%of_month%': month|month_of}) }}{% endblock %}
+
+{% block body %}
+{% import _self as bf %}
+<div class="page-head">
+    <h1>{{ 'Saisie'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+    <nav class="month-nav" aria-label="{{ 'Changer de mois'|trans }}">
+        <a class="btn btn-small" href="{{ path('app_budget_entry', {mois: previous.toString}) }}" aria-label="{{ 'Mois précédent : %month%'|trans({'%month%': previous|month_label}) }}">‹</a>
+        {{ include('_month_picker.html.twig', {picker: month_picker(month, last_month, view.firstMonth, path('app_budget_entry'), current_month)}) }}
+        {% if next %}
+        <a class="btn btn-small" href="{{ path('app_budget_entry', {mois: next.toString}) }}" aria-label="{{ 'Mois suivant : %month%'|trans({'%month%': next|month_label}) }}">›</a>
+        {% endif %}
+    </nav>
+</div>
+{{ include('_entry_parts.html.twig') }}
+
+{#- Copy of another month's budget into this form (nothing saved before the submission), and what to add first. -#}
+<form method="get" action="{{ path('app_budget_entry') }}" class="card copy-form">
+    <input type="hidden" name="mois" value="{{ month }}">
+    <label for="copy-from">{{ 'Copier le budget d\'un autre mois'|trans }}</label>
+    <div class="copy-row">
+        {{ include('_month_field.html.twig', {id: 'copy-from', name: 'depuis', value: copy_from ?? previous}) }}
+        <button type="submit" class="btn">{{ 'Copier'|trans }}</button>
+    </div>
+    <p class="hint">{{ 'Remplit le formulaire ci-dessous avec les montants en vigueur ce mois-là ; rien n\'est enregistré avant l\'enregistrement du budget.'|trans }}</p>
+    <p class="copy-links">
+        <a href="{{ path('app_budget_household') }}">{{ 'Ajouter un poste ou une catégorie'|trans }}</a>
+        <a href="{{ path('app_account_new') }}">{{ 'Ajouter un compte'|trans }}</a>
+        <a href="{{ path('app_budget_household', {_fragment: 'household-title'}) }}">{{ 'Mettre à jour mon foyer fiscal'|trans }}</a>
+    </p>
+</form>
+
+{% if errors is not empty %}
+<p class="flash flash-error" role="alert">{{ 'Certains montants sont invalides : rien n\'a été enregistré. Corrigez les champs signalés.'|trans }}</p>
+{% elseif copy_from %}
+<p class="flash flash-info" role="status">{{ copied
+    ? 'Budget %of_source% copié : vérifiez les montants, puis enregistrez le budget %of_month%. Rien n\'est encore enregistré.'|trans({'%of_source%': copy_from|month_of, '%of_month%': month|month_of})
+    : 'Aucun budget en %month% : rien n\'a été copié.'|trans({'%month%': copy_from|month_label}) }}</p>
+{% elseif view.isCarried %}
+<p class="flash flash-info" role="status">{{ 'Montants repris du budget %of_source% : modifiez ce qui change, puis enregistrez le budget %of_month%. Ils vaudront pour les mois suivants.'|trans({'%of_source%': view.budget.month|month_of, '%of_month%': month|month_of}) }}</p>
+{% elseif view.budget is null %}
+<p class="sheet-lead">{{ 'Saisissez les revenus nets du mois et le montant de chaque poste ; un champ vide vaut 0. Ces montants vaudront pour les mois suivants, jusqu\'à ce que vous les changiez.'|trans }}</p>
+{% endif %}
+
+<form method="post" action="{{ path('app_budget_entry_save') }}" class="budget-form" novalidate
+      data-budget-form data-invalid-label="{{ 'Montant illisible'|trans }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+    <input type="hidden" name="mois" value="{{ month }}">
+    {#- Euro symbol on the language's side: "1 234,56 €", "€1,234.56". -#}
+    {% set euro_first = app.request.locale == 'en' %}
+
+    {#- Title outside the box, like the shared and personal budgets below. -#}
+    <h2 class="budget-scope" id="budget-incomes-title">{{ 'Revenus du mois'|trans }}</h2>
+    <section class="sheet budget-incomes" aria-labelledby="budget-incomes-title">
+        <table class="ledger budget-table">
+            <tbody>
+            {% for adult_id in household.adultIds %}
+                <tr>
+                    <th scope="row"><label for="income-{{ adult_id }}" class="ledger-name">{{ 'Revenus nets de %name%'|trans({'%name%': household.adultName(adult_id)}) }}</label></th>
+                    <td class="entry-cell">
+                        <div class="amount-field">
+                            {%- if euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                            <input type="text" id="income-{{ adult_id }}" name="incomes[{{ adult_id }}]" value="{{ incomes[adult_id] }}"
+                                   inputmode="decimal" autocomplete="off" placeholder="{{ 0|money_input }}" data-budget-income="{{ adult_id }}"{{ bf.invalid(errors, 'incomes.' ~ adult_id) }}>
+                            {%- if not euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                        </div>
+                        {{ bf.error(errors, 'incomes.' ~ adult_id) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            {#- Children of working age (16 in the year of the month): incomes of their own, added to the household's. -#}
+            {% for child_id, child_income in child_incomes %}
+                <tr>
+                    <th scope="row"><label for="child-income-{{ child_id }}" class="ledger-name">{{ 'Revenus nets de %name%'|trans({'%name%': household.childName(child_id)}) }}</label></th>
+                    <td class="entry-cell">
+                        <div class="amount-field">
+                            {%- if euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                            <input type="text" id="child-income-{{ child_id }}" name="child_incomes[{{ child_id }}]" value="{{ child_income }}"
+                                   inputmode="decimal" autocomplete="off" placeholder="{{ 0|money_input }}" data-budget-income="child-{{ child_id }}"{{ bf.invalid(errors, 'child_incomes.' ~ child_id) }}>
+                            {%- if not euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                        </div>
+                        {{ bf.error(errors, 'child_incomes.' ~ child_id) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr><th scope="row">{{ 'Revenus du foyer'|trans }}</th><td class="num" data-budget-income-total>{{ overview.income|money }}</td></tr>
+            </tfoot>
+        </table>
+
+        {% if household.isCouple %}
+        <fieldset class="budget-split">
+            <legend>{{ 'Partage du compte commun'|trans }}</legend>
+            <label class="choice"><input type="radio" name="split_rule" value="income" data-budget-split{{ split_rule != 'fixed' ? ' checked' }}> {{ 'Au prorata des revenus du mois'|trans }}</label>
+            <div class="choice budget-split-fixed">
+                <input type="radio" id="split-fixed" name="split_rule" value="fixed" data-budget-split{{ split_rule == 'fixed' ? ' checked' }}>
+                <label for="split-fixed">{{ 'Part fixée'|trans }}</label>
+                <label for="first-share" class="visually-hidden">{{ 'Part de %name% en pourcentage'|trans({'%name%': household.adultName(1)}) }}</label>
+                <span class="budget-share-field">{{ '%name% verse'|trans({'%name%': household.adultName(1)}) }}
+                    <input type="text" id="first-share" name="first_share" value="{{ first_share }}" inputmode="decimal" autocomplete="off" size="6"
+                           data-budget-share{{ bf.invalid(errors, 'first_share') }}> %{{ ', %name% le reste'|trans({'%name%': household.adultName(2)}) }}</span>
+            </div>
+            {{ bf.error(errors, 'first_share') }}
+        </fieldset>
+        {% endif %}
+    </section>
+
+    {% for scope in [null]|merge(household.adultIds) %}
+    {%- set scope_categories = overview.categoriesOf(scope) -%}
+    <h2 class="budget-scope">{{ scope is null ? 'Budget commun, payé par le compte commun'|trans : 'Budget propre à %name%'|trans({'%name%': household.adultName(scope)}) }}</h2>
+    {% if scope_categories is empty %}
+    <p class="muted">{{ 'Aucune catégorie.'|trans }} <a href="{{ path('app_budget_household') }}">{{ 'Ajouter une catégorie'|trans }}</a></p>
+    {% endif %}
+    {% for category in scope_categories %}
+    <section class="sheet budget-category is-{{ category.group.value }}" aria-labelledby="category-{{ category.id }}"
+             data-budget-category data-scope="{{ scope ?? 'shared' }}">
+        <h3 id="category-{{ category.id }}"><span class="group-dot" aria-hidden="true"></span>{{ category.name }} <span class="muted">· {{ category.group.label|trans }}</span></h3>
+        <table class="ledger budget-table">
+            <tbody>
+            {% for budget_line in overview.lines(category.id) %}
+                {%- set field_id = 'amount-' ~ budget_line.id -%}
+                <tr>
+                    <th scope="row">
+                        <label for="{{ field_id }}" class="ledger-name">{{ budget_line.name }}</label>
+                        {% if budget_line.childId is not null and household.hasChild(budget_line.childId) %}<span class="ledger-sub">{{ 'pour %name%'|trans({'%name%': household.childName(budget_line.childId)}) }}</span>{% endif %}
+                        {% if budget_line.accountId is not null and view.accounts[budget_line.accountId] is defined %}<span class="ledger-sub">{{ 'vers %account%'|trans({'%account%': view.accounts[budget_line.accountId].name}) }}</span>{% endif %}
+                    </th>
+                    <td class="entry-cell">
+                        <div class="amount-field">
+                            {%- if euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                            <input type="text" id="{{ field_id }}" name="amounts[{{ budget_line.id }}]" value="{{ amounts[budget_line.id] }}"
+                                   inputmode="decimal" autocomplete="off" placeholder="{{ 0|money_input }}" data-budget-amount{{ bf.invalid(errors, 'amounts.' ~ budget_line.id) }}>
+                            {%- if not euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                        </div>
+                        {{ bf.error(errors, 'amounts.' ~ budget_line.id) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="2" class="muted">{{ 'Aucun poste.'|trans }} <a href="{{ path('app_budget_household') }}">{{ 'Ajouter un poste'|trans }}</a></td></tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr><th scope="row">{{ 'Total'|trans }}</th><td class="num" data-budget-category-total>{{ overview.categoryTotal(category.id)|money }}</td></tr>
+            </tfoot>
+        </table>
+    </section>
+    {% endfor %}
+    {% endfor %}
+
+    <div class="sticky-actions budget-actions">
+        <p class="budget-totals">
+            <span>{{ 'Compte commun'|trans }} <strong class="num" data-budget-joint>{{ overview.jointTotal|money }}</strong></span>
+            <span><span data-budget-available-label data-label-available="{{ 'Disponible'|trans }}" data-label-overrun="{{ 'Dépassement'|trans }}">{{ overview.available < 0 ? 'Dépassement'|trans : 'Disponible'|trans }}</span>
+                <strong class="num" data-budget-available>{{ overview.available|money }}</strong></span>
+        </p>
+        <button type="submit" class="btn btn-primary">{{ 'Enregistrer le budget %of_month%'|trans({'%of_month%': month|month_of}) }}</button>
+    </div>
+</form>
+{% endblock %}

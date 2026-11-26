@@ -1,0 +1,84 @@
+security:
+    password_hashers:
+        Patrimeter\Security\User:
+            algorithm: argon2id
+
+    providers:
+        users:
+            id: Patrimeter\Security\UserProvider
+
+    firewalls:
+        dev:
+            pattern: ^/(_profiler|_wdt|assets)/
+            security: false
+        # OAuth metadata and endpoints called by the clients, without a session.
+        oauth_endpoints:
+            pattern: ^/(oauth/(token|register|revoke)$|\.well-known/oauth-)
+            security: false
+        # Without session nor authentication: CSP violation reports sent by the browsers, monitoring
+        # (docs/supervision.md).
+        service_endpoints:
+            pattern: ^/(csp/rapport|sante(/metriques)?)$
+            security: false
+        # API and MCP: bearer token on each request, without a cookie (Patrimeter\Security\Api).
+        api:
+            pattern: ^/(api/|mcp$)
+            stateless: true
+            provider: users
+            user_checker: Patrimeter\Security\UserChecker
+            access_token:
+                token_handler: Patrimeter\Security\Api\ApiTokenHandler
+                failure_handler: Patrimeter\Security\Api\ApiAuthResponses
+            entry_point: Patrimeter\Security\Api\ApiAuthResponses
+            access_denied_handler: Patrimeter\Security\Api\ApiAuthResponses
+        main:
+            lazy: true
+            provider: users
+            user_checker: Patrimeter\Security\UserChecker
+            custom_authenticators:
+                - Patrimeter\Security\PasswordLoginAuthenticator
+                - Patrimeter\Security\WebAuthn\PasskeyAuthenticator
+            entry_point: Patrimeter\Security\PasswordLoginAuthenticator
+            # Second factor (scheb/2fa-bundle): TOTP or backup code, after the password.
+            two_factor:
+                auth_form_path: app_2fa_login
+                check_path: app_2fa_login_check
+                default_target_path: app_dashboard
+                success_handler: Patrimeter\Security\TwoFactor\TwoFactorRedirects
+                failure_handler: Patrimeter\Security\TwoFactor\TwoFactorRedirects
+                auth_code_parameter_name: code
+                enable_csrf: true
+                csrf_parameter: _csrf
+                csrf_token_id: patrimeter
+            logout:
+                path: app_logout
+                target: app_login
+                enable_csrf: true
+                csrf_parameter: _csrf
+                csrf_token_id: patrimeter
+
+    access_control:
+        # Writing through the API requires a token with the write scope (PortfolioTools does the same for MCP).
+        - { path: ^/api/, methods: [POST, PUT, PATCH, DELETE], roles: ROLE_API_WRITE }
+        - { path: ^/(api/|mcp$), roles: ROLE_USER }
+        - { path: ^/connexion$, roles: PUBLIC_ACCESS }
+        - { path: ^/connexion/passkey, roles: PUBLIC_ACCESS }
+        - { path: ^/connexion/code, roles: IS_AUTHENTICATED_2FA_IN_PROGRESS }
+        - { path: ^/deconnexion$, roles: PUBLIC_ACCESS }
+        - { path: ^/inscription, roles: PUBLIC_ACCESS }
+        - { path: ^/installation$, roles: PUBLIC_ACCESS }
+        - { path: ^/demo$, roles: PUBLIC_ACCESS }
+        - { path: ^/rappel/desabonnement/, roles: PUBLIC_ACCESS }
+        - { path: ^/mot-de-passe-oublie, roles: PUBLIC_ACCESS }
+        - { path: ^/theme$, roles: PUBLIC_ACCESS }
+        - { path: ^/langue$, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }
+
+when@test:
+    security:
+        password_hashers:
+            # Minimal cost in tests only (Argon2id remains the algorithm).
+            Patrimeter\Security\User:
+                algorithm: argon2id
+                time_cost: 3
+                memory_cost: 10

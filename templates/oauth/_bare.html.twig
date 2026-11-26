@@ -1,0 +1,23 @@
+{#-
+    Layout without navigation nor forms, for the page that hands over to the OAuth client after the consent
+    (leave.html.twig): nothing to click but the way out.
+-#}
+{%- set theme = theme_preference(app.request) -%}
+<!doctype html>
+<html lang="{{ app.request.locale }}"{% if theme %} data-theme="{{ theme }}"{% endif %}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>{% block title %}{{ 'Connexion'|trans }}{% endblock %} · Patrimeter</title>
+<link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+{% block head_extra %}{% endblock %}
+</head>
+<body class="is-guest">
+<main class="main" id="contenu">
+{% block body %}{% endblock %}
+</main>
+</body>
+</html>

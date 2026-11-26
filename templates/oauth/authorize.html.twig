@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Autoriser une application'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card login-card">
+    <h1>{{ 'Autoriser une application'|trans }}</h1>
+    <p>{{ '%client% demande à accéder à votre patrimoine. Après validation, vous serez renvoyé vers %host%.'|trans({'%client%': '<strong>' ~ client_name|e ~ '</strong>', '%host%': '<strong>' ~ redirect_host|e ~ '</strong>'})|raw }}</p>
+    <ul>
+        <li>{{ 'Lire vos comptes, vos relevés et votre patrimoine net'|trans }}</li>
+        {% if can_write %}<li>{{ 'Créer ou modifier des comptes et des relevés'|trans }}</li>{% endif %}
+    </ul>
+    <p class="hint">{{ 'Cette application ne connaîtra pas votre mot de passe. Vous pouvez lui retirer l\'accès à tout moment depuis la page Mon compte.'|trans }}</p>
+    <form method="post" action="{{ path('app_oauth_authorize_submit') }}" class="form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        {% for name, value in fields %}
+        <input type="hidden" name="{{ name }}" value="{{ value }}">
+        {% endfor %}
+        <button type="submit" name="decision" value="allow" class="btn btn-primary btn-block">{{ 'Autoriser'|trans }}</button>
+        <button type="submit" name="decision" value="deny" class="btn btn-block">{{ 'Refuser'|trans }}</button>
+    </form>
+</section>
+{% endblock %}

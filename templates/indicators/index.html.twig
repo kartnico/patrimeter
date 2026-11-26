@@ -1,0 +1,49 @@
+{#- Custom indicators: their values this month, then the form of a new one. Variables: month, values (indicator,
+    value, previous, share), full, max_indicators, fields, errors, levels, accounts. -#}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Indicateurs'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ 'Indicateurs'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+    <a class="btn btn-small" href="{{ path('app_dashboard') }}">{{ 'Patrimoine'|trans }}</a>
+</div>
+<p class="sheet-lead">{{ 'Vos propres totaux : des niveaux de la pyramide et des comptes choisis, suivis chaque mois comme le patrimoine net (parts de propriété et crédits liés compris).'|trans }}</p>
+
+{% if values is not empty %}
+<section class="sheet" aria-labelledby="indicator-list-title">
+    <h2 id="indicator-list-title" class="visually-hidden">{{ 'Indicateurs'|trans }}</h2>
+    <table class="ledger">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Indicateur'|trans }}</th>
+                <th scope="col" class="num">{{ month|month_label|capitalize }}</th>
+                <th scope="col" class="num">{{ 'Sur un mois'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for line in values %}
+            <tr>
+                <th scope="row">
+                    <a class="ledger-name" href="{{ path('app_indicator_edit', {id: line.indicator.id}) }}">{{ line.indicator.name }}</a>
+                    {% if line.share is not null %}<span class="ledger-sub">{{ '%share% du patrimoine net'|trans({'%share%': line.share|percent}) }}</span>{% endif %}
+                </th>
+                <td class="num">{{ line.value|money }}</td>
+                <td class="num {{ line.previous is null ? '' : (line.value - line.previous)|sign_class }}">{{ line.previous is null ? '—' : (line.value - line.previous)|money(true) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+
+<section class="sheet" aria-labelledby="indicator-new-title">
+    <h2 id="indicator-new-title">{{ 'Nouvel indicateur'|trans }}</h2>
+    {% if full %}
+    <p class="muted">{{ '%max% indicateurs au plus : supprimez-en un pour en créer un autre.'|trans({'%max%': max_indicators}) }}</p>
+    {% else %}
+    {{ include('indicators/_form.html.twig', {action: path('app_indicator_create'), submit: 'Créer l\'indicateur'|trans}) }}
+    {% endif %}
+</section>
+{% endblock %}

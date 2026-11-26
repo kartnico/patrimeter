@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Rappel mensuel'|trans }}{% endblock %}
+
+{% block body %}
+<section class="card login-card">
+    <h1>{{ 'Rappel mensuel'|trans }}</h1>
+    {% if done %}
+    <p>{{ 'C\'est fait : vous ne recevrez plus le rappel de saisie. Vous pouvez le réactiver depuis Mon compte > Profil.'|trans }}</p>
+    {% elseif valid %}
+    <p>{{ 'Ne plus recevoir l\'e-mail mensuel qui rappelle de saisir les soldes ?'|trans }}</p>
+    <form method="post" action="{{ path('app_reminder_unsubscribe_confirm', {token: token}) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <button type="submit" class="btn btn-primary btn-block">{{ 'Ne plus recevoir le rappel'|trans }}</button>
+    </form>
+    {% else %}
+    <p>{{ 'Ce lien n\'est plus valable : le rappel est déjà désactivé, ou un e-mail plus récent en contient un autre.'|trans }}</p>
+    {% endif %}
+    <p class="login-alt"><a href="{{ path('app_login') }}">{{ 'Connexion'|trans }}</a></p>
+</section>
+{% endblock %}

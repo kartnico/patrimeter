@@ -1,0 +1,17 @@
+# MCP service (symfony/mcp-bundle, experimental): docs/api.md. Protected by the "api" firewall of
+# security.yaml; the tools are in src/Application/Mcp/.
+mcp:
+    servers:
+        patrimeter:
+            name: Patrimeter
+            version: '2.0.0'
+            description: 'Suivi de patrimoine net : comptes, relevés, pyramide et biens immobiliers.'
+            instructions: 'Les montants sont en centimes d''euro et les mois au format AAAA-MM. Un crédit a un montant positif : le capital restant dû.'
+            registry: 'Patrimeter\Application\Mcp\'
+            http:
+                path: /mcp
+                # Protection against DNS rebinding: only the public name of the site. The Origin header is checked
+                # before the firewall by ApiSubscriber (the site and MCP_ALLOWED_ORIGINS, McpTest): the bundle's own
+                # check, which cannot read an environment variable here, would refuse the allowed origins.
+                allowed_hosts: ['%env(key:host:url:DEFAULT_URI)%']
+                allowed_origins: ['*']

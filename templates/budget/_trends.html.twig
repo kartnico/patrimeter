@@ -1,0 +1,31 @@
+{#- Average spending (needs and wants) and savings per month over 3, 6 and 12 months, compared with the period before. -#}
+<section class="sheet budget-trends" aria-labelledby="budget-trends-title">
+    <h2 id="budget-trends-title">{{ 'Tendances du budget'|trans }}</h2>
+    <p class="sheet-lead">{{ 'Moyenne par mois des dépenses (besoins et envies) et de l\'épargne prévues, jusqu\'au mois affiché ; en dessous, la même moyenne sur la période d\'avant.'|trans }}</p>
+    <table class="ledger trends">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Sur'|trans }}</th>
+                <th scope="col" class="num">{{ 'Dépenses'|trans }}</th>
+                <th scope="col" class="num">{{ 'Épargne'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, expenses in trends.expenses %}
+            {%- set savings = trends.savings[index] -%}
+            <tr>
+                <th scope="row">{{ '%count% mois|%count% mois'|trans({'%count%': expenses.months}) }}</th>
+                {% for trend in [expenses, savings] %}
+                <td class="num">
+                    {%- if trend.value is null -%}<span class="muted">—</span>
+                    {%- else -%}
+                    {{ trend.value|money }}
+                    {%- if trend.previous is not null %}<span class="ledger-sub">{{ 'avant : %amount%'|trans({'%amount%': trend.previous|money}) }}</span>{% endif -%}
+                    {%- endif -%}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>

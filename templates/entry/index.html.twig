@@ -1,0 +1,224 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Saisie %of_month%'|trans({'%of_month%': month|month_of}) }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    {#- Same title on the three tabs of the monthly entry (wealth, budget, goals): "Saisie" and the month in grey. -#}
+    <h1>{{ 'Saisie'|trans }} <span class="muted">{{ month|month_label|capitalize }}</span></h1>
+    {#- No account yet: no change of month, the first accounts are created in the current one. -#}
+    {% if has_any_account %}
+    <nav class="month-nav" aria-label="{{ 'Changer de mois'|trans }}">
+        <a class="btn btn-small" href="{{ path('app_entry', {mois: previous.toString}) }}" aria-label="{{ 'Mois précédent : %month%'|trans({'%month%': previous|month_label}) }}">‹</a>
+        {{ include('_month_picker.html.twig', {picker: month_picker(month, last_month, null, path('app_entry'), current_month)}) }}
+        {% if next %}
+        <a class="btn btn-small" href="{{ path('app_entry', {mois: next.toString}) }}" aria-label="{{ 'Mois suivant : %month%'|trans({'%month%': next|month_label}) }}">›</a>
+        {% endif %}
+    </nav>
+    {% endif %}
+    {% if account_count > 0 %}
+    <p class="entry-counter">
+        <progress class="entry-progress" value="{{ entered_count }}" max="{{ account_count }}" aria-label="{{ 'Comptes saisis ce mois-ci'|trans }}" data-entry-progress>{{ entered_count }}/{{ account_count }}</progress>
+        <span><strong data-entry-count>{{ entered_count }}</strong>/{{ account_count }} {{ 'saisis'|trans }}</span>
+    </p>
+    {% endif %}
+</div>
+{{ include('_entry_parts.html.twig') }}
+
+{#- Past month without an open account: copying a later month carries into it the accounts opened since. Without any
+    account at all, nothing to copy: only the creation of the first accounts is offered. -#}
+{% set copy_possible = has_any_account and (account_count > 0 or month.compare(current_month) < 0) %}
+{% if account_count == 0 %}
+<div class="card empty-state">
+    {% if has_any_account %}
+    <p>{{ 'Aucun compte ouvert en %month%.'|trans({'%month%': month|month_label}) }}</p>
+    {% else %}
+    <p>{{ 'Aucun compte pour l\'instant : créez vos comptes et vos biens immobiliers, puis saisissez leurs soldes ici chaque mois.'|trans }}</p>
+    {% endif %}
+    {% if copy_possible %}
+    <p class="muted">{{ 'Vos comptes ont été ouverts plus tard ? Copiez les soldes d\'un mois suivant ci-dessous : ils seront repris en %month%.'|trans({'%month%': month|month_label}) }}</p>
+    {% endif %}
+    <p class="actions">
+        <a class="btn btn-primary" href="{{ path('app_account_new') }}">{{ 'Créer un compte'|trans }}</a>
+        <a class="btn" href="{{ path('app_property_new') }}">{{ 'Créer un bien immobilier'|trans }}</a>
+    </p>
+</div>
+{% endif %}
+
+{% if copy_possible %}
+{#- Copy of an entry: takes the balances of another month into this form, without saving anything. -#}
+<form method="get" action="{{ path('app_entry') }}" class="card copy-form">
+    <input type="hidden" name="mois" value="{{ month }}">
+    <label for="copy-from">{{ 'Copier les soldes d\'un autre mois'|trans }}</label>
+    <div class="copy-row">
+        {{ include('_month_field.html.twig', {id: 'copy-from', name: 'depuis', value: copy_from ?? (account_count == 0 ? current_month : previous)}) }}
+        <button type="submit" class="btn">{{ 'Copier'|trans }}</button>
+    </div>
+    <p class="hint">{{ 'Remplit le formulaire ci-dessous avec les soldes de ce mois ; rien n\'est enregistré avant la validation.'|trans }}</p>
+    <p class="copy-links">
+        <a href="{{ path('app_account_new') }}">{{ 'Ajouter un compte'|trans }}</a>
+        <a href="{{ path('app_property_new') }}">{{ 'Ajouter un bien immobilier'|trans }}</a>
+    </p>
+</form>
+
+{% if copy_from %}
+<p class="flash flash-info" role="status">{{ copied_count > 0
+    ? 'Soldes %of_source% copiés (%count% compte) : vérifiez-les, puis validez la saisie %of_month%. Rien n\'est encore enregistré.|Soldes %of_source% copiés (%count% comptes) : vérifiez-les, puis validez la saisie %of_month%. Rien n\'est encore enregistré.'|trans({'%count%': copied_count, '%of_source%': copy_from|month_of, '%of_month%': month|month_of})
+    : 'Aucun solde connu en %month% pour les comptes de ce mois : rien n\'a été copié.'|trans({'%month%': copy_from|month_label}) }}
+    {% if advance_count > 0 %}
+    {{ '%count% compte ouvert après %month% est repris : la validation avancera son ouverture au %date%.|%count% comptes ouverts après %month% sont repris : la validation avancera leur ouverture au %date%.'|trans({'%count%': advance_count, '%month%': month|month_label, '%date%': (month ~ '-01')|date_fr}) }}
+    {% endif %}</p>
+{% endif %}
+{% endif %}
+
+{% if account_count > 0 %}
+
+{% if has_errors %}
+<p class="flash flash-error" role="alert">{{ 'Certains montants sont invalides : rien n\'a été enregistré. Corrigez les champs signalés.'|trans }}</p>
+{% endif %}
+
+{#- Legend of the statuses; the rest of the help (shortcuts, loans, emptied field) folds behind "?". -#}
+<div class="entry-legend">
+    <p class="entry-intro">{{ 'Les comptes non encore mis à jour sont pré-remplis avec leur dernier solde connu. Saisissez ce qui a bougé ; la validation enregistre tous les soldes %of_month%.'|trans({'%of_month%': month|month_of}) }}</p>
+    <ul class="entry-statuses">
+        <li><span class="status status-entered"><span class="status-dot" aria-hidden="true"></span>{{ 'saisi ce mois-ci'|trans }}</span></li>
+        <li><span class="status status-carried"><span class="status-dot" aria-hidden="true"></span><span class="badge badge-carried">{{ 'reporté'|trans }}</span> {{ 'dernier solde connu'|trans }}</span></li>
+    </ul>
+    <details class="entry-help-toggle">
+        <summary aria-label="{{ 'Aide de la saisie'|trans }}"><span aria-hidden="true">?</span></summary>
+        <div class="entry-help">
+            <h2>{{ 'Raccourcis clavier'|trans }}</h2>
+            <dl class="entry-keys">
+                <dt><kbd>{{ 'Entrée'|trans }}</kbd></dt><dd>{{ 'valide le montant, champ suivant'|trans }}</dd>
+                <dt><kbd>{{ 'Maj'|trans }}</kbd>+<kbd>{{ 'Entrée'|trans }}</kbd></dt><dd>{{ 'champ précédent'|trans }}</dd>
+                <dt><kbd>{{ 'Échap'|trans }}</kbd></dt><dd>{{ 'rétablit le montant proposé'|trans }}</dd>
+                <dt><kbd>=</kbd></dt><dd>{{ 'reprend le solde du mois précédent, champ suivant'|trans }}</dd>
+            </dl>
+            <h2>{{ 'Crédits'|trans }}</h2>
+            <p>{{ 'Marqués %badge% : le montant est le capital restant dû, précédé de « − » et souligné en pointillé. Il est déduit du niveau.'|trans({'%badge%': '<span class="badge-due">' ~ 'dû'|trans ~ '</span>'})|raw }}</p>
+            <h2>{{ 'À affiner'|trans }}</h2>
+            <p>{{ 'Montant approximatif donné à la création du compte : corrigez-le si besoin ; la validation l\'enregistre comme solde du mois et retire la mention.'|trans }}</p>
+            <h2>{{ 'Champ vidé'|trans }}</h2>
+            <p>{{ 'Un champ vidé n\'est pas enregistré : le dernier solde reste reporté.'|trans }}</p>
+            <h2>{{ 'Totaux'|trans }}</h2>
+            <p>{{ 'Les totaux des niveaux et le patrimoine net tiennent compte de votre part des biens détenus à plusieurs.'|trans }}</p>
+        </div>
+    </details>
+</div>
+
+<form method="post" action="{{ path('app_entry_save') }}" class="entry-form" novalidate
+      data-entry-form
+      data-diff-label="{{ '%amount% vs %month%'|trans({'%month%': previous|month_short}) }}"
+      data-invalid-label="{{ 'Montant illisible'|trans }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+    <input type="hidden" name="mois" value="{{ month }}">
+    {% if copy_from %}<input type="hidden" name="depuis" value="{{ copy_from }}">{% endif %}
+
+    {#- Euro symbol on the language's side: "1 234,56 €", "€1,234.56". -#}
+    {% set euro_first = app.request.locale == 'en' %}
+    {% for level in levels() %}
+    {% if groups[level.value] is defined %}
+    {#- A level whose balances are all entered this month is folded: the entry shows only what is left to do. -#}
+    <section class="sheet entry-level level-{{ level.value }}" aria-labelledby="entry-level-{{ level.value }}" data-entry-level>
+        <details class="entry-fold" data-entry-fold{{ level.value in folded_levels ? '' : ' open' }}>
+        <summary>
+            <h2 id="entry-level-{{ level.value }}"><span class="level-dot" aria-hidden="true"></span>{{ level.label|trans({}, 'levels') }}</h2>
+            <span class="entry-fold-meta">
+                {%- if level.value in folded_levels %}<span class="status status-entered"><span class="status-dot" aria-hidden="true"></span>{{ 'saisi'|trans }}</span>{% endif -%}
+                <span class="entry-fold-total" data-level-sum>{{ totals[level.value]|money }}</span>
+            </span>
+        </summary>
+        <table class="ledger entry-table">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'Compte'|trans }}</th>
+                    <th scope="col" class="entry-status-col">{{ 'Statut'|trans }}</th>
+                    <th scope="col" class="num entry-previous">{{ previous|month_label|capitalize }}</th>
+                    <th scope="col" class="num">{{ month|month_label|capitalize }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in groups[level.value] %}
+            {% set field_id = 'amount-' ~ row.account.id %}
+            {% set state = row.copied ? 'copied' : (row.value is null ? 'empty' : (row.value.carried ? 'carried' : 'entered')) %}
+            {% set liability = row.account.isLiability %}
+            <tr class="entry-row is-{{ state }}{{ liability ? ' is-liability' }}" data-entry-row
+                data-share="{{ row.share }}" data-liability="{{ liability ? 1 : 0 }}"
+                data-previous="{{ row.previous ? row.previous.cents : '' }}">
+                <th scope="row" class="entry-account">
+                    <label for="{{ field_id }}" id="{{ field_id }}-name" class="ledger-name entry-name">{{ row.account.name }}</label>
+                    {%- if liability %} <span class="badge-due" title="{{ 'Capital restant dû'|trans }}">{{ 'dû'|trans }}</span>{% endif %}
+                    <span class="ledger-sub">{{ row.account.typeLabel|trans({}, 'account_types') }}</span>
+                    {% if row.approximate %}
+                    <span class="badge badge-approximate" title="{{ 'Montant approximatif donné à la création du compte : vérifiez-le'|trans }}">{{ 'à affiner'|trans }}</span>
+                    {% endif %}
+                    {% if row.advance %}
+                    <input type="hidden" name="advance[]" value="{{ row.account.id }}">
+                    <span class="entry-advance">{{ 'ouvert le %date% : ouverture avancée au %new%'|trans({'%date%': row.account.openedOn|date_fr, '%new%': (month ~ '-01')|date_fr}) }}</span>
+                    {% endif %}
+                    {% if row.previous %}
+                    <span class="entry-previous-inline">{{ previous|month_short }} <span class="{{ liability ? 'liability' }}">{{ row.account.signed(row.previous.cents)|money }}</span></span>
+                    {% endif %}
+                </th>
+                <td class="entry-status-col">
+                    <span class="status-initial">
+                    {% if state == 'copied' %}
+                        <span class="badge badge-copied">{{ 'copié'|trans }}<span class="status-source"> · {{ copy_from|month_short }}</span></span>
+                    {% else %}
+                        {{ include('_value_status.html.twig', {value: row.value}) }}
+                    {% endif %}
+                    </span>
+                    <span class="status status-entered status-confirmed"><span class="status-dot" aria-hidden="true"></span>{{ 'saisi'|trans }}</span>
+                </td>
+                <td class="num entry-previous">
+                    {%- if row.previous -%}
+                    <span class="{{ liability ? 'liability' }}">{{ row.account.signed(row.previous.cents)|money }}</span>
+                    {%- else -%}
+                    <span class="muted">—</span>
+                    {%- endif -%}
+                </td>
+                <td class="entry-cell">
+                    <div class="amount-field">
+                        {%- if euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                        <input type="text" id="{{ field_id }}" name="amounts[{{ row.account.id }}]"
+                               value="{{ row.input }}" inputmode="decimal" autocomplete="off"
+                               data-initial="{{ row.input }}"
+                               {% if row.error is not null %}aria-invalid="true" aria-describedby="{{ field_id }}-err"{% endif %}>
+                        {%- if not euro_first %}<span class="amount-unit" aria-hidden="true">€</span>{% endif %}
+                    </div>
+                    <span class="entry-diff" data-entry-diff></span>
+                    {% if row.previous %}
+                    {#- "Unchanged": takes the previous month's balance and confirms it (shown by app.js). -#}
+                    {#- Accessible name: the visible text first (WCAG 2.5.3), then what it means; the account by its label. -#}
+                    <button type="button" class="entry-same" data-entry-same hidden aria-describedby="{{ field_id }}-name">= {{ previous|month_short }}<span class="visually-hidden"> : {{ 'solde inchangé'|trans }}</span></button>
+                    {% endif %}
+                    {% if row.error is not null %}
+                    <p class="field-error" id="{{ field_id }}-err">{{ row.error|trans }}</p>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="3">{{ 'Net du niveau'|trans }}</th>
+                    <td class="num" data-level-total>{{ totals[level.value]|money }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </details>
+    </section>
+    {% endif %}
+    {% endfor %}
+
+    <div class="sticky-actions entry-actions">
+        <p class="entry-net">{{ 'Patrimoine net %of_month%'|trans({'%of_month%': month|month_of}) }} <strong data-entry-net>{{ net|money }}</strong>
+            {%- if previous_net is not null %}
+            <span class="entry-change" data-entry-change data-previous-net="{{ previous_net }}"
+                  data-label="{{ '%amount% vs %month%'|trans({'%month%': previous|month_short}) }}">{{ '%amount% vs %month%'|trans({'%amount%': (net - previous_net)|money(true), '%month%': previous|month_short}) }}</span>
+            {%- endif %}</p>
+        <button type="submit" class="btn btn-primary">{{ 'Valider la saisie %of_month%'|trans({'%of_month%': month|month_of}) }}</button>
+    </div>
+</form>
+{% endif %}
+{% endblock %}

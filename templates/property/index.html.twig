@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Biens immobiliers'|trans }}{% endblock %}
+
+{% block body %}
+{{ include('_account_tabs.html.twig') }}
+<div class="tab-head">
+    <h2>{{ 'Biens immobiliers'|trans }}</h2>
+    <a class="btn btn-primary" href="{{ path('app_property_new') }}">+ {{ 'Nouveau bien'|trans }}</a>
+</div>
+
+{% if lines is empty %}
+<div class="card empty-state">
+    <p>{{ 'Aucun bien pour l\'instant. Créez un bien avec ses crédits en une seule fois.'|trans }}</p>
+</div>
+{% else %}
+<p class="sheet-lead">{{ 'Valeur de chaque bien %of_month%, votre part et ses crédits : la valeur nette est celle que retient la pyramide. Le nom d\'un bien ou d\'un crédit ouvre sa fiche et ses relevés.'|trans({'%of_month%': month|month_of}) }}</p>
+{% endif %}
+
+{#- One sheet per property, laid out like the accounts: the property, then its loans, then its net value. -#}
+{% for line in lines %}
+<section class="sheet property level-{{ line.account.level.value }}" aria-labelledby="property-{{ line.account.id }}">
+    <h2 id="property-{{ line.account.id }}"><span class="level-dot" aria-hidden="true"></span>{{ line.account.name }}</h2>
+    <table class="ledger">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Compte'|trans }}</th>
+                <th scope="col" class="ledger-status">{{ 'Statut'|trans }}</th>
+                <th scope="col" class="num ledger-amount">{{ month|month_label|capitalize }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">
+                    <a class="ledger-name account-name" href="{{ path('app_account_edit', {id: line.account.id}) }}">{{ line.account.name }}</a>
+                    <span class="ledger-sub">{{ 'Votre part : %share% de %amount%'|trans({'%share%': share_percent_label(line.share), '%amount%': line.total is null ? '—' : line.total|money}) }}</span>
+                </th>
+                <td class="ledger-status">{{ include('_value_status.html.twig', {value: line.value}) }}</td>
+                <td class="num">{% if line.total is null %}<span class="muted">—</span>{% else %}{{ line.retained|money }}{% endif %}</td>
+            </tr>
+            {% for loan in line.loans %}
+            <tr>
+                <th scope="row">
+                    <a class="ledger-name account-name" href="{{ path('app_account_edit', {id: loan.account.id}) }}">{{ loan.account.name }}</a>
+                    <span class="badge-due" title="{{ 'Capital restant dû'|trans }}">{{ 'dû'|trans }}</span>
+                    <span class="ledger-sub">{{ loan.account.loanMode.value == 'own' ? 'montant propre'|trans : 'au prorata, sur %amount%'|trans({'%amount%': loan.total|money}) }}</span>
+                </th>
+                <td class="ledger-status">{{ include('_value_status.html.twig', {value: loan.value}) }}</td>
+                <td class="num"><span class="liability">{{ (-loan.retained)|money }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="property-net">
+                <th scope="row" colspan="2">{{ 'Valeur nette'|trans }}</th>
+                <td class="num">{{ line.net|money }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</section>
+{% endfor %}
+{% endblock %}

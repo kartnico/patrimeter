@@ -1,0 +1,20 @@
+// Infection (mutation tests, "infection" job, docs/ci.md): every mutant of the pure business code (src/Domain) and of
+// the encryption (src/Infrastructure/Crypto) must be killed by the unit or regression tests. Thresholds: minMsi and
+// minCoveredMsi below.
+{
+    $schema: 'vendor/infection/infection/resources/schema.json',
+    source: { directories: ['src/Domain', 'src/Infrastructure/Crypto'] },
+    timeout: 20,
+    threads: 'max',
+    testFramework: 'phpunit',
+    testFrameworkOptions: '--testsuite=unit,regression',
+    logs: {
+        text: 'var/infection/infection.log',
+        summary: 'var/infection/summary.log',
+        html: 'var/infection/infection.html',
+    },
+    mutators: { '@default': true },
+    // Measured on 13/11/2026: mutant coverage 100 %, MSI 95 % (941 mutants, encryption and budget included).
+    minMsi: 92,
+    minCoveredMsi: 92,
+}

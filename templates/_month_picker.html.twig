@@ -1,0 +1,50 @@
+{#-
+    Month picker as a calendar (year + grid of 12 months).
+    Variable: picker (Patrimeter\Twig\MonthPicker). Works without JavaScript (links); app.js adds the navigation by
+    year without reloading, the grid of years and the keyboard.
+-#}
+<details class="month-picker" data-month-picker
+         data-base="{{ picker.base }}" data-selected="{{ picker.selected }}"
+         data-max="{{ picker.max }}" data-today="{{ picker.todayMonth }}" data-first="{{ picker.first ?? '' }}"
+         data-short-names="{{ picker.shortNames|join('|') }}" data-long-names="{{ picker.longNames|join('|') }}"
+         data-label-previous="{{ 'Année précédente'|trans }}" data-label-next="{{ 'Année suivante'|trans }}"
+         data-label-year="{{ 'Choisir l\'année, %year%'|trans }}">
+    <summary class="btn btn-small month-picker-toggle" aria-label="{{ '%month% — choisir un autre mois'|trans({'%month%': picker.selected|month_short}) }}">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>
+        <span>{{ picker.selected|month_short|capitalize }}</span>
+    </summary>
+    <div class="month-picker-panel" role="group" aria-label="{{ 'Choisir un mois'|trans }}">
+        <div class="mp-head">
+            {% if picker.previousYearHref %}
+            <a class="mp-step" href="{{ picker.previousYearHref }}" data-year-step="-1" aria-label="{{ 'Année précédente'|trans }}">‹</a>
+            {% else %}
+            <span class="mp-step is-disabled" data-year-step="-1" aria-disabled="true">‹</span>
+            {% endif %}
+            <button type="button" class="mp-year" data-year-toggle aria-expanded="false" aria-label="{{ 'Choisir l\'année, %year%'|trans({'%year%': picker.year}) }}">{{ picker.year }}</button>
+            {% if picker.nextYearHref %}
+            <a class="mp-step" href="{{ picker.nextYearHref }}" data-year-step="1" aria-label="{{ 'Année suivante'|trans }}">›</a>
+            {% else %}
+            <span class="mp-step is-disabled" data-year-step="1" aria-disabled="true">›</span>
+            {% endif %}
+        </div>
+        <ul class="mp-grid mp-months" data-months>
+            {% for cell in picker.months %}
+            <li>
+                {% if cell.href is null %}
+                <span class="{{ cell.classes }}" aria-disabled="true">{{ cell.label }}</span>
+                {% else %}
+                <a class="{{ cell.classes }}" href="{{ cell.href }}" aria-label="{{ cell.aria_label }}"{% if cell.current %} aria-current="date"{% endif %}>{{ cell.label }}</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        <ul class="mp-grid mp-years" data-years hidden>
+            {% for cell in picker.years %}
+            <li><button type="button" class="mp-cell{{ cell.today ? ' is-today' }}" data-year="{{ cell.year }}"{% if cell.current %} aria-current="true"{% endif %}>{{ cell.year }}</button></li>
+            {% endfor %}
+        </ul>
+        {% if not picker.selected.equals(picker.max) %}
+        <p class="mp-foot"><a href="{{ picker.base }}">{{ 'Revenir au mois en cours'|trans }}</a></p>
+        {% endif %}
+    </div>
+</details>

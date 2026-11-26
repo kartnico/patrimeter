@@ -1,0 +1,102 @@
+# Patrimeter user documentation in French, built by Zensical (https://zensical.org) and published on GitHub Pages
+# from release tags ("github-publish" job, docs/ci.md). Local build: make docs.
+#
+# Two twin sites, one per language, at the same paths: this one (fr/ → site/fr/) and zensical.en.toml
+# (en/ → site/en/). The language selector (extra.alternate) goes from one to the other staying on the same page.
+# The root of the site (racine/) chooses the browser's language. Any page is changed in both languages
+# (tests/Architecture/DocumentationTranslationTest.php).
+#
+# Pages written here: fr/. Pages taken from the repository at build time, without a copy to maintain (prepare.sh):
+# fr/exploitation/ (installation, backup… as the CI runs them), CHANGELOG.md and SECURITY.md.
+# Screenshots: taken by Playwright in the CI ("captures" job).
+
+[project]
+site_name = "Patrimeter"
+site_description = "Suivi mensuel du patrimoine net, affiché en pyramide"
+site_url = "https://kartnico.github.io/patrimeter/fr/"
+repo_url = "https://github.com/kartnico/patrimeter"
+repo_name = "kartnico/patrimeter"
+docs_dir = "fr"
+site_dir = "site/fr"
+copyright = "Patrimeter, sous licence MIT"
+
+nav = [
+  { "Accueil" = "index.md" },
+  { "Démarrage rapide" = "demarrage-rapide.md" },
+  { "Utilisation" = [
+    "utilisation/premiere-connexion.md",
+    "utilisation/comptes.md",
+    "utilisation/saisie.md",
+    "utilisation/tableau-de-bord.md",
+    "utilisation/biens.md",
+    "utilisation/objectifs.md",
+    "utilisation/indicateurs.md",
+    "utilisation/defis.md",
+    "utilisation/budget.md",
+    "utilisation/famille.md",
+    "utilisation/carbure.md",
+    "utilisation/securite.md",
+    "utilisation/donnees.md",
+    "utilisation/import-csv.md",
+    "utilisation/api.md",
+    "utilisation/questions.md",
+    "utilisation/accessibilite.md",
+  ] },
+  { "Installation et exploitation" = [
+    "exploitation/installation.md",
+    "exploitation/docker.md",
+    "exploitation/mise-a-jour.md",
+    "exploitation/reglages.md",
+    "exploitation/backup.md",
+    "exploitation/supervision.md",
+    "exploitation/export.md",
+    "exploitation/api.md",
+    "exploitation/api-reference.md",
+    "exploitation/encryption.md",
+    "exploitation/technologies.md",
+  ] },
+  { "Versions" = "CHANGELOG.md" },
+  { "Sécurité" = "SECURITY.md" },
+]
+
+[project.extra]
+alternate = [
+  { name = "Français", link = "/patrimeter/fr/", lang = "fr" },
+  { name = "English", link = "/patrimeter/en/", lang = "en" },
+]
+
+[project.theme]
+language = "fr"
+# The application's favicon, copied by prepare.sh from public/favicon.svg.
+favicon = "assets/favicon.svg"
+features = [
+  "navigation.instant",
+  "navigation.tracking",
+  "navigation.tabs",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.path",
+  "toc.follow",
+  "search.highlight",
+  "content.code.copy",
+]
+
+# System theme, then light / dark switch, as in the application.
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Thème clair"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "teal"
+toggle.icon = "lucide/sun"
+toggle.name = "Thème sombre"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "teal"
+toggle.icon = "lucide/moon"
+toggle.name = "Thème du système"

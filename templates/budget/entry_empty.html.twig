@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{#- Budget part of the monthly entry before the tax household exists: nothing to enter yet, one way forward. -#}
+{% block title %}{{ 'Saisie du budget %of_month%'|trans({'%of_month%': month|month_of}) }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ 'Saisie du budget %of_month%'|trans({'%of_month%': month|month_of}) }}</h1>
+</div>
+{{ include('_entry_parts.html.twig') }}
+
+<section class="card empty-state" aria-labelledby="budget-empty-title">
+    <h2 id="budget-empty-title">{{ 'Pas encore de budget'|trans }}</h2>
+    <p>{{ 'Aucun foyer fiscal ni budget pour l\'instant. Le budget se construit à partir de votre foyer fiscal : ses adultes et ses enfants, puis des catégories et des postes proposés, que vous adaptez.'|trans }}</p>
+    <p class="actions"><a class="btn btn-primary" href="{{ path('app_budget') }}">{{ 'Créer mon foyer fiscal'|trans }}</a></p>
+</section>
+{% endblock %}

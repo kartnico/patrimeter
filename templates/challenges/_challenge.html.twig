@@ -1,0 +1,50 @@
+{#- A challenge: its stars (the best ever reached, out of the most it gives), what it rewards, the ladder of its stars and
+    where it stands this month; the savings rate challenge also takes the rate the user aims at (savings_rates,
+    savings_rate_target). -#}
+<li class="card challenge{{ stars >= result.maxStars ? ' is-complete' }}">
+    <span class="challenge-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="{{ result.challenge.icon }}"/></svg></span>
+    <div class="challenge-body">
+        <div class="challenge-head">
+            <h3>{{ result.challenge.title|trans }}</h3>
+            {{ include('challenges/_stars.html.twig', {earned: stars, total: result.maxStars}, with_context = false) }}
+        </div>
+        <p class="muted small">{{ result.challenge.description|trans }}</p>
+        {#- Its stars, from the bottom (earned) to the top (still to reach), each with what it asks; listed in that
+            order for screen readers, drawn bottom up by the style sheet. -#}
+        <ol class="challenge-ladder" aria-label="{{ 'Étoiles du défi « %challenge% »'|trans({'%challenge%': result.challenge.title|trans}) }}">
+            {% for threshold in result.thresholds %}
+            {%- set step_done = loop.index <= stars -%}
+            {%- set step_next = loop.index == stars + 1 -%}
+            <li class="{{ step_done ? 'is-done' : (step_next ? 'is-next') }}">
+                <span class="ladder-stars" aria-hidden="true">{% for i in 1..loop.index %}★{% endfor %}</span>
+                <span>{{ result.challenge.thresholdLabel|trans(result.parameters|merge({'%count%': threshold})) }}</span>
+                {%- if step_done %} <span class="ladder-mark">✓<span class="visually-hidden"> {{ 'gagnée'|trans }}</span></span>
+                {%- elseif step_next %} <span class="pill">{{ 'prochaine étoile'|trans }}</span>{% endif %}
+            </li>
+            {% endfor %}
+        </ol>
+        {% if result.available %}
+        <p class="challenge-progress">{{ 'Où vous en êtes :'|trans }} {{ result.challenge.progressLabel|trans(result.messageParameters) }}</p>
+        {% if stars < result.maxStars %}
+        <progress class="game-bar" max="100" value="{{ result.percent }}" aria-label="{{ 'Vers la prochaine étoile du défi « %challenge% »'|trans({'%challenge%': result.challenge.title|trans}) }}">{{ result.percent }} %</progress>
+        {% endif %}
+        {% else %}
+        <p class="challenge-progress">{{ result.challenge.unavailableLabel|trans }}</p>
+        {% endif %}
+        {% if result.challenge.value == 'savings_rate' %}
+        <form method="post" action="{{ path('app_challenges_settings') }}" class="challenge-setting">
+            <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+            <input type="hidden" name="action" value="savings_rate">
+            <input type="hidden" name="_return" value="{{ path('app_challenges') }}">
+            <label for="savings-rate">{{ 'Taux d\'épargne que vous visez'|trans }}</label>
+            <select id="savings-rate" name="taux">
+                <option value="">{{ 'Aucun'|trans }}</option>
+                {% for rate in savings_rates %}
+                <option value="{{ rate }}"{% if rate == savings_rate_target %} selected{% endif %}>{{ rate }} %</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-small">{{ 'Enregistrer'|trans }}</button>
+        </form>
+        {% endif %}
+    </div>
+</li>

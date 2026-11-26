@@ -1,0 +1,14 @@
+{#-
+    Identity confirmation (password, less than 5 minutes old), then back to the current tab.
+    Variables: user, return_path, password_label (already translated text).
+-#}
+<form method="post" action="{{ path('app_security_reauthenticate') }}" class="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+    <input type="hidden" name="_return" value="{{ return_path }}">
+    {#- Hidden account name, for password managers. -#}
+    <label for="reauth_username" hidden>{{ 'Adresse e-mail'|trans }}</label>
+    <input type="text" id="reauth_username" name="username" value="{{ user.email }}" autocomplete="username" hidden>
+    <label for="reauth_password">{{ password_label }}</label>
+    <input type="password" id="reauth_password" name="password" autocomplete="current-password" required>
+    <p class="actions"><button type="submit" class="btn">{{ 'Confirmer mon identité'|trans }}</button></p>
+</form>

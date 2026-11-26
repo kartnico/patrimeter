@@ -1,0 +1,34 @@
+{#- Position of the net worth among the world's adults (Patrimeter\Domain\WorldWealthDistribution). -#}
+<section class="card wealth-rank" aria-labelledby="world-rank-title">
+    <h2 id="world-rank-title" class="wealth-rank-title">{{ 'Parmi les adultes du monde'|trans }}</h2>
+    {% if rank.topPercent %}
+    <p class="wealth-rank-main">{{ 'Vous faites partie du %share% des adultes les mieux dotés du monde.'|trans({'%share%': '<strong class="num">' ~ 1|percent(0) ~ '</strong>'})|raw }}</p>
+    {% else %}
+    <p class="wealth-rank-main">{{ 'Votre patrimoine net dépasse celui d\'environ %share% des adultes du monde.'|trans({'%share%': '<strong class="num">' ~ rank.percent|percent(0) ~ '</strong>'})|raw }}</p>
+    {% endif %}
+    <p class="muted small">{{ 'Patrimoine par adulte, en dollars convertis en euros (%rate% $ pour 1 €).'|trans({'%rate%': world_usd_per_eur}) }}</p>
+    {#- Scale from 0 to 100 % of adults: ticks at the published band thresholds, marker at your position. -#}
+    <svg class="wealth-rank-scale" viewBox="0 0 200 24" role="img" aria-label="{{ 'Échelle des adultes du monde, des moins dotés aux mieux dotés : votre place est à environ %share%.'|trans({'%share%': rank.percent|percent(0)}) }}">
+        <rect class="wealth-rank-track" x="4" y="9" width="192" height="6" rx="3"/>
+        <rect class="wealth-rank-fill" x="4" y="9" width="{{ (rank.percentile * 1.92)|round(1) }}" height="6" rx="3"/>
+        {% for threshold in world_thresholds|filter(t => t.percent < 99) %}
+        <line class="wealth-rank-tick" x1="{{ (4 + threshold.percent * 1.92)|round(1) }}" y1="7" x2="{{ (4 + threshold.percent * 1.92)|round(1) }}" y2="17"/>
+        {% endfor %}
+        <circle class="wealth-rank-marker" cx="{{ (4 + rank.percentile * 1.92)|round(1) }}" cy="12" r="6"/>
+    </svg>
+    <p class="wealth-rank-ends muted small" aria-hidden="true"><span>{{ 'moins dotés'|trans }}</span><span>{{ 'mieux dotés'|trans }}</span></p>
+    <details class="wealth-rank-details">
+        <summary>{{ 'Repères et source'|trans }}</summary>
+        <table class="wealth-rank-table">
+            <caption class="visually-hidden">{{ 'Patrimoine net par adulte dans le monde, %date%'|trans({'%date%': world_reference|trans}) }}</caption>
+            <thead><tr><th scope="col">{{ 'Adultes'|trans }}</th><th scope="col">{{ 'Patrimoine net inférieur à'|trans }}</th></tr></thead>
+            <tbody>
+                {% for threshold in world_thresholds %}
+                <tr><td>{{ threshold.percent|percent }}</td><td class="num">{{ threshold.cents|money_rounded }} <span class="muted">({{ app.request.locale == 'en' ? '$' ~ threshold.usd|number_format(0, '.', ',') : threshold.usd|number_format(0, ',', ' ') ~ ' $' }})</span></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="muted small">{{ 'Patrimoine net par adulte (placements, logement et autres biens, dettes déduites), %date%, dans 56 pays qui réunissent plus de 92 % du patrimoine mondial. Le rapport ne publie que des tranches : votre place est estimée entre leurs bornes. La comparaison porte sur des adultes : si vous suivez le patrimoine d\'un couple, votre place est surestimée.'|trans({'%date%': world_reference|trans}) }}</p>
+        <p class="muted small">{{ 'Source :'|trans }} <a href="{{ world_source_url }}" rel="noopener noreferrer external">{{ world_source|trans }}</a>.</p>
+    </details>
+</section>
