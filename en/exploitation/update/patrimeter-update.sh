@@ -1,6 +1,6 @@
 #!/bin/sh
 # Updates Patrimeter from a release archive (patrimeter-vX.Y.Z.tar.gz, downloaded by the administrator): checksum,
-# backup of the database, services stopped, new code next to the old one, migrations, scripts and systemd units,
+# services stopped, verified snapshot of the database, new code next to the old one, migrations and systemd units,
 # restart, checks. The previous code is kept for a rollback.
 # Documentation: docs/mise-a-jour.md. Install as /usr/local/sbin/patrimeter-update.
 #
@@ -10,7 +10,7 @@
 # Variables: PATRIMETER_DIR (/srv/patrimeter), PATRIMETER_BACKUP_DIR (/var/backups/patrimeter), PHP (PHP version,
 # otherwise that of the php command).
 #
-# Two phases: this script checks, backs up, stops and swaps the code, then hands over to the script of the NEW
+# Two phases: this script checks, stops writers, backs up and swaps the code, then hands over to the script of the NEW
 # version (--apply option), which knows the steps of that version.
 set -eu
 
@@ -50,15 +50,26 @@ services() {
 
 if [ "$phase" = rollback ]; then
     [ -d "$previous" ] || fail "aucune version précédente ($previous)."
-    [ -s "$backups/before-update.archive" ] || fail "sauvegarde d'avant la mise à jour introuvable."
-    database="$(cat "$backups/before-update.archive")"
+    if [ -d "$previous/.rollback" ]; then
+        set -- "$previous"/.rollback/patrimeter-*.sqlite.gz
+        [ "$#" -eq 1 ] && [ -f "$1.sha256" ] || fail "instantané de retour arrière incomplet."
+        database="$1"
+    else
+        # Updates initiated by older versions used a pointer into the rotating backups.
+        [ -s "$backups/before-update.archive" ] || fail "sauvegarde d'avant la mise à jour introuvable."
+        database="$(cat "$backups/before-update.archive")"
+    fi
+    PATRIMETER_DIR="$previous" /usr/local/sbin/patrimeter-restore --check "$database"
+    [ ! -e "$project.failed" ] || fail "retour arrière précédent à examiner : $project.failed."
     services stop
     mv "$project/var" "$previous/var"
     mv "$project" "$project.failed"
     mv "$previous" "$project"
     cp -p "$project.failed/.env.local" "$project/.env.local"
-    rm -rf "$project/var/cache/prod" "$project.failed"
+    rm -rf "$project/var/cache/prod"
+    case "$database" in "$previous"/.rollback/*) database="$project/.rollback/${database##*/}" ;; esac
     /usr/local/sbin/patrimeter-restore "$database"
+    rm -rf "$project/.rollback" "$project.failed"
     services start
     echo "Patrimeter revenu à la version $(cat "$project/VERSION"), base du $(basename "$database")."
     exit 0
@@ -80,19 +91,26 @@ if [ "$phase" = prepare ]; then
     [ -f "$project.new/VERSION" ] || fail "$archive n'est pas une archive de Patrimeter."
     chown -R root:root "$project.new"
 
-    # Backup, noted for a rollback, then the services stop and the code is swapped; data and configuration stay.
-    mkdir -p "$backups"
-    chmod 0700 "$backups"
-    /usr/local/sbin/patrimeter-backup
-    find "$backups" -maxdepth 1 -name 'patrimeter-*.sqlite.gz' | sort | tail -n 1 > "$backups/before-update.archive"
-    services stop
+    [ -f "$project.new/docs/update/patrimeter-update.sh" ] || fail "script de mise à jour absent de l'archive."
     rm -rf "$project.new/var"
-    mv "$project/var" "$project.new/var"
     cp -p "$project/.env.local" "$project.new/.env.local"
+    # A private directory pairs this snapshot with its code, independently of scheduled backup rotation.
+    [ ! -e "$project/.rollback" ] || fail "instantané précédent à examiner : $project/.rollback."
+    snapshot="$(mktemp -d "$project/.rollback.XXXXXX")"
+    trap 'rm -rf "$snapshot"; services start' EXIT
+    services stop
+    PATRIMETER_BACKUP_DIR="$snapshot" /usr/local/sbin/patrimeter-backup
+    set -- "$snapshot"/patrimeter-*.sqlite.gz
+    [ "$#" -eq 1 ] && [ -f "$1.sha256" ] || fail "instantané incomplet."
+    /usr/local/sbin/patrimeter-restore --check "$1"
+    mv "$snapshot" "$project/.rollback"
+    trap - EXIT
+    mv "$project/var" "$project.new/var"
     rm -rf "$previous"
     mv "$project" "$previous"
     rm -rf "$previous/var"
     mv "$project.new" "$project"
+    rm -f "$backups/before-update.archive"
 
     copy="$(mktemp)"
     cp "$project/docs/update/patrimeter-update.sh" "$copy"

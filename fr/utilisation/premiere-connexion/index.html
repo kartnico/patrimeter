@@ -28,7 +28,7 @@
       
       
       <link rel="icon" href="../../assets/favicon.svg">
-      <meta name="generator" content="zensical-0.1.0">
+      <meta name="generator" content="zensical-0.1.1">
     
     
       
@@ -39,7 +39,7 @@
       
         
       
-      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.4ab2de0c.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.ebb7f775.min.css">
       
         
           
@@ -1784,14 +1784,19 @@ accompagne le changement de mot de passe (<a href="../securite/">Mon compte</a>)
 connectez-vous avec votre mot de passe habituel. Si les inscriptions sont fermées sur votre instance,
 l'administrateur crée le compte pour vous.</p>
 <h2 id="application-dauthentification">Application d'authentification<a class="headerlink" href="#application-dauthentification" title="Permanent link">&para;</a></h2>
+<p>Le premier démarrage compte quatre étapes, rappelées en haut de chaque écran (« Étape 2 sur 4 · environ 2 minutes ») :
+votre compte, la sécurité (application d'authentification et codes de secours), la clé de récupération, puis vos
+premiers comptes.</p>
 <p>À la première connexion, Patrimeter demande de configurer une <strong>application d'authentification</strong> (second
-facteur obligatoire) : scannez le QR code, puis saisissez le code à 6 chiffres affiché. Patrimeter affiche
-alors <strong>dix codes de secours</strong> à usage unique : notez-les en lieu sûr, ils remplacent le téléphone s'il est
-perdu. <strong>Copier les codes</strong> les met dans le presse-papiers, un par ligne, pour les coller dans un gestionnaire de mots
-de passe.</p>
+facteur obligatoire), sur l'écran <strong>Protégez votre compte</strong> : scannez le QR code, puis saisissez le code à 6 chiffres
+affiché et <strong>Activer et voir mes codes de secours</strong>. Patrimeter affiche alors <strong>dix codes de secours</strong> à usage unique :
+notez-les en lieu sûr, ils remplacent le téléphone s'il est perdu. <strong>Copier les codes</strong> les met dans le presse-papiers,
+un par ligne, pour les coller dans un gestionnaire de mots de passe ; <strong>Imprimer</strong> les imprime.</p>
 <p>Ensuite, à chaque connexion : adresse et mot de passe, puis code de l'application (ou un code de secours).</p>
 <h2 id="cle-de-recuperation">Clé de récupération<a class="headerlink" href="#cle-de-recuperation" title="Permanent link">&para;</a></h2>
 <p>Patrimeter affiche une <strong>clé de récupération</strong>, une seule fois, et vous demande d'en ressaisir une partie.
+<strong>Pourquoi deux secrets ?</strong> rappelle le rôle de chacun : les codes de secours remplacent le téléphone pour vous
+connecter, la clé rouvre vos données si vous oubliez votre mot de passe. <strong>Imprimer</strong> imprime la clé.
 Vos données sont chiffrées avec une clé que seul votre mot de passe ouvre : <strong>sans clé de récupération, un
 mot de passe oublié fait perdre les données</strong> (l'accès au compte, lui, se retrouve). Rangez-la avec vos
 codes de secours, par exemple dans un gestionnaire de mots de passe : <strong>Copier la clé</strong> la met dans le
@@ -1812,21 +1817,27 @@ mois</strong>. Vos <strong>Comptes</strong> et vos <strong>Biens immobiliers</st
 <strong>Foyer fiscal et catégories</strong> depuis la page Budget. <strong>Mon compte</strong>, à droite, réunit le profil, la sécurité et les
 agents IA.</p>
 <h2 id="premiers-comptes">Premiers comptes<a class="headerlink" href="#premiers-comptes" title="Permanent link">&para;</a></h2>
-<p>Tant qu'aucun compte n'existe, la page <strong>Patrimoine</strong> reste sur le mois en cours et propose cinq façons de commencer :</p>
+<p>Tant qu'aucun compte n'existe, la page <strong>Patrimoine</strong> reste sur le mois en cours et propose, en dernière étape du
+premier démarrage, de dessiner votre pyramide (<strong>Dessinons votre pyramide</strong>) :</p>
 <ul>
-<li><strong>Construire ma pyramide</strong> (le plus simple) : la pyramide vide, et ses six niveaux de la base au sommet. <strong>Remplir</strong>
-  ouvre un niveau avec ses comptes courants (compte courant, Livret A, LDDS, LEP, PEA, assurance-vie…) : indiquez le
-  solde d'aujourd'hui de ce que vous détenez, laissez vide le reste, puis <strong>Valider ce niveau</strong> ; le niveau se colore
-  dans la pyramide. <strong>Je n'en ai pas</strong> passe au suivant ;</li>
-<li><strong>Répondre à quelques questions</strong> (pour débuter) : une question à la fois, en mots courants (« Avez-vous de l'argent
+<li><strong>Répondre à quelques questions</strong> (recommandé) : une question à la fois, en mots courants (« Avez-vous de l'argent
   de côté, disponible tout de suite ? »), avec une réponse par tranche (« de 1 000 € à 5 000 € »), un montant exact
   ou « Non, ou je ne sais pas ». <strong>Pourquoi cette question ?</strong> dit à quel niveau de la pyramide elle correspond. Une
   tranche compte pour son milieu. La dernière question, facultative, choisit votre style d'épargnant
   (<a href="../defis/#profil-depargnant">défis</a>). <strong>Créer mes comptes</strong> crée d'un coup les comptes répondus ;</li>
+<li><strong>Construire ma pyramide</strong>, si vous connaissez vos comptes : la pyramide vide, et ses six niveaux de la base au
+  sommet. <strong>Remplir</strong> ouvre un niveau avec ses comptes courants (compte courant, Livret A, LDDS, LEP, PEA,
+  assurance-vie…) : indiquez le solde d'aujourd'hui de ce que vous détenez, laissez vide le reste, puis <strong>Valider ce
+  niveau</strong> ; le niveau se colore dans la pyramide. <strong>Je n'en ai pas</strong> passe au suivant ;</li>
+<li><strong>Autres façons de commencer</strong>, repliées :<ul>
 <li><strong>Saisie express</strong> : tous ces comptes sur une seule page, créés d'un coup avec <strong>Créer mes comptes</strong> ;</li>
 <li><strong>Importer un fichier CSV</strong> : comptes, crédits et biens depuis un tableur (<a href="../import-csv/">import CSV</a>) ;</li>
 <li><strong>Créer compte par compte</strong>, avec tous les réglages : niveau, nature, date d'ouverture (<a href="../comptes/">comptes</a>).</li>
 </ul>
+</li>
+</ul>
+<p>Un compte famille ne se remplit pas : sous <strong>Ce compte est pour une famille ?</strong>, <strong>Réunir une famille</strong> mène aux
+<a href="../famille/">membres de la famille</a>.</p>
 <p>Le nom de chaque compte reprend son type et se modifie. Pour un crédit, indiquez le capital restant dû. Des montants
 approximatifs suffisent : ils sont marqués <strong>à affiner</strong> dans la <a href="../saisie/#lire-lecran">saisie du mois</a>, jusqu'à ce
 que vous les y enregistriez. Les comptes sont ouverts ce mois-ci, avec ce solde ; si une ligne est fausse, rien n'est
@@ -1915,7 +1926,7 @@ anglais. Les e-mails sont écrits dans la langue de la page qui les a déclench�
       <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.instant","navigation.tracking","navigation.tabs","navigation.sections","navigation.top","navigation.path","toc.follow","search.highlight","content.code.copy"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copié dans le presse-papier","clipboard.copy":"Copier dans le presse-papier","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 de plus sur cette page","search.result.more.other":"# de plus sur cette page","search.result.none":"Aucun document trouvé","search.result.one":"1 document trouvé","search.result.other":"# documents trouvés","search.result.placeholder":"Taper pour démarrer la recherche","search.result.term.missing":"Non trouvé","select.version":"Sélectionner la version"},"version":null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d31f0ffa.min.js"></script>
+      <script src="../../assets/javascripts/bundle.3cb411a8.min.js"></script>
       
     
   </body>

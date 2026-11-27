@@ -28,7 +28,7 @@
       
       
       <link rel="icon" href="../../assets/favicon.svg">
-      <meta name="generator" content="zensical-0.1.0">
+      <meta name="generator" content="zensical-0.1.1">
     
     
       
@@ -39,7 +39,7 @@
       
         
       
-      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.4ab2de0c.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.ebb7f775.min.css">
       
         
           
@@ -1782,13 +1782,18 @@ hours (just start again). If this address already has an account, the email simp
 you so: sign in with your usual password. If registrations are closed on your instance, the administrator
 creates the account for you.</p>
 <h2 id="authenticator-app">Authenticator app<a class="headerlink" href="#authenticator-app" title="Permanent link">&para;</a></h2>
-<p>At the first sign-in, Patrimeter asks you to set up an <strong>authenticator app</strong> (mandatory second factor): scan
-the QR code, then enter the 6-digit code it shows. Patrimeter then shows <strong>ten backup codes</strong>, each usable
-once: write them down somewhere safe, they replace the phone if it is lost. <strong>Copy the codes</strong> puts them in the
-clipboard, one per line, to paste them into a password manager.</p>
+<p>The first start has four steps, recalled at the top of each screen ("Step 2 of 4 · about 2 minutes"): your account,
+security (authenticator app and backup codes), the recovery key, then your first accounts.</p>
+<p>At the first sign-in, Patrimeter asks you to set up an <strong>authenticator app</strong> (mandatory second factor), on the
+<strong>Protect your account</strong> screen: scan the QR code, then enter the 6-digit code it shows and <strong>Enable and see my backup
+codes</strong>. Patrimeter then shows <strong>ten backup codes</strong>, each usable once: write them down somewhere safe, they replace the
+phone if it is lost. <strong>Copy the codes</strong> puts them in the clipboard, one per line, to paste them into a password
+manager; <strong>Print</strong> prints them.</p>
 <p>Then, at every sign-in: address and password, then the code from the app (or a backup code).</p>
 <h2 id="recovery-key">Recovery key<a class="headerlink" href="#recovery-key" title="Permanent link">&para;</a></h2>
-<p>Patrimeter shows a <strong>recovery key</strong>, only once, and asks you to type part of it again. Your data is encrypted
+<p>Patrimeter shows a <strong>recovery key</strong>, only once, and asks you to type part of it again.
+<strong>Why two secrets?</strong> recalls the role of each: the backup codes replace the phone to sign in, the key opens your data
+again if you forget your password. <strong>Print</strong> prints the key. Your data is encrypted
 with a key that only your password opens: <strong>without a recovery key, a forgotten password means losing the
 data</strong> (access to the account, however, can be restored). Keep it with your backup codes, for example in a
 password manager: <strong>Copy the key</strong> puts it in the clipboard.</p>
@@ -1808,21 +1813,27 @@ update</strong>. Your <strong>Accounts</strong> and your <strong>Real estate</st
 household and categories</strong> from the Budget page. <strong>My account</strong>, on the right, gathers the profile, the security and
 the AI agents.</p>
 <h2 id="first-accounts">First accounts<a class="headerlink" href="#first-accounts" title="Permanent link">&para;</a></h2>
-<p>As long as no account exists, the <strong>Net worth</strong> page stays on the current month and offers five ways to start:</p>
+<p>As long as no account exists, the <strong>Net worth</strong> page stays on the current month and offers, as the last step of the
+first start, to draw your pyramid (<strong>Let's draw your pyramid</strong>):</p>
 <ul>
-<li><strong>Build my pyramid</strong> (the simplest): the empty pyramid, and its six levels from the base to the top. <strong>Fill</strong> opens a
-  level with its common accounts (current account, Livret A, LDDS, LEP, PEA, life insurance…): enter today's balance
-  of what you hold, leave the rest empty, then <strong>Confirm this level</strong>; the level takes its colour in the pyramid.
-  <strong>I have none</strong> goes on to the next one;</li>
-<li><strong>Answer a few questions</strong> (for beginners): one question at a time, in everyday words ("Do you have money put
+<li><strong>Answer a few questions</strong> (recommended): one question at a time, in everyday words ("Do you have money put
   aside, available right away?"), answered by a range ("from €1,000 to €5,000"), an exact amount or "No, or I don't
   know". <strong>Why this question?</strong> says which level of the pyramid it is about. A range counts for its middle. The last
   question, optional, chooses your saver style (<a href="../defis/#saver-profile">challenges</a>). <strong>Create my accounts</strong> creates
   the accounts answered at once;</li>
+<li><strong>Build my pyramid</strong>, if you know your accounts: the empty pyramid, and its six levels from the base to the top.
+  <strong>Fill</strong> opens a level with its common accounts (current account, Livret A, LDDS, LEP, PEA, life insurance…): enter
+  today's balance of what you hold, leave the rest empty, then <strong>Confirm this level</strong>; the level takes its colour in
+  the pyramid. <strong>I have none</strong> goes on to the next one;</li>
+<li><strong>Other ways to start</strong>, folded:<ul>
 <li><strong>Express entry</strong>: all these accounts on a single page, created at once with <strong>Create my accounts</strong>;</li>
 <li><strong>Import a CSV file</strong>: accounts, loans and properties from a spreadsheet (<a href="../import-csv/">CSV import</a>);</li>
 <li><strong>Create account by account</strong>, with every setting: level, nature, opening date (<a href="../comptes/">accounts</a>).</li>
 </ul>
+</li>
+</ul>
+<p>A family account is not filled in: under <strong>Is this account for a family?</strong>, <strong>Bring a family together</strong> leads to the
+<a href="../famille/">family members</a>.</p>
 <p>The name of each account repeats its type and can be changed. For a loan, enter the outstanding principal. Approximate
 amounts are enough: they are marked <strong>to refine</strong> in the <a href="../saisie/#reading-the-screen">monthly entry</a>, until you save
 them there. The accounts are opened this month, with this balance; if a line is wrong, nothing is created and the page
@@ -1911,7 +1922,7 @@ page that triggered them.</p>
       <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.instant","navigation.tracking","navigation.tabs","navigation.sections","navigation.top","navigation.path","toc.follow","search.highlight","content.code.copy"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d31f0ffa.min.js"></script>
+      <script src="../../assets/javascripts/bundle.3cb411a8.min.js"></script>
       
     
   </body>
