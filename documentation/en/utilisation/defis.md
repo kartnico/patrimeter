@@ -10,6 +10,18 @@ saver profile. Nothing more to enter: everything is computed from your data.
 
 ![Challenges and stars](../captures/defis-ordinateur.png)
 
+## The Challenges page
+
+At the top, **My level** and **My profile** give your two statuses; each leads to its card. Then come:
+
+- **My stars**: the total, on a dial, and **Where do my stars come from?**, the stars earned by family of challenges
+  (first steps, balance entries, budget and goals, cushion and credit, account security);
+- **My level**: where you stand between your level and the next one, and how many stars are missing; **See the 6
+  levels** unfolds the ladder;
+- **My profile**: your stage, the next one, a bar when its condition can be counted (months entered, months of
+  spending set aside…) and what it asks; **See the 5 stages** unfolds the ladder;
+- **My streak**: the months entered in a row and the joker of the year.
+
 ## The challenges
 
 Each challenge gives up to three stars, at thresholds (five for **First steps**, two for **Protected account**):
@@ -38,26 +50,29 @@ Each challenge gives up to three stars, at thresholds (five for **First steps**,
   the rate **you** choose on its card (from 5% to 50%): Patrimeter suggests none. Without a rate chosen, nor a budget,
   the challenge says so. A month without a budget entered takes the previous month's, as in the budget.
 
-Each card shows its stars and its score ("1 of 3"), what it rewards, then the ladder of its stars, from the first at
-the bottom (earned, ticked) to the last at the top: each threshold says what it asks, and the next one is marked **next
-star**. Then come where you stand this month and a bar up to the next star. The challenges
-whose stars are all earned move to **Completed**.
+Each card shows its score ("1 star earned out of 3"), then its thresholds from left to right, each under its star:
+**Earned** (full star), **Next** (circled star) or **Later**. Then come **Already done** (where you stand this month)
+and what is missing for the next star, for example "For the 2nd star: 3 more months entered in a row."; a challenge
+that must first be made measurable says what to do (**Before you start**). **Rule of the challenge** unfolds what it
+rewards. The challenges whose stars are all earned move to **Completed**, marked **Challenge completed**.
 
 **A star earned is never lost**: if a streak stops or a balance goes down, the stars already obtained stay; only the
 progress of the month changes.
 
 ## Stars after the monthly entry
 
-After **Save … balances** in the monthly entry, a message announces each new star: "New star, challenge “Entry streak”:
-1 of 3." The stars earned elsewhere (a passkey added, a budget entered) are counted at the next visit of the Challenges
-page.
+After **Save … balances** in the monthly entry, a message announces the new highest score for each challenge, for
+example “New star, challenge ‘Entry streak’: 1 of 3.” Checking the dashboard, Challenges page or API first does not
+dismiss the announcement. Saving the same balances again does not repeat it. If you turn challenges off, you can still
+save balances without star announcements. Your stars and any pending announcements are kept for when you turn
+challenges back on.
 
 ## Level
 
 The total of the stars gives a **level**, from 1 to 6: Curious (from the start), Attentive (4 stars), Steady (8),
 Far-sighted (13), Consistent (18) and Master of the pyramid (24). In all, 28 stars are possible: the Challenges page
-shows "8 stars of 28" at the top, and the ladder of the six levels, from the first at the bottom to the last at the
-top, with yours (**you are here**) and what is missing for the next one.
+shows "8 stars of 28" at the top, and the ladder of the six levels, from the first to the last, with yours (**you are
+here**) and what is missing for the next one.
 
 ## Saver profile
 

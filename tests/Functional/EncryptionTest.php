@@ -123,6 +123,10 @@ final class EncryptionTest extends FunctionalTestCase
         self::assertCount(1, $copy);
         self::assertNotNull($copy->attr('hidden'));
         self::assertCount(1, $this->client->getCrawler()->filter('code#recovery-key'));
+        // Third step of the first start, and why two secrets: the backup codes sign in, the key opens the data.
+        self::assertSelectorTextContains('.onboarding-steps [aria-current="step"]', 'Clé');
+        self::assertSelectorTextContains('details.setup-why', 'Pourquoi deux secrets ?');
+        self::assertSelectorTextContains('.setup-card form button[type="submit"]', 'J\'ai noté ma clé, continuer');
         // The smoke test of the real deployment reads the key with its own pattern: it must still find it (2.26.0
         // broke it by adding the id of the copy button).
         self::assertSame(1, preg_match(self::smokePattern('RECOVERY_KEY_PATTERN'), $this->body(), $match));

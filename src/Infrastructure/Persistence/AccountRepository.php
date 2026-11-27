@@ -86,12 +86,16 @@ final class AccountRepository
      * Moves an account's opening date back (never forward): entry of a past month taken from a month where the
      * account already existed in Patrimeter.
      */
-    public function advanceOpening(UserId $owner, int $id, string $openedOn): void
+    public function advanceOpening(UserId $owner, int $id, string $openedOn): ?Month
     {
         $account = $this->find($owner, $id);
         if ($account !== null && $openedOn < $account->openedOn) {
             $this->store($owner, $id, ['opened_on' => $openedOn] + self::payload($account));
+
+            return Month::fromDate($account->openedOn);
         }
+
+        return null;
     }
 
     public function archive(UserId $owner, int $id, string $closedOn): void

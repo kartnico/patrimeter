@@ -4,6 +4,9 @@
 
 {% block body %}
 <section class="card setup-card">
+    {% if first_setup %}
+    {{ include('_onboarding_steps.html.twig', {current: 2, duration: 'environ 1 minute'|trans}, with_context = false) }}
+    {% endif %}
     <h1>{{ 'Codes de secours'|trans }}</h1>
     {% if first_setup %}
     <p class="flash flash-success" role="status">{{ 'Application d\'authentification activée.'|trans }}</p>
@@ -14,14 +17,16 @@
         <li><code>{{ code }}</code></li>
         {% endfor %}
     </ul>
-    {#- Copy button (app.js): shown only when the browser lets the page write to the clipboard; one code per line. -#}
-    <p class="copy-actions"><button type="button" class="btn btn-small copy-button" data-copy="backup-codes" data-copied="{{ 'Copié'|trans }}" hidden>{{ 'Copier les codes'|trans }}</button></p>
+    {#- Copy button (app.js): shown only when the browser lets the page write to the clipboard; one code per line. Print
+        button: shown by app.js. -#}
+    <p class="copy-actions actions"><button type="button" class="btn btn-small copy-button" data-copy="backup-codes" data-copied="{{ 'Copié'|trans }}" hidden>{{ 'Copier les codes'|trans }}</button>
+        <button type="button" class="btn btn-small" data-print hidden>{{ 'Imprimer'|trans }}</button></p>
     <p class="visually-hidden" role="status" data-copy-status data-copied-message="{{ 'Codes copiés dans le presse-papiers.'|trans }}"></p>
     {% if not first_setup %}
     <p class="hint">{{ 'Les codes précédents ne fonctionnent plus.'|trans }}</p>
     {% endif %}
     <p class="actions">
-        <a class="btn btn-primary" href="{{ first_setup ? path('app_dashboard') : path('app_security_signin') }}">{{ 'J\'ai noté mes codes'|trans }}</a>
+        <a class="btn btn-primary" href="{{ first_setup ? path('app_dashboard') : path('app_security_signin') }}">{{ first_setup ? 'J\'ai noté mes codes, continuer'|trans : 'J\'ai noté mes codes'|trans }}</a>
     </p>
 </section>
 {% endblock %}

@@ -88,24 +88,35 @@ CI. Details in the [CHANGELOG](CHANGELOG.en.md).
 
 - [x] Prepare release-only source snapshots, bilingual GitHub Pages and tested Docker Hub images from private GitLab CI.
 
-## 3.5.0 — Data integrity and bug fixes
+## 3.5.0 — Reliable updates, reminders and monthly balances
 
-- [ ] **Make rollback safe after the last write and after backup rotation.** The
-  [updater](docs/update/patrimeter-update.sh) takes its snapshot while writes are still possible, then records a
-  filename that [rotation](docs/backup/patrimeter-backup.sh) can delete. Pause web and scheduled writes before taking
-  the final snapshot; restart the old version if it fails. Keep the verified
-  snapshot with the matching release, outside rotation. Test that the last acknowledged entry survives update,
-  rotation and rollback, and that a missing or corrupt archive leaves the running site untouched.
-- [ ] **Keep historical net worth correct when backdating a property.**
-  [Monthly entry](src/Application/MonthlyEntry.php) moves the opening date, but not the initial ownership share.
-  Carry that share back in the same transaction without changing later shares.
+- [x] Keep account dates consistent with statements and load only the last eligible balance for each account.
+- [x] Retry failed reminders and backups; preserve existing data when repeating installation.
+- [x] Protect rolling container tags from stale rebuilds and improve month navigation and accessibility.
+- [x] The [updater](docs/update/patrimeter-update.sh) stops writers before taking the final snapshot, verifies it
+  and keeps it with the previous release outside backup rotation. Rollback checks it before stopping the live site.
+- [x] **Keep historical net worth correct when backdating a property.**
+  [Monthly entry](src/Application/MonthlyEntry.php) moves the opening date and its initial share in one transaction
+  without changing later shares.
   Copy a 50%-owned €200,000 property and its €80,000 prorated loan to the previous month:
   the net contribution must be €60,000 in both months, not €120,000 in the earlier one.
-- [ ] **Make earned stars independent of the order in which pages are opened.** The
+- [x] **Make earned stars independent of the order in which pages are opened.** The
   [game service](src/Application/Game/Game.php) records new stars while building a view.
   Separate awarding a star from announcing it: opening Challenges or reading
   the API must neither consume the announcement nor award it twice. Test both visit orders, a repeated save and
   turning the game off and on. Keep existing stars; with the game off, monthly entry still works without game prompts.
+
+## 3.6.0 — Challenges page, first start and family account
+
+- [x] **Redesigned Challenges page**: level and saver profile at the top, stars by family of challenges, distance to
+  the next level and stage, entry streak; each card shows its thresholds on a rail, what is done and what is missing
+  for the next star.
+- [x] **Clearer first start** (mockups, version A): the steps of the first sign-in on each screen, both secrets
+  explained, one recommended way to start and the family account offered apart.
+- [x] **Clearer family account** (mockups, version A): the members page as the month's meeting point (status in words,
+  import on each card), and the perimeter choice explained.
+- [x] Run the Docker Hub promotion test in every full pipeline, before any tag; describe the reminder claim columns in
+  the data model.
 
 ## 3.x — Game
 

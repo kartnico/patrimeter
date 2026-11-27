@@ -74,12 +74,26 @@ final class EntryReminderRepository
         ], $rows);
     }
 
-    /** The reminder of the month has left, with this unsubscribe link (only its fingerprint is kept). */
+    /** A crashed sender may be replaced after one hour; no database lock is held across SMTP. */
+    public function claim(UserId $user, string $month, string $hash, int $now): bool
+    {
+        return $this->connection->executeStatement(
+            'UPDATE entry_reminders SET claim_hash = ?, claim_until = ? WHERE user_id = ?
+             AND (last_sent_month IS NULL OR last_sent_month <> ?) AND (claim_until IS NULL OR claim_until <= ?)',
+            [$hash, $now + 3600, $user->value, $month, $now],
+        ) === 1;
+    }
+
+    public function release(UserId $user, string $hash): void
+    {
+        $this->connection->executeStatement('UPDATE entry_reminders SET claim_hash = NULL, claim_until = NULL WHERE user_id = ? AND claim_hash = ?', [$user->value, $hash]);
+    }
+
     public function markSent(UserId $user, string $month, string $unsubscribeHash): void
     {
         $this->connection->executeStatement(
-            'UPDATE entry_reminders SET last_sent_month = ?, unsubscribe_hash = ? WHERE user_id = ?',
-            [$month, $unsubscribeHash, $user->value],
+            'UPDATE entry_reminders SET last_sent_month = ?, unsubscribe_hash = ?, claim_hash = NULL, claim_until = NULL WHERE user_id = ? AND claim_hash = ?',
+            [$month, $unsubscribeHash, $user->value, $unsubscribeHash],
         );
     }
 }

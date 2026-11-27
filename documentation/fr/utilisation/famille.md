@@ -11,8 +11,9 @@ Patrimoine (avec son historique) et Budget, et le rapport, montrent alors **la f
 1. Chacun crée son compte Patrimeter et y saisit ses comptes, ses soldes et, s'il le souhaite, son
    [budget](budget.md).
 2. Créez un **troisième compte**, pour la famille (une autre adresse e-mail).
-3. Dans ce compte, ouvrez **Membres de la famille** (lien de la page Patrimoine de bienvenue, ou de la page
-   [Vos données](donnees.md)), puis **Ajouter un membre** : son nom et son fichier d'export.
+3. Dans ce compte, ouvrez **Membres de la famille** (**Réunir une famille** sur la page Patrimoine de bienvenue, ou
+   la page [Vos données](donnees.md)), puis **Ajouter un membre** : son nom et son fichier d'export. Tant qu'aucun
+   membre n'est importé, la page commence par les trois étapes du mois.
 
 Un compte famille réunit **deux membres au plus**.
 
@@ -32,12 +33,14 @@ famille.
 
 ## Chaque mois
 
-1. Chacun télécharge ses données : **Vos données** → **Télécharger mes données**.
-2. Dans le compte famille, **Membres de la famille** → **Mettre à jour** pour chaque membre, avec son nouveau
-   fichier : il **remplace** le précédent import.
+1. Chacun télécharge ses données : **Mon profil**, **Exporter ou importer**, puis **Télécharger mes données**.
+2. Dans le compte famille, **Membres de la famille** : sur la carte de chaque membre, choisissez ou déposez son
+   nouveau fichier, puis **Mettre à jour** ; il **remplace** le précédent import.
 
-La page indique pour chacun la date du dernier import et celle du fichier ; un fichier d'un mois précédent est
-signalé (**Attention**). **Retirer** un membre supprime ses données importées du compte famille, jamais de son
+En tête, la page dit combien de membres sont à jour pour le mois (« 1 membre à jour sur 2 pour novembre 2026 »).
+Chaque carte porte le statut du membre, en mots : **À jour**, ou **À mettre à jour** quand son fichier date d'un mois
+précédent ; elle donne aussi son patrimoine net, la date du fichier, celle de l'import et le nombre de comptes.
+**Plus d'actions**, puis **Retirer … de la famille**, supprime ses données importées du compte famille, jamais de son
 propre compte.
 
 ## Les vues de la famille
@@ -48,7 +51,11 @@ choix en tête de page :
 - **Toute la famille** (par défaut) : les comptes des membres et ceux du compte famille ; le budget réunit ceux des
   membres ;
 - **un membre** : ses seules données, telles qu'il les voit dans son compte ;
-- **Ce compte** : les données propres au compte famille, s'il en a.
+- **Comptes de la famille** : les comptes propres au compte famille, par exemple ceux des enfants, s'il en a.
+
+Une ligne sous le choix rappelle ce que la vue additionne, et signale chaque membre dont le fichier est à mettre à
+jour (« Fichier de Julien à mettre à jour », avec un lien vers les membres). Dans ces vues, les soldes se comptent
+« du mois » ou « reportés » : ils viennent des fichiers des membres, pas d'une saisie dans le compte famille.
 
 Le choix est retenu d'une page à l'autre. Dans la famille :
 

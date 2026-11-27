@@ -47,16 +47,23 @@ final class ChallengesTest extends FunctionalTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('nav.nav a[aria-current="page"][href="/defis"]');
         $streak = $crawler->filter('.challenge')->reduce(static fn($card): bool => str_contains($card->filter('h3')->text(), 'Série de saisies'));
-        self::assertSame('1 étoile sur 3', $streak->filter('.stars .visually-hidden')->text());
-        self::assertStringContainsString('Mois de suite : 3', $streak->text());
-        // Score in clear, and the ladder of its stars: the first one earned, the next one flagged with what it asks.
-        self::assertSame('1 sur 3', $streak->filter('.stars-score')->text());
-        $steps = $streak->filter('.challenge-ladder li');
-        self::assertSame(['is-done', 'is-next', ''], $steps->each(static fn($step): string => (string) $step->attr('class')));
-        self::assertStringContainsString('6 mois de suite saisis', $steps->eq(1)->text());
-        self::assertStringContainsString('prochaine étoile', $steps->eq(1)->text());
-        // The six levels, with the stars each needs.
-        self::assertCount(6, $crawler->filter('.level-ladder li'));
+        self::assertSame('1 étoile acquise sur 3', $streak->filter('.medal-score')->text());
+        self::assertStringContainsString('Mois de suite : 3', $streak->filter('.fact')->text());
+        // The rail of its thresholds: the first one earned, the next one flagged; short name for the eye, full sentence
+        // and state for screen readers.
+        $steps = $streak->filter('.rail li');
+        self::assertSame(['earned', 'next', 'later'], $steps->each(static fn($step): string => (string) $step->attr('class')));
+        self::assertSame('6 mois', $steps->eq(1)->filter('b')->text());
+        self::assertSame('6 mois de suite saisis', $steps->eq(1)->filter('.visually-hidden')->text());
+        self::assertSame('Suivante', $steps->eq(1)->filter('small')->text());
+        // What is missing for the next star, from this month's streak.
+        self::assertSame('Pour la 2ᵉ étoile', $streak->filter('.delta b')->text());
+        self::assertSame('Encore 3 mois de saisie de suite.', $streak->filter('.delta p')->text());
+        // The stars by family add up to the total; the six levels, folded, with the stars each needs.
+        $families = $crawler->filter('.score-panel .bar-item');
+        self::assertSame(['Premiers pas', 'Saisie des soldes', 'Budget et objectifs', 'Coussin et crédit', 'Sécurité du compte'], $families->each(static fn($family): string => $family->filter('span')->text()));
+        self::assertSame('sur 28 étoiles', $crawler->filter('.dial p > span')->text());
+        self::assertCount(6, $crawler->filter('.game-level details .level-ladder li'));
         self::assertStringContainsString('sur 28', $crawler->filter('.star-total')->text());
         self::assertStringContainsString('Repères indicatifs, à adapter à votre situation : ce n\'est pas un conseil en investissement.', $crawler->filter('.notice')->text());
 
@@ -64,9 +71,40 @@ final class ChallengesTest extends FunctionalTestCase
         self::service(StatementRepository::class)->delete(self::owner(), $this->livret, Month::fromString('2026-11'));
         $crawler = $this->client->request('GET', '/defis');
         $streak = $crawler->filter('.challenge')->reduce(static fn($card): bool => str_contains($card->filter('h3')->text(), 'Série de saisies'));
-        self::assertSame('1 étoile sur 3', $streak->filter('.stars .visually-hidden')->text());
+        self::assertSame('1 étoile acquise sur 3', $streak->filter('.medal-score')->text());
         self::assertStringContainsString('Mois de suite : 2', $streak->text());
+        self::assertSame('Encore 4 mois de saisie de suite.', $streak->filter('.delta p')->text(), 'still the second star, from two months');
         self::assertSame(1, self::queryInt("SELECT stars FROM game_stars WHERE user_id = ? AND challenge = 'streak'", [self::owner()->value]));
+    }
+
+    public function testPendingStarSurvivesReadingChallengesAndSavingWithTheGameOff(): void
+    {
+        $statements = self::service(StatementRepository::class);
+        $august = Month::fromString('2026-08');
+        $statements->save(self::owner(), $this->livret, $august, 500_000);
+        $this->client->request('GET', '/defis');
+        self::assertResponseIsSuccessful();
+        // The streak no longer qualifies, but the pending award belongs to the owner, not the page.
+        $statements->delete(self::owner(), $this->livret, $august);
+        $this->submit('/defis/reglages', ['action' => 'disable'], '/defis');
+        $entry = ['mois' => '2026-10', 'amounts' => [$this->livret => '5 100']];
+        $this->submit('/saisie', $entry, '/saisie');
+        self::assertResponseRedirects('/?mois=2026-10', Response::HTTP_SEE_OTHER);
+        $this->client->followRedirect();
+        self::assertStringContainsString('enregistrée', $this->flashes());
+        self::assertStringNotContainsString('Nouvelle étoile', $this->flashes());
+        self::assertSelectorNotExists('.first-steps');
+        self::assertSelectorNotExists('.summary-level');
+
+        $this->submit('/defis/reglages', ['action' => 'enable'], '/defis');
+        $this->submit('/saisie', $entry, '/saisie');
+        $this->client->followRedirect();
+        self::assertStringContainsString('Nouvelle étoile, défi « Série de saisies » : 1 sur 3.', $this->flashes());
+        $this->client->request('GET', '/defis');
+        $this->submit('/saisie', $entry, '/saisie');
+        $this->client->followRedirect();
+        self::assertStringNotContainsString('Nouvelle étoile', $this->flashes());
+        self::assertSame(1, self::service(GameRepository::class)->stars(self::owner())['streak']);
     }
 
     public function testTheProfileShowsTheStageAndTheLevel(): void
@@ -75,8 +113,17 @@ final class ChallengesTest extends FunctionalTestCase
 
         self::assertSame('Découverte', $crawler->filter('.stage-ladder li.is-current strong')->text(), 'two months entered');
         self::assertCount(5, $crawler->filter('.stage-ladder li'));
-        self::assertStringContainsString('Niveau', $crawler->filter('#game-level-title')->text());
+        // The two statuses at the top, each a link to its card.
+        self::assertSame(['#game-level-title', '#game-profile-title'], $crawler->filter('.status-pair a')->each(static fn($link): string => (string) $link->attr('href')));
+        self::assertStringContainsString('Stade 1 sur 5', $crawler->filter('.status-pair')->text());
+        self::assertStringContainsString('Mon niveau · ', $crawler->filter('#game-level-title')->text());
+        self::assertMatchesRegularExpression('/^Encore \d+ étoiles? pour passer au niveau /', $crawler->filter('.game-level .takeaway')->text());
+        // The next stage, with how far it is.
+        self::assertSame('Mon profil · Découverte', $crawler->filter('#game-profile-title')->text());
+        self::assertStringContainsString('Prochain stade : Organisé', $crawler->filter('.game-profile .route')->text());
+        self::assertStringContainsString('Mois où tous les comptes sont saisis', $crawler->filter('.game-profile .bar-item')->text());
         self::assertStringContainsString('Renseignez votre foyer et votre budget pour mesurer ce coussin.', $crawler->filter('.challenge-list')->text());
+        self::assertStringContainsString('Avant de commencer', $crawler->filter('.challenge-list')->text());
         self::assertStringContainsString('Fixez un objectif d\'épargne pour relever ce défi.', $crawler->filter('.challenge-list')->text());
     }
 
@@ -157,7 +204,7 @@ final class ChallengesTest extends FunctionalTestCase
         self::assertStringContainsString('Taux d\'épargne visé : 15 %.', $this->flashes());
         self::assertSame('15', $card($crawler)->filter('#savings-rate option[selected]')->attr('value'));
         self::assertStringContainsString('Mois de suite à 15 % ou plus : 2', $card($crawler)->text(), 'October, and November carried over');
-        self::assertSame('1 étoile sur 3', $card($crawler)->filter('.stars .visually-hidden')->text());
+        self::assertSame('1 étoile acquise sur 3', $card($crawler)->filter('.medal-score')->text());
 
         // A rate that is not offered is not kept.
         $this->submit('/defis/reglages', ['action' => 'savings_rate', 'taux' => '12', '_return' => '/defis'], '/defis');

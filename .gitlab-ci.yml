@@ -42,14 +42,14 @@ variables:
   GIT_CONFIG_KEY_0: http.version
   GIT_CONFIG_VALUE_0: HTTP/1.1
   RUNNER_MIN_FREE_GB: "5"
-  DEBIAN_IMAGE: "public.ecr.aws/docker/library/debian:13-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2"
+  DEBIAN_IMAGE: "public.ecr.aws/docker/library/debian:13-slim@sha256:8aa5a7bf5a1955bddbe7d74fcdd0b91ab30e74362a8b73af672b0481b35b44a0"
   # Recommended versions of the project: those of the published container image and of the checked installation
   # ("deployment" job).
-  RECOMMENDED_DEBIAN_IMAGE: "public.ecr.aws/docker/library/debian:13-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2"
+  RECOMMENDED_DEBIAN_IMAGE: "public.ecr.aws/docker/library/debian:13-slim@sha256:8aa5a7bf5a1955bddbe7d74fcdd0b91ab30e74362a8b73af672b0481b35b44a0"
   RECOMMENDED_PHP_VERSION: "8.5"
   # Node 24 (LTS) on Debian 13: PHP is also installed on it from the Surý repository.
-  NODE_IMAGE: "public.ecr.aws/docker/library/node:24-trixie-slim@sha256:af02d57b57719b9657a45199a79264a9437940cd55b3c7b3fc99615654f124a0"
-  PYTHON_IMAGE: "public.ecr.aws/docker/library/python:3.14-slim-trixie@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f"
+  NODE_IMAGE: "public.ecr.aws/docker/library/node:24-trixie-slim@sha256:4d00acb4bcc42c454c4eb801526f7ad7f772ea3bd4fd168c5cc2e384abcbb9d4"
+  PYTHON_IMAGE: "public.ecr.aws/docker/library/python:3.14-slim-trixie@sha256:22eafb370920ad8b429e0aec3fff433e0669968519f5d60469d83729c138b28b"
   VNU_IMAGE: "ghcr.io/validator/validator@sha256:f10441aee7dcea043d2153b0a8bbce13dafeafc8a3680b69b88b83ba5b9880f5"
   GITLEAKS_IMAGE: "ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f"
   MAILPIT_IMAGE: "ghcr.io/axllent/mailpit:v1.34.0@sha256:23a2ef85bc50853ab3093645d1d64679afd8887e89da5e48a88940c172591a4e"
@@ -59,18 +59,18 @@ variables:
   # Analyse of docker/Dockerfile (job « hadolint ») and validation of docker/compose.yaml (job « compose-config »).
   HADOLINT_IMAGE: "ghcr.io/hadolint/hadolint:v2.15.1-debian@sha256:9a3944b7fddcb947d1ffd90829ac1a6e5c30479223358f249d8b96c7d0019e27"
   # renovate: datasource=docker depName=docker/compose-bin
-  COMPOSE_VERSION: "v5.7.0"
-  COMPOSE_SHA256: "7758048ad38e580f22559603312874fec8bb638d021a9e64182385fc17cc12a2"
+  COMPOSE_VERSION: "v5.7.1"
+  COMPOSE_SHA256: "af426722a8af5de812fcee30cc1c39f0639f5f723cbadefb25e5d4db054064cf"
   # CI image of the PHP jobs (ci/php/Dockerfile, job "ci-php-image"): PHP 8.3 to 8.5 from Surý and Composer already
   # installed. Its tag is the start of the SHA-256 of what builds it (CiPhpImageTest computes it): any change gives a
   # new image, built by the first pipeline that needs it.
-  CI_PHP_IMAGE: "$CI_REGISTRY_IMAGE/ci-php:40f8efe749d7"
+  CI_PHP_IMAGE: "$CI_REGISTRY_IMAGE/ci-php:8de8c778ab4c"
   # Container image built on every full pipeline, tested (smoke test, Trivy) before any publication.
   CI_IMAGE: "$CI_REGISTRY_IMAGE:ci-$CI_PIPELINE_ID"
   # Building the container image without a daemon nor privileged mode ("container-image" job).
   BUILDAH_IMAGE: "quay.io/buildah/stable:v1.43.5-immutable@sha256:7c2b605262748ace2c5c57c5550942d0adad57aec82ede3070927722306c0ffb"
   # renovate: datasource=pypi depName=semgrep
-  SEMGREP_VERSION: "1.184.0"
+  SEMGREP_VERSION: "1.185.0"
   # OpenSSF Scorecard (scorecard job): release pinned by its version and the SHA-256 of its Linux archive.
   # renovate: datasource=docker depName=ghcr.io/ossf/scorecard extractVersion=^v(?<version>.+)$
   SCORECARD_VERSION: "5.6.0"
@@ -78,10 +78,10 @@ variables:
   # Deployed instance scanned by Nuclei on the security schedule and on demand (job "nuclei-production", docs/ci.md); empty: no scan.
   PRODUCTION_URL: "https://patrimeter.example.org"
   # Renovate (job "renovate", daily schedule with RENOVATE=1, renovate.json): pinned image.
-  RENOVATE_IMAGE: "ghcr.io/renovatebot/renovate:44.259.0-full@sha256:8774f5857b486db6b986031ccb0cd8cf9d10882dbec42c6db4a5fee9bead3c27"
+  RENOVATE_IMAGE: "ghcr.io/renovatebot/renovate:44.263.5-full@sha256:ad5c80f4ca3a2d3c7260764b20d0d09ae57ddd071081816ff915745abe27020a"
   # Generator of the user documentation (documentation/, published by GitHub Pages).
   # renovate: datasource=pypi depName=zensical
-  ZENSICAL_VERSION: "0.1.0"
+  ZENSICAL_VERSION: "0.1.1"
   # PHP version of the tools (style, analysis, coverage); the tests cover 8.3 to 8.5.
   PHP_VERSION: "8.4"
   COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.cache/composer"
@@ -1072,6 +1072,10 @@ container-image:
   needs: *after-disk-check
   script:
     - sh tests/deployment/public-tree.sh
+    - sh tests/deployment/backup-retry.sh
+    # Docker Hub promotion script, with fake registry tools: checked in every full pipeline, before any tag.
+    - command -v jq >/dev/null || dnf install -y -q jq
+    - sh tests/deployment/promote-image.sh
     - version="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
     - dockerfile=docker/Dockerfile
     # Daily: the code of the latest published version, not main's. Up to 2.14.0, its Dockerfile is at the root.
@@ -1091,7 +1095,7 @@ container-image:
     - command -v git >/dev/null || dnf install -y -q git-core
     - context=$(mktemp -d) && git archive --format=tar HEAD -o "$context/source.tar" && mkdir "$context/tree" && tar -xf "$context/source.tar" -C "$context/tree"
     - if [ -f "$context/tree/ci/prepare-public-tree.sh" ]; then sh "$context/tree/ci/prepare-public-tree.sh" "$context/tree"; fi
-    - mkdir -p image && echo "IMAGE_VERSION=$version" > image/build.env
+    - mkdir -p image
     - >-
       buildah build --layers=false --build-arg "PATRIMETER_RELEASE=$version"
       --build-arg "DEBIAN_IMAGE=$RECOMMENDED_DEBIAN_IMAGE" --build-arg "PHP_VERSION=$RECOMMENDED_PHP_VERSION"
@@ -1116,8 +1120,6 @@ container-image:
     name: "patrimeter-image-$CI_COMMIT_REF_NAME"
     paths: [image/]
     expire_in: 2 weeks
-    reports:
-      dotenv: image/build.env
 
 # Smoke test: the image really starts (GitLab service, "web" entry point: migrations, nginx, php-fpm), serves the
 # sign-in page with its security headers, and answers the monitoring. Throwaway secrets, specific to the job.
@@ -1154,7 +1156,7 @@ container-publish:
   image: $BUILDAH_IMAGE
   needs:
     - job: container-image
-      artifacts: true
+      artifacts: false
     - job: container-smoke
       artifacts: false
     - job: captures
@@ -1170,6 +1172,7 @@ container-publish:
     BUILDAH_FORMAT: docker
   script:
     - command -v git >/dev/null || dnf install -y -q git-core
+    - command -v skopeo >/dev/null && command -v jq >/dev/null || dnf install -y -q skopeo jq
     - sh ci/publish-image.sh
 
 github-publish:

@@ -47,20 +47,27 @@ final class Game
         return $this->instanceEnabled && $this->repository->settings($owner)['enabled'];
     }
 
-    /** The game this month; the stars that beat the best ones stored are kept. */
-    public function view(UserId $owner): GameView
-    {
-        return $this->measure($owner)[0];
-    }
-
     /**
-     * Records the stars earned since the last visit and returns them, for the message after the monthly entry.
+     * Measures this entry and claims all outstanding announcements, including records reached on earlier visits.
      *
      * @return list<array{challenge: Challenge, stars: int, max: int}>
      */
-    public function newStars(UserId $owner): array
+    public function claimEntryAnnouncements(UserId $owner): array
     {
-        return $this->instanceEnabled && $this->repository->settings($owner)['enabled'] ? $this->measure($owner)[1] : [];
+        if (!$this->isEnabled($owner)) {
+            return [];
+        }
+        $view = $this->view($owner);
+        $pending = $this->repository->claimAnnouncements($owner);
+        $announcements = [];
+        foreach ($view->results as $result) {
+            $stars = $pending[$result->challenge->value] ?? null;
+            if ($stars !== null) {
+                $announcements[] = ['challenge' => $result->challenge, 'stars' => $stars, 'max' => $result->maxStars()];
+            }
+        }
+
+        return $announcements;
     }
 
     /**
@@ -150,13 +157,12 @@ final class Game
         $this->repository->saveFirstStepsHidden($owner, $hidden);
     }
 
-    /** @return array{GameView, list<array{challenge: Challenge, stars: int, max: int}>} */
-    private function measure(UserId $owner): array
+    /** Measures the challenges and keeps new records without claiming their announcements. */
+    public function view(UserId $owner): GameView
     {
         $settings = $this->repository->settings($owner);
         $facts = $this->facts->facts($owner, $this->calendar->currentMonth(), $settings['savings_rate_target']);
         $best = $this->repository->stars($owner);
-        $earned = [];
         $results = [];
         foreach (Challenge::cases() as $challenge) {
             $result = $challenge->evaluate($facts);
@@ -165,7 +171,6 @@ final class Game
             if ($stars > ($best[$challenge->value] ?? 0)) {
                 $this->repository->raise($owner, $challenge, $stars, $this->calendar->today());
                 $best[$challenge->value] = $stars;
-                $earned[] = ['challenge' => $challenge, 'stars' => $stars, 'max' => $result->maxStars()];
             }
         }
         $order = $settings['style']?->order() ?? SaverStyle::defaultOrder();
@@ -173,6 +178,6 @@ final class Game
         $ordered = array_map(static fn(Challenge $challenge): ChallengeResult => $results[$challenge->value], $order);
         $ordered = ($best[Challenge::FirstSteps->value] ?? 0) < $firstSteps->maxStars() ? [$firstSteps, ...$ordered] : [...$ordered, $firstSteps];
 
-        return [new GameView($facts, $ordered, $best, $settings['style'], $settings['first_steps_hidden']), $earned];
+        return new GameView($facts, $ordered, $best, $settings['style'], $settings['first_steps_hidden']);
     }
 }

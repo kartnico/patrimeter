@@ -10,7 +10,6 @@ use Patrimeter\Application\Family\Perimeter;
 use Patrimeter\Application\NotFound;
 use Patrimeter\Application\Transfer\DataTransfer;
 use Patrimeter\Application\ValidationFailed;
-use Patrimeter\Domain\Month;
 use Patrimeter\Http\Sentences;
 use Patrimeter\Security\CurrentUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,19 +44,19 @@ final class FamilyController extends AbstractController
         foreach ($this->family->members($owner) as $member) {
             $portfolio = $this->family->portfolio($owner, Perimeter::member($member->id));
             $snapshot = $portfolio->calculator()->snapshot($current);
-            $exported = $member->exportedOn === null ? null : Month::fromDate($member->exportedOn);
             $members[] = [
                 'member' => $member,
                 'accounts' => count($portfolio->accounts),
                 'net' => $snapshot->hasData() ? $snapshot->net() : null,
                 'budget' => $member->budget !== null,
                 // File of an earlier month: the current month's is expected.
-                'stale' => $exported === null || $exported->compare($current) < 0,
+                'stale' => $member->isStale($current),
             ];
         }
 
         return $this->render('family/index.html.twig', [
             'members' => $members,
+            'up_to_date' => count(array_filter($members, static fn(array $item): bool => !$item['stale'])),
             'can_add' => count($members) < FamilyPortfolio::MAX_MEMBERS,
             'current_month' => $current,
         ]);

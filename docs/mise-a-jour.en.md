@@ -23,9 +23,10 @@ ARCHIVE="$(ls /tmp/patrimeter-v*.tar.gz | sort -V | tail -n 1)"
 patrimeter-update "$ARCHIVE"
 ```
 
-`patrimeter-update` checks the archive's checksum, backs up the database, stops the service for one or two minutes,
-installs the new version next to the old one, applies the migrations, then starts again. It keeps the old version for
-a rollback.
+Starting with the 3.5 updater, `patrimeter-update` prepares the new release before stopping the web service and
+scheduled tasks. It then backs up the last confirmed entry, verifies the copy, applies migrations and restarts.
+The copy stays with the previous release, outside backup rotation. If creating or checking it fails, the old
+release restarts. A rollback verifies the copy before interrupting the running site.
 
 Then check:
 

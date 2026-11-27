@@ -23,9 +23,10 @@ ARCHIVE="$(ls /tmp/patrimeter-v*.tar.gz | sort -V | tail -n 1)"
 patrimeter-update "$ARCHIVE"
 ```
 
-`patrimeter-update` vérifie l'empreinte de l'archive, sauvegarde la base, coupe le service une à deux minutes,
-installe la nouvelle version à côté de l'ancienne, applique les migrations, puis redémarre. Il garde l'ancienne
-version pour un retour arrière.
+À partir de l’outil 3.5, `patrimeter-update` prépare la nouvelle version avant de couper le service web et les tâches
+planifiées. Il sauvegarde alors la dernière saisie validée, vérifie la copie, applique les migrations et redémarre.
+La copie reste avec la version précédente, hors rotation des sauvegardes. Si sa création ou sa vérification échoue,
+l’ancienne version redémarre. Un retour arrière vérifie la copie avant d’interrompre le site.
 
 Vérifiez ensuite :
 

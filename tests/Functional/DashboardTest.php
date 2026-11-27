@@ -30,14 +30,19 @@ final class DashboardTest extends FunctionalTestCase
     {
         $this->client->request('GET', '/');
 
-        self::assertSelectorTextContains('.welcome h2', 'Bienvenue dans Patrimeter');
-        // Four ways to start, the pyramid built level by level first.
-        self::assertSame(
-            ['/bienvenue/pyramide', '/bienvenue/questions', '/bienvenue/express', '/donnees#csv', '/comptes/nouveau'],
-            $this->client->getCrawler()->filter('.welcome-choices a')->each(static fn($link): ?string => $link->attr('href')),
-        );
-        self::assertSelectorExists('.welcome-choice.is-default[href="/bienvenue/pyramide"]');
+        // Last step of the first start: the questions recommended, the pyramid next, the other three ways folded.
+        self::assertSelectorTextContains('.welcome .onboarding-steps', 'Étape 4 sur 4');
+        self::assertSelectorTextContains('.welcome .onboarding-steps [aria-current="step"]', 'Premiers comptes');
+        self::assertSelectorTextContains('.welcome h2', 'Dessinons votre pyramide');
+        $crawler = $this->client->getCrawler();
+        self::assertSame(['/bienvenue/questions', '/bienvenue/pyramide'], $crawler->filter('.welcome-choices a')->each(static fn($link): ?string => $link->attr('href')));
+        self::assertSelectorExists('.welcome-choice.is-default[href="/bienvenue/questions"]');
+        self::assertSelectorTextContains('.welcome-choice.is-default .welcome-tag', 'recommandé');
+        self::assertSame(['/bienvenue/express', '/donnees#csv', '/comptes/nouveau'], $crawler->filter('details.welcome-more a')->each(static fn($link): ?string => $link->attr('href')));
         self::assertSelectorExists('.welcome a[href="/biens/nouveau"]');
+        // A family account is offered apart, not filled in.
+        self::assertSelectorTextContains('.welcome-family h2', 'Ce compte est pour une famille ?');
+        self::assertSelectorExists('.welcome-family a[href="/famille"]');
     }
 
     public function testNetWorthPyramidAndComparisons(): void

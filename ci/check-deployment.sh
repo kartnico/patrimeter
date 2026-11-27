@@ -83,6 +83,15 @@ run_doc docs/installation.md install
 # First account, its password read on standard input (docs/installation.md § 4).
 printf '%s\n' "$PASSWORD" | runuser -u www-data -- php /srv/patrimeter/bin/console app:user:create "$email"
 
+# Repeat the actual installation over live data, including a private uploaded file.
+install -o www-data -g www-data -m 0600 /dev/null /srv/patrimeter/var/uploads/replay-test
+secret_checksum="$(sha256sum /srv/patrimeter/.env.local)"
+run_doc docs/installation.md install
+runuser -u www-data -- sqlite3 -bail /srv/patrimeter/var/patrimeter.sqlite 'BEGIN IMMEDIATE; UPDATE users SET id = id WHERE 0; ROLLBACK;'
+expect_stat /srv/patrimeter/var/uploads/replay-test 'www-data:www-data 600'
+test "$(sha256sum /srv/patrimeter/.env.local)" = "$secret_checksum"
+rm /srv/patrimeter/var/uploads/replay-test
+
 step 'Proxy inverse de test et réglages propres à ce conteneur'
 sed -i 's/^TRUSTED_PROXIES=.*/TRUSTED_PROXIES=127.0.0.1/' /srv/patrimeter/.env.local
 {
@@ -243,27 +252,49 @@ step 'Mise à jour : docs/mise-a-jour.md (patrimeter-update)'
 # A "newer" archive (the same code under a later version name) in /tmp, next to the first one.
 cp /tmp/patrimeter-v0.0.1.tar.gz /tmp/patrimeter-v0.0.2.tar.gz
 (cd /tmp && sha256sum patrimeter-v0.0.2.tar.gz > patrimeter-v0.0.2.tar.gz.sha256)
-backups_before="$(find /var/backups/patrimeter -maxdepth 1 -name 'patrimeter-*.sqlite.gz' | wc -l)"
-# Backup archives are named by the second: never two in the same second.
-sleep 1
-run_doc docs/mise-a-jour.md update
-if [ "$(find /var/backups/patrimeter -maxdepth 1 -name 'patrimeter-*.sqlite.gz' | wc -l)" -le "$backups_before" ]; then
-    echo "check-deployment : patrimeter-update n'a pas sauvegardé la base." >&2
+# Fail snapshot creation after stopping writers: the old site must restart with its data intact.
+if PATRIMETER_BACKUP_COPY=false PATRIMETER_BACKUP_AGE_RECIPIENTS='' patrimeter-update /tmp/patrimeter-v0.0.2.tar.gz; then
     exit 1
 fi
+php "$smoke" expect-amount "$email" "$PASSWORD" "$account" '1 234,56'
+# Simulate a final acknowledged web request just before the real service stop.
+mkdir /tmp/adm-update-test
+cat > /tmp/adm-update-test/systemctl <<'SH'
+#!/bin/sh
+set -eu
+if [ "$1" = stop ]; then
+    php "$UPDATE_SMOKE" set-amount "$UPDATE_EMAIL" "$PASSWORD" "$UPDATE_ACCOUNT" '2 345,67'
+fi
+exec /usr/local/bin/systemctl "$@"
+SH
+chmod 0755 /tmp/adm-update-test/systemctl
+export UPDATE_SMOKE="$project/$smoke" UPDATE_EMAIL="$email" UPDATE_ACCOUNT="$account"
+PATH="/tmp/adm-update-test:$PATH" run_doc docs/mise-a-jour.md update
+rm -r /tmp/adm-update-test
+set -- /srv/patrimeter.previous/.rollback/patrimeter-*.sqlite.gz
+snapshot="$1"
+test -s "$snapshot.sha256"
 test -d /srv/patrimeter.previous
 test ! -e /srv/patrimeter.previous/var
 expect_stat /srv/patrimeter/.env.local 'root:www-data 640'
 expect_stat /srv/patrimeter/src 'root:root 755'
 php "$smoke" web proxied
-php "$smoke" expect-amount "$email" "$PASSWORD" "$account" '1 234,56'
+php "$smoke" expect-amount "$email" "$PASSWORD" "$account" '2 345,67'
 
 step 'Retour arrière : docs/mise-a-jour.md (patrimeter-update --rollback)'
 php "$smoke" set-amount "$email" "$PASSWORD" "$account" '5 555,55'
+PATRIMETER_BACKUP_KEEP=1 patrimeter-backup
+mv "$snapshot" "$snapshot.valid"
+for damage in missing corrupt; do
+    if [ "$damage" = corrupt ]; then printf 'invalid' > "$snapshot"; fi
+    if patrimeter-update --rollback; then exit 1; fi
+    php "$smoke" expect-amount "$email" "$PASSWORD" "$account" '5 555,55'
+done
+mv "$snapshot.valid" "$snapshot"
 run_doc docs/mise-a-jour.md rollback
 test ! -e /srv/patrimeter.previous
 php "$smoke" web proxied
-php "$smoke" expect-amount "$email" "$PASSWORD" "$account" '1 234,56'
+php "$smoke" expect-amount "$email" "$PASSWORD" "$account" '2 345,67'
 
 step 'patrimeter-update refuse une option inconnue, une archive absente et un appel sans root'
 if /usr/local/sbin/patrimeter-update --pas-une-option 2> /dev/null; then

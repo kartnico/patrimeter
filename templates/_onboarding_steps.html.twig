@@ -1,0 +1,20 @@
+{#-
+    Steps of the first start, shown on the screens of the first sign-in: account, security (authentication app and
+    backup codes), recovery key, first accounts. The current one is marked in words, never by the colour alone.
+    Variables: current (2 to 4), duration (translated sentence, e.g. "about 2 minutes").
+-#}
+{%- set onboarding_labels = ['Compte'|trans, 'Sécurité'|trans, 'Clé'|trans, 'Premiers comptes'|trans] -%}
+<nav class="onboarding-steps" aria-label="{{ 'Premier démarrage'|trans }}">
+    <p class="onboarding-steps-count">{{ 'Étape %number% sur %total%'|trans({'%number%': current, '%total%': onboarding_labels|length}) }} · {{ duration }}</p>
+    <ol>
+        {% for onboarding_label in onboarding_labels %}
+        {% if loop.index < current %}
+        <li class="is-done"><span><span aria-hidden="true">✓ </span>{{ onboarding_label }}<span class="visually-hidden"> ({{ 'fait'|trans }})</span></span></li>
+        {% elseif loop.index == current %}
+        <li class="is-current" aria-current="step">{{ onboarding_label }}</li>
+        {% else %}
+        <li>{{ onboarding_label }}</li>
+        {% endif %}
+        {% endfor %}
+    </ol>
+</nav>

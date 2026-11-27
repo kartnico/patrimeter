@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Patrimeter\Application\Family;
 
 use Patrimeter\Domain\Budget\Household;
+use Patrimeter\Domain\Month;
 
 /**
  * Member of a family account: their name, the dates of their last import and of the imported export, and the content
@@ -28,6 +29,12 @@ final class FamilyMember
         public readonly array $accounts,
         public readonly ?array $budget,
     ) {}
+
+    /** Whether the imported file is older than the given month (or of an unknown date): that month's file is expected. */
+    public function isStale(Month $current): bool
+    {
+        return $this->exportedOn === null || Month::fromDate($this->exportedOn)->compare($current) < 0;
+    }
 
     public static function isValidName(string $name): bool
     {

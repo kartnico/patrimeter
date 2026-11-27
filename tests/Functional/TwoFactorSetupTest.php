@@ -51,6 +51,10 @@ final class TwoFactorSetupTest extends FunctionalTestCase
         $crawler = $this->submitSetupCode($secret);
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Codes de secours');
+        self::assertSelectorTextContains('.onboarding-steps [aria-current="step"]', 'Sécurité');
+        self::assertSelectorTextContains('.setup-card a.btn-primary', 'J\'ai noté mes codes, continuer');
+        // Print button, hidden until app.js shows it.
+        self::assertCount(1, $crawler->filter('button[data-print][hidden]'));
         $codes = $crawler->filter('ul.backup-codes code')->each(static fn($node): string => $node->text());
         self::assertCount(10, $codes);
         self::assertMatchesRegularExpression('/\A[2-9A-HJKMNP-Z]{5}-[2-9A-HJKMNP-Z]{5}\z/', $codes[0]);

@@ -82,6 +82,11 @@ final class NoAccountMonthTest extends FunctionalTestCase
             $this->client->request('GET', $otherMonth);
             self::assertResponseIsSuccessful($otherMonth);
             self::assertSelectorExists('.month-nav');
+            self::assertSelectorExists('.mp-foot a');
         }
+        $this->client->request('GET', '/?mois=2026-12');
+        self::assertSelectorExists('.mp-foot a[href="/"]');
+        $this->client->request('GET', '/');
+        self::assertSelectorNotExists('.mp-foot a');
     }
 }

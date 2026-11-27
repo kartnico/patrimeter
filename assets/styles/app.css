@@ -1133,13 +1133,48 @@ tr.is-level-highlighted > :first-child { box-shadow: inset 4px 0 0 var(--primary
 .bar-actual.is-over { fill: var(--danger); }
 .carbure-mapping select { width: 100%; max-width: 20rem; }
 
-/* Family account: choice of the perimeter (family, each member, this account) and members */
-.perimeter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; margin: -.25rem 0 1rem; }
+/* Family account: choice of the perimeter (family, each member, the family's own accounts) with what it adds up, then
+   the members page: the month's status, each member's card (status in words and icon, import, removal folded) and the
+   monthly steps. */
+.perimeter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; margin: -.25rem 0 .4rem; }
 .perimeter-manage { color: var(--muted); }
-.family-member .wealth-tiles { margin-bottom: .75rem; }
-.family-import { margin-top: .75rem; }
-.family-steps { margin: 0 0 .75rem; padding-left: 1.25rem; }
-.family-steps li { margin-bottom: .35rem; }
+.perimeter-note { display: flex; flex-wrap: wrap; gap: .25rem .9rem; margin: 0 0 1rem; color: var(--muted); }
+.perimeter-stale-link { color: var(--carried); font-weight: 600; }
+.family-status { display: flex; align-items: center; gap: .6rem; margin: 0 0 1rem; padding: .75rem 1rem; border-radius: 10px; background: var(--info-soft); }
+.family-status svg { flex: none; width: 22px; height: 22px; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.family-grid { display: grid; gap: 1rem; margin-bottom: 1rem; }
+.family-member { margin: 0; }
+.family-member.is-stale { border-color: var(--carried); }
+.family-member-head { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin-bottom: .75rem; }
+.family-member-head h2 { margin: 0; font-size: 1.15rem; }
+.family-avatar {
+    flex: none; display: inline-flex; align-items: center; justify-content: center; width: 2.6rem; height: 2.6rem;
+    border-radius: 50%; background: var(--primary-soft); color: var(--primary); font-size: 1.1rem; font-weight: 800;
+}
+.is-stale .family-avatar { background: var(--carried-soft); color: var(--carried); }
+.family-pill { margin-left: auto; padding: .2rem .6rem; border-radius: 999px; background: var(--primary-soft); color: var(--primary); font-size: .85rem; font-weight: 700; }
+.family-pill.is-stale { background: var(--carried-soft); color: var(--carried); }
+.family-drop { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: .75rem; padding: .75rem; border: 2px dashed var(--field-border); border-radius: 10px; }
+.family-drop label { flex: 1 1 100%; font-size: .9rem; }
+.family-drop input[type="file"] { flex: 1 1 12rem; min-width: 0; }
+.family-drop.is-stale { border-color: var(--carried); background: var(--surface-2); }
+.family-drop.is-stale label { font-weight: 600; }
+.family-more { margin-top: .6rem; }
+.family-more summary { color: var(--muted); font-size: .85rem; cursor: pointer; }
+.family-more form { margin-top: .5rem; }
+.family-steps { display: grid; gap: .75rem; margin: .5rem 0 1rem; padding: 0; list-style: none; counter-reset: family-step; }
+.family-steps li { display: grid; align-content: start; gap: .35rem; padding: .9rem; border-radius: 10px; background: var(--surface-2); counter-increment: family-step; }
+.family-steps li::before {
+    content: counter(family-step); display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem;
+    border-radius: 50%; background: var(--primary); color: var(--primary-text); font-weight: 700;
+}
+.family-shared { margin: 0 0 .75rem; }
+.family-shared summary { color: var(--primary); font-weight: 600; cursor: pointer; }
+.family-shared p { margin: .5rem 0 0; }
+@media (min-width: 760px) {
+    .family-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .family-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 
 /* Budget: with the month's net worth */
 .wealth-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .5rem; margin: 0 0 1rem; }
@@ -1329,7 +1364,30 @@ a.wealth-tile-value { color: var(--text); }
 }
 .welcome-choice.is-default svg { background: var(--primary); stroke: var(--primary-text); }
 .welcome-tag { padding: 0 .35rem; border: 1px solid var(--primary); border-radius: 6px; color: var(--primary); font-size: .75rem; font-weight: 700; white-space: nowrap; }
-.welcome-grid, .game-grid { display: grid; gap: 1rem; margin-bottom: 1rem; }
+.welcome-grid { display: grid; gap: 1rem; margin-bottom: 1rem; }
+/* First start: the steps of the first sign-in (account, security, recovery key, first accounts), the current one in bold,
+   those done ticked; then the ways to start, the other three folded, and the family account offered apart. */
+.onboarding-steps { margin: 0 0 1rem; }
+.onboarding-steps-count { margin: 0 0 .45rem; color: var(--muted); font-size: .85rem; font-weight: 600; }
+.onboarding-steps ol {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none;
+    color: var(--muted); font-size: .78rem; line-height: 1.25;
+}
+.onboarding-steps li { display: grid; align-content: start; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
+.onboarding-steps li::before { content: ""; height: 6px; border-radius: 999px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--field-border); }
+.onboarding-steps .is-done, .onboarding-steps .is-current { color: var(--primary); }
+.onboarding-steps .is-done::before, .onboarding-steps .is-current::before { background: var(--primary); box-shadow: none; }
+.onboarding-steps .is-current { font-weight: 700; }
+.setup-why { margin: 0 0 1rem; padding: .6rem .8rem; border-radius: 8px; background: var(--info-soft); }
+.setup-why summary { font-weight: 600; cursor: pointer; }
+.setup-why ul { margin: .5rem 0 0; padding-left: 1.1rem; font-size: .92rem; }
+.welcome-more { margin: 0 0 .75rem; padding-top: .5rem; border-top: 1px solid var(--border); }
+.welcome-more summary { padding: .4rem 0; color: var(--primary); font-weight: 600; cursor: pointer; }
+.welcome-more ul { margin: .3rem 0 0; padding-left: 1.1rem; }
+.welcome-more li + li { margin-top: .3rem; }
+.welcome-family { border: 1px dashed var(--field-border); }
+.welcome-family h2 { display: flex; align-items: center; gap: .5rem; }
+.welcome-family svg { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .pyramid-count { margin: .5rem 0 0; text-align: center; }
 .welcome-levels, .first-steps-list, .stage-ladder, .level-ladder, .challenge-list { list-style: none; margin: .5rem 0 .75rem; padding: 0; }
 .welcome-levels li, .stage-ladder li, .level-ladder li { display: flex; align-items: center; gap: .6rem; padding: .5rem 0; border-bottom: 1px solid var(--border); }
@@ -1370,9 +1428,8 @@ a.wealth-tile-value { color: var(--text); }
 .star-off { color: var(--muted); opacity: .55; }
 .stars-score { margin-left: .4rem; color: var(--text); font-size: .9rem; font-weight: 700; }
 .star-total { margin: 0; padding: .3rem .9rem; border-radius: 999px; background: var(--star-soft); color: var(--star); font-size: 1.1rem; font-weight: 800; }
-.first-steps-head, .challenge-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem .5rem; }
-.first-steps-head h2, .challenge-head h3 { margin: 0; }
-.challenge-head h3 { font-size: 1rem; }
+.first-steps-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem .5rem; }
+.first-steps-head h2 { margin: 0; }
 .first-steps-list li { display: flex; align-items: flex-start; gap: .6rem; padding: .35rem 0; }
 .step-mark, .stage-mark {
     flex: none; display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem;
@@ -1381,9 +1438,8 @@ a.wealth-tile-value { color: var(--text); }
 .is-done .step-mark, .is-reached .stage-mark { background: var(--primary); border-color: var(--primary); }
 /* A point to fix (installation wizard): the mark in the danger colour, the word said to screen readers. */
 .is-todo .step-mark { border-color: var(--danger); color: var(--danger); }
-/* Ladders (levels, stages, stars of a challenge): listed from the first step, drawn from the bottom (done) to the top
-   (still to reach). */
-.stage-ladder, .level-ladder, .challenge-ladder { display: flex; flex-direction: column-reverse; }
+/* Ladders of the levels and stages, folded in their card: from the first step, at the top, to the last. */
+.stage-ladder, .level-ladder { display: flex; flex-direction: column; }
 .stage-ladder li, .level-ladder li { align-items: flex-start; }
 .stage-ladder li.is-current, .level-ladder li.is-current { margin: 0 -.75rem; padding: .5rem .75rem; border-radius: 8px; background: var(--primary-soft); }
 .stage-ladder .pill {
@@ -1404,24 +1460,84 @@ a.wealth-tile-value { color: var(--text); }
 .game-bar-stars { color: var(--star); }
 .game-bar-stars::-webkit-progress-value { background: var(--star); }
 .game-bar-stars::-moz-progress-bar { background: var(--star); }
-.challenge-list { display: grid; gap: .75rem; }
-.challenge { display: flex; gap: .8rem; margin: 0; }
+/* Défis page: the two statuses, then the board (stars by family, level, saver profile) and the entry streak. */
+.status-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.5rem, 2vw, 1rem); }
+.status-pair a {
+    display: grid; gap: .15rem; padding: clamp(.7rem, 2vw, 1.2rem); border-inline-start: 4px solid var(--star);
+    border-radius: var(--radius); background: var(--star-soft); color: var(--text); text-decoration: none;
+}
+.status-pair a + a { border-color: var(--primary); background: var(--primary-soft); }
+.status-pair span { font-weight: 700; }
+.status-pair strong { font-size: clamp(1.45rem, 4vw, 2.35rem); line-height: 1.15; }
+.status-pair small, .board .caption, .streak-strip span, .ends { color: var(--muted); }
+.status-pair a:hover small { text-decoration: underline; }
+.caption { margin: .25rem 0 .8rem; font-size: .88rem; color: var(--muted); }
+.board { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); align-items: start; margin-bottom: 1rem; }
+.board > .card { min-width: 0; margin: 0; padding: clamp(1rem, 2.5vw, 1.5rem); }
+.board h2 { margin: 0; }
+.board h3 { margin: 0; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 1rem; }
+.dial { position: relative; width: 8.5rem; margin: .5rem auto; color: var(--star); }
+.dial svg { display: block; width: 100%; fill: none; stroke: var(--surface-2); stroke-width: 9; }
+.dial .arc { stroke: currentcolor; stroke-linecap: round; }
+.dial p { position: absolute; inset: 0; display: grid; align-content: center; margin: 0; text-align: center; }
+.dial strong { color: var(--text); font-size: 2.75rem; line-height: 1.1; }
+.dial strong span { color: var(--star); font-size: .45em; vertical-align: middle; }
+.dial p > span { color: var(--muted); font-size: .85rem; }
+.score-note { margin: .2rem 0 1rem; font-size: .9rem; text-align: center; }
+.bar-item { display: grid; grid-template-columns: 1fr auto; gap: .1rem .6rem; margin: .65rem 0; font-size: .88rem; }
+.bar-item .game-bar { grid-column: 1 / -1; height: .46rem; margin: .1rem 0; }
+.ruler { padding: .4rem .1rem; }
+.pointer { margin: 0; color: var(--star); line-height: 1; }
+.pointer b { display: inline-block; padding: .35rem .55rem; border-radius: 2rem; background: var(--star-soft); }
+.ends { display: flex; justify-content: space-between; gap: 1em; margin: 0; font-size: .78rem; }
+.takeaway { margin: .8rem 0; }
+.board details { border-top: 1px solid var(--border); }
+.board summary { padding: .65rem 0; color: var(--primary); font-weight: 650; cursor: pointer; }
+.route { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; color: var(--primary); }
+.route span:first-child { padding: .23rem .55rem; border-radius: .4rem; background: var(--primary-soft); font-weight: 700; }
+.streak-strip {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .4rem 1rem;
+    margin: 1rem 0 1.5rem; padding: .75rem 1rem; border-inline-start: 3px solid var(--primary); background: var(--primary-soft);
+}
+.streak-strip span { font-size: .85rem; }
+/* Challenge cards: the rail of the thresholds (earned stars filled, the next one circled), what is done, what is
+   missing for the next star, the rule folded. */
+.challenge-list { display: grid; gap: 1rem; align-items: start; }
+.challenge { min-width: 0; margin: 0; padding: clamp(.9rem, 2vw, 1.25rem); }
+.medal-top { display: flex; gap: .75rem; align-items: center; }
+.medal-top h3 { margin: 0 0 .15rem; font-size: 1.05rem; }
+.medal-score { color: var(--star); font-size: .88rem; font-weight: 700; }
 .challenge-icon {
     flex: none; display: flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
     border-radius: 12px; background: var(--star-soft); color: var(--star);
 }
 .challenge-icon svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.challenge-body { flex: 1; min-width: 0; }
-.challenge-body p { margin: .25rem 0; }
-.challenge-progress { font-weight: 600; }
-.challenge-ladder { margin: .5rem 0; padding: 0; list-style: none; font-size: .85rem; }
-.challenge-ladder li { display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem .5rem; padding: .2rem 0; color: var(--muted); }
-.challenge-ladder li.is-done, .challenge-ladder li.is-next { color: var(--text); }
-.challenge-ladder li.is-next { font-weight: 600; }
-.ladder-stars { min-width: 4.5em; color: var(--star); font-size: 1.1rem; line-height: 1; }
-.challenge-ladder li:not(.is-done) .ladder-stars { opacity: .45; }
-.ladder-mark { color: var(--positive); font-weight: 700; }
-.challenge-ladder .pill, .level-ladder .pill {
+.rail { display: flex; margin: .9rem 0; padding: .8rem .15rem; list-style: none; border-radius: var(--radius); background: var(--surface-2); }
+.rail li {
+    position: relative; isolation: isolate; flex: 1; display: grid; justify-items: center; align-content: start;
+    color: var(--muted); font-size: .78rem; text-align: center;
+}
+.rail li:not(:last-child)::after {
+    content: ""; position: absolute; top: 1rem; left: 50%; z-index: -1; width: 100%; border-top: 1px solid var(--field-border);
+}
+.rail svg { width: 2rem; height: 2rem; background: var(--surface-2); fill: var(--surface-2); stroke: currentcolor; stroke-width: 1.8; stroke-linejoin: round; }
+.rail b { margin: .25rem 0 .1rem; color: var(--text); }
+.rail small { font-size: .72rem; }
+.rail .earned, .rail .next { color: var(--star); }
+.rail .earned svg { fill: currentcolor; }
+.rail .next svg { border-radius: 50%; outline: 1px dashed currentcolor; outline-offset: 1px; }
+.rail .next small { font-weight: 750; }
+.challenge p { margin: .2rem 0 0; line-height: 1.45; }
+.fact b, .delta b { display: block; font-size: .84rem; }
+.fact b { color: var(--primary); }
+.delta { margin: .75rem 0; padding: .65rem .85rem; border-inline-start: 3px solid var(--star); border-radius: .3rem; background: var(--star-soft); }
+.delta b { color: var(--star); }
+.delta.finished { border-color: var(--primary); background: var(--primary-soft); }
+.delta.finished b { color: var(--primary); }
+.delta-steps { margin: .3rem 0 0; padding-left: 1.2rem; }
+.challenge details summary { padding: .5rem 0; color: var(--muted); font-size: .85rem; cursor: pointer; }
+.challenge details p { padding-bottom: .5rem; }
+.level-ladder .pill {
     padding: 0 .45rem; border: 1px solid var(--star); border-radius: 999px; background: var(--star-soft);
     color: var(--star); font-size: .75rem; font-weight: 700;
 }
@@ -1432,6 +1548,9 @@ a.wealth-tile-value { color: var(--text); }
 
 @media (min-width: 760px) {
     .welcome-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .welcome-grid, .game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .welcome-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
     .challenge-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .score-panel { grid-row: span 2; }
+    .dial { width: 10.5rem; }
 }

@@ -47,6 +47,9 @@ docker compose up -d
 docker compose ps
 ```
 
+Only `app` has an HTTP probe. `scheduler` and `backup` should be running, without a `healthy` status.
+To check their activity, inspect `docker compose logs scheduler backup`.
+
 The container serves the site over HTTP on port 8080. The reverse proxy publishes it over HTTPS, for example with
 nginx:
 
@@ -106,8 +109,10 @@ docker compose up -d
 
 ## 5. Backing up and restoring
 
-The `backup` service backs up the database every day into the `backups` volume (30 archives kept). Copy these archives
-off the server, with `patrimeter.env` ([backup](backup.en.md)).
+The `backup` service backs up the database into the `backups` volume (30 archives kept), then checks the latest
+archive. If both operations succeed, the next backup runs 24 hours later by default (`PATRIMETER_BACKUP_INTERVAL`,
+in seconds). If either the backup or the check fails, the service logs the failure and starts a new backup one hour
+later. Copy the archives and `patrimeter.env` off the server ([backup](backup.en.md)).
 
 ```sh
 cd /srv/patrimeter-docker

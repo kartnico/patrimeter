@@ -32,12 +32,10 @@ test('compte famille : export d’un membre, import pour lui, vues de la famille
     await logIn(family, seededUser('famille'));
     await family.goto('/famille');
     await expect(family.locator('section.family-member h2')).toHaveText(['Camille', 'Julien']);
-    await family.getByLabel("Nouveau fichier d'export de Camille (JSON, 2 Mo au plus)").setInputFiles(file);
-    await family
-        .locator('section.family-member')
-        .filter({ hasText: 'Camille' })
-        .getByRole('button', { name: 'Mettre à jour' })
-        .click();
+    const camille = family.locator('section.family-member').filter({ hasText: 'Camille' });
+    await expect(camille.locator('.family-pill')).toBeVisible();
+    await camille.locator('input[type="file"]').setInputFiles(file);
+    await camille.getByRole('button', { name: 'Mettre à jour' }).click();
     await expect(family.locator('.flash-success')).toContainText('Données de Camille importées');
 
     // View of the family, then of Julien alone; the choice is kept from one page to the next.

@@ -4,14 +4,29 @@
 
 {% block body %}
 <section class="card setup-card">
+    {% if not replacing %}
+    {{ include('_onboarding_steps.html.twig', {current: 3, duration: 'environ 1 minute'|trans}, with_context = false) }}
+    {% endif %}
     <h1>{{ 'Clé de récupération'|trans }}</h1>
     <p>{{ 'Vos données sont chiffrées avec votre mot de passe, et personne, pas même l\'administrateur, ne peut les récupérer pour vous. <strong>Cette clé est le seul moyen de les retrouver si vous oubliez votre mot de passe.</strong> Notez-la ou imprimez-la et rangez-la en lieu sûr : elle ne sera plus jamais affichée.'|trans|raw }}</p>
     {% if replacing %}
     <p class="hint">{{ 'Elle remplacera votre clé actuelle, qui reste valable jusqu\'à la confirmation.'|trans }}</p>
     {% endif %}
     <p class="secret-key"><code id="recovery-key">{{ recovery_key }}</code></p>
-    {#- Copy button (app.js): shown only when the browser lets the page write to the clipboard. -#}
-    <p class="copy-actions"><button type="button" class="btn btn-small copy-button" data-copy="recovery-key" data-copied="{{ 'Copié'|trans }}" hidden>{{ 'Copier la clé'|trans }}</button></p>
+    {#- Copy button (app.js): shown only when the browser lets the page write to the clipboard. Print button: shown by
+        app.js. -#}
+    <p class="copy-actions actions"><button type="button" class="btn btn-small copy-button" data-copy="recovery-key" data-copied="{{ 'Copié'|trans }}" hidden>{{ 'Copier la clé'|trans }}</button>
+        <button type="button" class="btn btn-small" data-print hidden>{{ 'Imprimer'|trans }}</button></p>
+    {% if not replacing %}
+    <details class="setup-why" open>
+        <summary>{{ 'Pourquoi deux secrets ?'|trans }}</summary>
+        <ul>
+            <li>{{ '<strong>Codes de secours</strong> (étape 2) : ils remplacent votre téléphone pour vous connecter.'|trans|raw }}</li>
+            <li>{{ '<strong>Clé de récupération</strong> : elle rouvre vos données si vous oubliez votre mot de passe.'|trans|raw }}</li>
+            <li>{{ 'Rangez-les ensemble, par exemple dans un gestionnaire de mots de passe.'|trans }}</li>
+        </ul>
+    </details>
+    {% endif %}
     <p class="visually-hidden" role="status" data-copy-status data-copied-message="{{ 'Clé copiée dans le presse-papiers.'|trans }}"></p>
     {% if error %}
     <p class="flash flash-error" role="alert">{{ error|trans }}</p>
@@ -20,7 +35,7 @@
         <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
         <label for="confirmation">{{ 'Pour confirmer, saisissez les deux derniers groupes de la clé'|trans }}</label>
         <input type="text" id="confirmation" name="confirmation" autocomplete="off" maxlength="12" required>
-        <button type="submit" class="btn btn-primary btn-block">{{ 'J\'ai noté ma clé'|trans }}</button>
+        <button type="submit" class="btn btn-primary btn-block">{{ replacing ? 'J\'ai noté ma clé'|trans : 'J\'ai noté ma clé, continuer'|trans }}</button>
     </form>
 </section>
 {% endblock %}

@@ -65,7 +65,7 @@ final class AccountController extends AbstractController
     {
         $owner = $this->currentUser->id();
         $month = $this->calendar->currentMonth();
-        $valuation = $this->statements->valuation($owner);
+        $valuation = $this->statements->latestValuation($owner, $month);
 
         $active = [];
         $archived = [];

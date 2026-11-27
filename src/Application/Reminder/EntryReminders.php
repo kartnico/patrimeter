@@ -89,31 +89,39 @@ final class EntryReminders
         $sent = 0;
         foreach ($this->reminders->due($month->toString(), $day) as $due) {
             $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
-            $this->reminders->markSent($due['user'], $month->toString(), self::hash($token));
-            $this->inLocale($due['locale'], fn() => $this->mailer->send($due['email'], t('Patrimeter : vos soldes de %month% sont à saisir', ['%month%' => $month->label($due['locale'])]), 'entry_reminder', [
-                'month' => $month->label($due['locale']),
-                'entry_url' => $this->urls->generate('app_entry'),
-                'unsubscribe_url' => $this->urls->generate('app_reminder_unsubscribe', ['token' => $token]),
-                'streak' => $this->game->streakNudge($due['user'], $month),
-            ]));
-            ++$sent;
+            $hash = self::hash($token);
+            if (!$this->reminders->claim($due['user'], $month->toString(), $hash, $this->calendar->now()->getTimestamp())) {
+                continue;
+            }
+            try {
+                $delivered = $this->inLocale($due['locale'], fn(): bool => $this->mailer->sendNow($due['email'], t('Patrimeter : vos soldes de %month% sont à saisir', ['%month%' => $month->label($due['locale'])]), 'entry_reminder', [
+                    'month' => $month->label($due['locale']),
+                    'entry_url' => $this->urls->generate('app_entry'),
+                    'unsubscribe_url' => $this->urls->generate('app_reminder_unsubscribe', ['token' => $token]),
+                    'streak' => $this->game->streakNudge($due['user'], $month),
+                ], $due['locale']));
+                if ($delivered) {
+                    $this->reminders->markSent($due['user'], $month->toString(), $hash);
+                    ++$sent;
+                }
+            } finally {
+                $this->reminders->release($due['user'], $hash);
+            }
         }
-        $this->mailer->flush();
 
         return $sent;
     }
 
-    private function inLocale(string $locale, callable $send): void
+    /** @param callable(): bool $send */
+    private function inLocale(string $locale, callable $send): bool
     {
         if (!$this->translator instanceof LocaleAwareInterface) {
-            $send();
-
-            return;
+            return $send();
         }
         $previous = $this->translator->getLocale();
         $this->translator->setLocale($locale);
         try {
-            $send();
+            return $send();
         } finally {
             $this->translator->setLocale($previous);
         }

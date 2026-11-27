@@ -1,7 +1,8 @@
 # Installer sur Linux
 
 Installation à partir de l'archive d'une version. Pour un conteneur, voir [Installer avec Docker](docker.md).
-Toutes les commandes se lancent en **root**, et chacune peut être rejouée sans risque.
+Lancez les commandes en **root**. Les étapes d’installation peuvent être rejouées avec la même archive sans modifier
+les droits des données dans `var/`. Pour une nouvelle version, suivez la [mise à jour](mise-a-jour.md).
 
 ## 1. Prérequis
 
@@ -25,13 +26,14 @@ la dernière version (projet GitLab, *Deploy > Releases*), dans `/tmp`.
 ARCHIVE="$(ls /tmp/patrimeter-v*.tar.gz | sort -V | tail -n 1)"
 # Empreinte vérifiée : la commande affiche « Réussi » (ou « OK »)
 (cd /tmp && sha256sum -c "$(basename "$ARCHIVE").sha256")
-# Code dans /srv/patrimeter, à root
+# Extraire le code en tant que root, sans toucher aux données ni aux secrets existants
 mkdir -p /srv/patrimeter
-tar -xzf "$ARCHIVE" -C /srv/patrimeter --strip-components=1
-chown -R root:root /srv/patrimeter
-# Seul var/ (base, sessions, cache, journaux) appartient à l'utilisateur de php-fpm
-install -d -o www-data -g www-data -m 0750 /srv/patrimeter/var
-install -d -o www-data -g www-data -m 0700 /srv/patrimeter/var/uploads
+tar -xzf "$ARCHIVE" -C /srv/patrimeter --strip-components=1 --no-same-owner \
+    --anchored --no-wildcards-match-slash --exclude='*/var' --exclude='*/.env.local'
+# Créer uniquement les répertoires manquants
+cd /srv/patrimeter
+[ -d var ] || install -d -o www-data -g www-data -m 0750 var
+[ -d var/uploads ] || install -d -o www-data -g www-data -m 0700 var/uploads
 ```
 
 Seul `public/` est servi par nginx : ne placez pas Patrimeter sous `/var/www/`.

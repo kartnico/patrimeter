@@ -86,6 +86,12 @@ final class SaverLevel
         return intdiv(100 * ($this->stars - $this->from), $this->next - $this->from);
     }
 
+    /** Name of the next level (French source string), or null at the last level. */
+    public function nextName(): ?string
+    {
+        return $this->next === null ? null : (self::LEVELS[$this->next] ?? null);
+    }
+
     /** Stars still needed for the next level, or null at the last level. */
     public function missing(): ?int
     {

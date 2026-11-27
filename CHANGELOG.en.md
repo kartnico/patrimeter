@@ -4,6 +4,55 @@ All notable changes to Patrimeter are recorded here (English translation of `CHA
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); numbering:
 [semantic versioning](https://semver.org/).
 
+## [3.6.0] - 2026-11-27
+
+### Changed
+
+- **Redesigned Challenges page**: your two statuses at the top (**My level**, **My profile**), a dial of the stars and
+  their split by family of challenges, how far the next level and the next stage are, then the entry streak. Each
+  challenge shows its thresholds from left to right (earned, next, later), what is already done and what is missing for
+  the next star; its rule unfolds. Indicative benchmarks, to adapt to your situation: this is not investment advice.
+- **Clearer first start**: a "Step 2 of 4" thread at the top of each screen (account, security, recovery key, first
+  accounts), without the misleading "Last step"; "Why two secrets?" tells the backup codes from the recovery key, both
+  of which can be printed; the welcome recommends the questions, then offers the pyramid and folds the three other ways
+  to start; a family account becomes a real choice there.
+- **Family members page**: each member's status for the month in words ("Up to date", "To update"), their new file
+  dropped on their card, "Remove" folded under "More actions", and the three monthly steps. Under the choice of the
+  view, a line says what it adds up and flags each file to update; "This account" becomes "Family's accounts", and the
+  imported balances are counted "of the month" or "carried over".
+- CI: the test of the Docker Hub image promotion runs in every full pipeline, before any tag, and no longer only at
+  publication time.
+
+### Fixed
+
+- Docker Hub publication: the job reads the version of the tested image with Buildah and shares its credentials with
+  Skopeo. In 3.5.0, the registry refused it (403): the 3.5.0 image was not published, 3.6.0 replaces it.
+
+## [3.5.0] - 2026-11-27
+
+### Installation
+
+- Docker Compose: use the Compose file from this release for the recommended configuration. The HTTP probe applies
+  to the web service; a failed backup or verification is retried after one hour.
+- Linux: reinstalling the same archive preserves data permissions and existing secrets.
+
+### Changed
+
+- Updated the affected Symfony components to 7.4.24, which includes security fixes.
+- The account list decrypts only the latest applicable statement for each displayed balance.
+- An older Docker rebuild can no longer replace a newer build of the same release.
+
+### Fixed
+
+- An account's opening date can no longer be moved beyond the month of an existing statement.
+- Copying a property to an earlier month preserves the initial ownership share for the property and its prorated loan.
+- Viewing challenges or reading the API no longer consumes the star announcement for the next monthly entry.
+- On Linux, the 3.5 updater keeps the last confirmed entry in a verified snapshot outside backup rotation.
+  Rollback rejects a missing or corrupt snapshot before taking the site offline.
+- Monthly reminders can be retried after a mail transport failure.
+- The calendar allows returning to the current month from next month; month and year buttons retain an accessible
+  name that identifies their field.
+
 ## [3.4.1] - 2026-11-26
 
 ### Installation
@@ -1434,6 +1483,8 @@ First version: native PHP, SQLite, single user.
 - Authentication with a single password (Argon2id), limited attempts, hardened sessions, CSRF token, security
   headers including a strict CSP.
 
+[3.6.0]: https://github.com/kartnico/patrimeter/compare/v3.5.0...v3.6.0
+[3.5.0]: https://github.com/kartnico/patrimeter/compare/v3.4.1...v3.5.0
 [3.4.1]: https://github.com/kartnico/patrimeter/tree/v3.4.1
 [3.4.0]: https://gitlab.example.org/kartzone/patrimeter/-/compare/v3.3.0...v3.4.0
 [3.3.0]: https://gitlab.example.org/kartzone/patrimeter/-/compare/v3.2.0...v3.3.0

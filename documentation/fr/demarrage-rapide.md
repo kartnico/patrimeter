@@ -4,7 +4,8 @@
 
 Deux façons, au choix :
 
-- **Avec Docker** : `compose.yaml`, un fichier de configuration, puis `docker compose up -d`
+- **Avec Docker** : téléchargez `compose.yaml` et `patrimeter.env.example` depuis `docker/`, configurez
+  `patrimeter.env` à partir du modèle, puis lancez `docker compose up -d`
   ([Installer avec Docker](exploitation/docker.md)).
 - **Sur Linux** : l'archive d'une version, avec PHP et nginx ([Installer sur Linux](exploitation/installation.md)).
 

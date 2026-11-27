@@ -1,16 +1,35 @@
 {#-
-    Choice of the perimeter of a family account (Patrimeter\Http\PerimeterSelection): the family, each member, this
-    account. The links keep the page's other parameters (month, period…). Variable: perimeters (empty without members).
+    Choice of the perimeter of a family account (Patrimeter\Http\PerimeterSelection): the family, each member, the
+    family account's own accounts. The links keep the page's other parameters (month, period…). Below, what the chosen
+    view adds up, and each member file older than the month, in words (never by the colour alone). Variable: perimeters
+    (empty without members).
 -#}
 {% if perimeters is not empty %}
+{%- set perimeter_current = perimeters|filter(choice => choice.current)|first -%}
+{%- set perimeter_has_own = perimeters|filter(choice => choice.key == 'compte') is not empty -%}
 <div class="perimeter-bar">
     <nav class="segmented perimeter-nav" aria-label="{{ 'Périmètre'|trans }}">
         {% for choice in perimeters %}
         <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({perimetre: choice.key})) }}"{% if choice.current %} aria-current="true"{% endif %}>
-            {%- if choice.key == 'famille' -%}{{ 'Toute la famille'|trans }}{%- elseif choice.key == 'compte' -%}{{ 'Ce compte'|trans }}{%- else -%}{{ choice.name }}{%- endif -%}
+            {%- if choice.key == 'famille' -%}{{ 'Toute la famille'|trans }}{%- elseif choice.key == 'compte' -%}{{ 'Comptes de la famille'|trans }}{%- else -%}{{ choice.name }}{%- endif -%}
+            {%- if choice.stale %}<span class="perimeter-stale" aria-hidden="true"> ⚠</span><span class="visually-hidden"> ({{ 'fichier à mettre à jour'|trans }})</span>{% endif -%}
         </a>
         {% endfor %}
     </nav>
     <a class="perimeter-manage small" href="{{ path('app_family') }}">{{ 'Membres de la famille'|trans }}</a>
 </div>
+<p class="perimeter-note small">
+    {%- if perimeter_current.key == 'famille' -%}
+    {{ perimeter_has_own ? 'Toute la famille additionne les données importées des membres et les comptes de la famille.'|trans : 'Toute la famille additionne les données importées des membres.'|trans }}
+    {%- elseif perimeter_current.key == 'compte' -%}
+    {{ 'Comptes de la famille : les comptes propres à ce compte, par exemple ceux des enfants.'|trans }}
+    {%- elseif perimeter_current.exported -%}
+    {{ 'Données importées de %name%, en lecture seule : fichier du %date%.'|trans({'%name%': perimeter_current.name, '%date%': perimeter_current.exported|date_fr}) }}
+    {%- else -%}
+    {{ 'Données importées de %name%, en lecture seule.'|trans({'%name%': perimeter_current.name}) }}
+    {%- endif -%}
+    {% for choice in perimeters|filter(choice => choice.stale) %}
+    <a class="perimeter-stale-link" href="{{ path('app_family') }}"><span aria-hidden="true">⚠ </span>{{ 'Fichier de %name% à mettre à jour'|trans({'%name%': choice.name}) }}</a>
+    {%- endfor %}
+</p>
 {% endif %}

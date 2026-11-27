@@ -28,12 +28,16 @@ services:
   scheduler:
     <<: *patrimeter
     command: scheduler
+    healthcheck:
+      disable: true
     depends_on: [app]
 
   # Daily backup of the database into the "backups" volume.
   backup:
     <<: *patrimeter
     command: backup
+    healthcheck:
+      disable: true
     depends_on: [app]
     volumes:
       - data:/srv/patrimeter/var

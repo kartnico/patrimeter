@@ -57,7 +57,8 @@ final class SetupTest extends FunctionalTestCase
 
         self::assertResponseRedirects('/securite/application', Response::HTTP_SEE_OTHER);
         $this->client->followRedirect();
-        self::assertSelectorTextContains('h1', 'Application d\'authentification');
+        self::assertSelectorTextContains('h1', 'Protégez votre compte');
+        self::assertSelectorTextContains('.onboarding-steps', 'Étape 2 sur 4');
         $account = self::service(UserRepository::class)->findByEmail(self::ADMIN);
         self::assertNotNull($account);
         self::assertTrue($account['email_verified'], 'address deemed confirmed, as with app:user:create');

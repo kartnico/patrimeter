@@ -20,6 +20,8 @@ Each level shows its **net value** (its assets minus the loans linked to it) and
 arrows and the selector change the month. As long as no account exists, the page stays on the current month, the one
 where you create your first accounts: no arrows and no selector (the same for the [monthly update](saisie.md)).
 
+From any other month, including next month, the selector lets you return directly to the current month.
+
 Hovering a level of the pyramid, or clicking it, **highlights its lines** in the other boxes (**Breakdown by level**,
 **How your investments are split**, **Since the start of the year**): tinted background and a bar on the left, the other
 levels of the pyramid fade. A click keeps the highlight; a second click, a click elsewhere or **Escape** removes it.

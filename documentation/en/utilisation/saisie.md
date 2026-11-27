@@ -81,4 +81,5 @@ month keeps its usual value. The same box leads to adding an **account** or a **
 account is open that month yet, the page offers the copy directly, from the current month. Copy the November
 balances: the accounts opened after October are included too, marked "opening moved back". When you save,
 their opening date moves to 1 October and their October balances are saved; an account whose field you empty
-stays open at its date.
+keeps its original opening date. For a property, its initial ownership share also applies to the earlier month,
+including to its prorated loan. Later changes keep their effective dates.

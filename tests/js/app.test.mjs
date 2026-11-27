@@ -363,6 +363,21 @@ describe('boutons de copie des adresses (onglet Agents IA)', () => {
 
         expect(document.querySelector('[data-copy]').hidden).toBe(true);
     });
+
+    test('the print button shows itself and opens the print dialog', () => {
+        const printed = [];
+        const print = window.print;
+        window.print = () => printed.push(true);
+        try {
+            start(`<button type="button" data-print hidden>Imprimer</button>`);
+            const button = document.querySelector('[data-print]');
+            expect(button.hidden).toBe(false);
+            button.click();
+            expect(printed).toEqual([true]);
+        } finally {
+            window.print = print;
+        }
+    });
 });
 
 describe('pyramide du patrimoine', () => {
@@ -457,6 +472,17 @@ describe('month and year fields shown as the month picker', () => {
         document.querySelector('.mp-cell[aria-label="mars 2026"]').click();
         expect(input.value).toBe('2026-03');
         expect(toggle.textContent).toContain('Mars 2026');
+    });
+
+    test('the calendar button keeps the field label when the input is hidden', () => {
+        start(`<label for="value">Mois cible</label>${field('month', '2026-10')}`);
+        const toggle = document.querySelector('.month-field-toggle');
+        expect(document.querySelector('label').control).toBe(toggle);
+        const name = toggle
+            .getAttribute('aria-labelledby')
+            .split(' ')
+            .map((id) => document.getElementById(id).textContent);
+        expect(name).toEqual(['Oct. 2026', 'Mois cible', ' — Choisir dans un calendrier']);
     });
 
     test('a year shows as such, picks from 12 years, and can be emptied', () => {

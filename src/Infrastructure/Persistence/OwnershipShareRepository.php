@@ -41,6 +41,17 @@ final class OwnershipShareRepository
         );
     }
 
+    public function moveInitialShare(UserId $owner, int $accountId, Month $opening, Month $earlier): void
+    {
+        $ciphertext = $this->connection->fetchOne('SELECT ciphertext FROM ownership_shares WHERE user_id = ? AND account_id = ? AND effective_month = ?', [$owner->value, $accountId, $opening->toString()]);
+        if (!is_string($ciphertext) || $opening->compare($earlier) <= 0) {
+            return;
+        }
+        $share = Aead::open($this->vault->key($owner), $ciphertext, self::context($owner, $accountId, $opening->toString()));
+        $this->save($owner, $accountId, $earlier, Row::int(['share' => $share], 'share'));
+        $this->delete($owner, $accountId, $opening);
+    }
+
     public function delete(UserId $owner, int $accountId, Month $month): void
     {
         $this->connection->executeStatement('DELETE FROM ownership_shares WHERE user_id = ? AND account_id = ? AND effective_month = ?', [$owner->value, $accountId, $month->toString()]);

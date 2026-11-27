@@ -130,8 +130,7 @@ final class EntryController extends AbstractController
             ]));
         }
 
-        // Stars earned with this entry (challenges on): announced right away, kept for good.
-        foreach ($this->game->newStars($owner) as $earned) {
+        foreach ($this->game->claimEntryAnnouncements($owner) as $earned) {
             $this->addFlash('success', t('Nouvelle étoile, défi « %challenge% » : %count% sur %max%.', [
                 '%challenge%' => t($earned['challenge']->title()),
                 '%count%' => $earned['stars'],
@@ -197,7 +196,16 @@ final class EntryController extends AbstractController
         $valuation = $this->statements->valuation($owner);
         // Balances of the first accounts, entered roughly on the welcome pages: "to refine" until saved again.
         $approximate = $this->statements->approximate($owner);
-        $shares = new OwnershipShares($this->shares->all($owner));
+        $history = $this->shares->all($owner);
+        $shares = new OwnershipShares($history);
+        foreach ($later as $id => $account) {
+            $initial = $history[$id][Month::fromDate($account->openedOn)->toString()] ?? null;
+            if ($initial !== null) {
+                $history[$id][$month->toString()] = $initial;
+                ksort($history[$id]);
+            }
+        }
+        $entryShares = $later === [] ? $shares : new OwnershipShares($history);
         $previousMonth = $month->previous();
 
         $groups = [];
@@ -220,7 +228,7 @@ final class EntryController extends AbstractController
             $input = $submitted !== null
                 ? ($submitted[$account->id] ?? '')
                 : ($shown !== null ? self::input($account, $shown->cents, $locale) : '');
-            $share = $shares->retainedShare($account, $month);
+            $share = $entryShares->retainedShare($account, $month);
             // Value retained from the amount shown (share applied, liability subtracted): level totals and month's net.
             $retained = self::retained($account, $input, $share, $locale);
             $level = $account->level->value;

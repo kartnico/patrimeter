@@ -50,6 +50,37 @@ enum SaverStage: string
         };
     }
 
+    /**
+     * How far the user is from this stage's condition, when it can be counted: the value measured, capped at the
+     * target, and the target. Null when the condition is a yes or no (Serene) or cannot be measured yet (no budget).
+     *
+     * @return array{value: int, target: int}|null
+     */
+    public function measure(GameFacts $facts): ?array
+    {
+        [$value, $target] = match ($this) {
+            self::Discovery => [count($facts->enteredMonths), 1],
+            self::Organized => [$facts->completeMonths, 3],
+            self::Protected => [$facts->precautionMonths, max(1, $facts->precautionTarget)],
+            self::Serene => [null, 0],
+            self::Builder => [$facts->streak()->length, 12],
+        };
+
+        return $value === null ? null : ['value' => min($value, $target), 'target' => $target];
+    }
+
+    /** What measure() counts, for the bar towards this stage (French source string); null without a measure. */
+    public function measureLabel(): ?string
+    {
+        return match ($this) {
+            self::Discovery => 'Mois saisis',
+            self::Organized => 'Mois où tous les comptes sont saisis',
+            self::Protected => 'Mois de dépenses de côté',
+            self::Serene => null,
+            self::Builder => 'Mois de saisie de suite',
+        };
+    }
+
     /** The stage reached, or null before the first month entered. */
     public static function of(GameFacts $facts): ?self
     {

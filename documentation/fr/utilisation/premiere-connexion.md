@@ -39,17 +39,23 @@ l'administrateur crée le compte pour vous.
 
 ## Application d'authentification
 
+Le premier démarrage compte quatre étapes, rappelées en haut de chaque écran (« Étape 2 sur 4 · environ 2 minutes ») :
+votre compte, la sécurité (application d'authentification et codes de secours), la clé de récupération, puis vos
+premiers comptes.
+
 À la première connexion, Patrimeter demande de configurer une **application d'authentification** (second
-facteur obligatoire) : scannez le QR code, puis saisissez le code à 6 chiffres affiché. Patrimeter affiche
-alors **dix codes de secours** à usage unique : notez-les en lieu sûr, ils remplacent le téléphone s'il est
-perdu. **Copier les codes** les met dans le presse-papiers, un par ligne, pour les coller dans un gestionnaire de mots
-de passe.
+facteur obligatoire), sur l'écran **Protégez votre compte** : scannez le QR code, puis saisissez le code à 6 chiffres
+affiché et **Activer et voir mes codes de secours**. Patrimeter affiche alors **dix codes de secours** à usage unique :
+notez-les en lieu sûr, ils remplacent le téléphone s'il est perdu. **Copier les codes** les met dans le presse-papiers,
+un par ligne, pour les coller dans un gestionnaire de mots de passe ; **Imprimer** les imprime.
 
 Ensuite, à chaque connexion : adresse et mot de passe, puis code de l'application (ou un code de secours).
 
 ## Clé de récupération
 
 Patrimeter affiche une **clé de récupération**, une seule fois, et vous demande d'en ressaisir une partie.
+**Pourquoi deux secrets ?** rappelle le rôle de chacun : les codes de secours remplacent le téléphone pour vous
+connecter, la clé rouvre vos données si vous oubliez votre mot de passe. **Imprimer** imprime la clé.
 Vos données sont chiffrées avec une clé que seul votre mot de passe ouvre : **sans clé de récupération, un
 mot de passe oublié fait perdre les données** (l'accès au compte, lui, se retrouve). Rangez-la avec vos
 codes de secours, par exemple dans un gestionnaire de mots de passe : **Copier la clé** la met dans le
@@ -78,20 +84,25 @@ agents IA.
 
 ## Premiers comptes
 
-Tant qu'aucun compte n'existe, la page **Patrimoine** reste sur le mois en cours et propose cinq façons de commencer :
+Tant qu'aucun compte n'existe, la page **Patrimoine** reste sur le mois en cours et propose, en dernière étape du
+premier démarrage, de dessiner votre pyramide (**Dessinons votre pyramide**) :
 
-- **Construire ma pyramide** (le plus simple) : la pyramide vide, et ses six niveaux de la base au sommet. **Remplir**
-  ouvre un niveau avec ses comptes courants (compte courant, Livret A, LDDS, LEP, PEA, assurance-vie…) : indiquez le
-  solde d'aujourd'hui de ce que vous détenez, laissez vide le reste, puis **Valider ce niveau** ; le niveau se colore
-  dans la pyramide. **Je n'en ai pas** passe au suivant ;
-- **Répondre à quelques questions** (pour débuter) : une question à la fois, en mots courants (« Avez-vous de l'argent
+- **Répondre à quelques questions** (recommandé) : une question à la fois, en mots courants (« Avez-vous de l'argent
   de côté, disponible tout de suite ? »), avec une réponse par tranche (« de 1 000 € à 5 000 € »), un montant exact
   ou « Non, ou je ne sais pas ». **Pourquoi cette question ?** dit à quel niveau de la pyramide elle correspond. Une
   tranche compte pour son milieu. La dernière question, facultative, choisit votre style d'épargnant
   ([défis](defis.md#profil-depargnant)). **Créer mes comptes** crée d'un coup les comptes répondus ;
-- **Saisie express** : tous ces comptes sur une seule page, créés d'un coup avec **Créer mes comptes** ;
-- **Importer un fichier CSV** : comptes, crédits et biens depuis un tableur ([import CSV](import-csv.md)) ;
-- **Créer compte par compte**, avec tous les réglages : niveau, nature, date d'ouverture ([comptes](comptes.md)).
+- **Construire ma pyramide**, si vous connaissez vos comptes : la pyramide vide, et ses six niveaux de la base au
+  sommet. **Remplir** ouvre un niveau avec ses comptes courants (compte courant, Livret A, LDDS, LEP, PEA,
+  assurance-vie…) : indiquez le solde d'aujourd'hui de ce que vous détenez, laissez vide le reste, puis **Valider ce
+  niveau** ; le niveau se colore dans la pyramide. **Je n'en ai pas** passe au suivant ;
+- **Autres façons de commencer**, repliées :
+    - **Saisie express** : tous ces comptes sur une seule page, créés d'un coup avec **Créer mes comptes** ;
+    - **Importer un fichier CSV** : comptes, crédits et biens depuis un tableur ([import CSV](import-csv.md)) ;
+    - **Créer compte par compte**, avec tous les réglages : niveau, nature, date d'ouverture ([comptes](comptes.md)).
+
+Un compte famille ne se remplit pas : sous **Ce compte est pour une famille ?**, **Réunir une famille** mène aux
+[membres de la famille](famille.md).
 
 Le nom de chaque compte reprend son type et se modifie. Pour un crédit, indiquez le capital restant dû. Des montants
 approximatifs suffisent : ils sont marqués **à affiner** dans la [saisie du mois](saisie.md#lire-lecran), jusqu'à ce

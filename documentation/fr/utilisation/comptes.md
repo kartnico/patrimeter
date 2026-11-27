@@ -12,6 +12,8 @@ Un crédit porte la mention **dû** et son capital restant dû précédé de « 
 
 ![Liste des comptes](../captures/comptes-ordinateur.png)
 
+Modifier la date d’ouverture ne peut pas placer un relevé existant avant le premier mois d’activité du compte.
+
 ## Créer un compte
 
 **+ Nouveau compte**, puis :

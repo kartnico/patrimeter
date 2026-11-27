@@ -51,6 +51,9 @@ final class PropertyPortfolio
      */
     public function conflicts(UserId $owner, Account $account, array $data): array
     {
+        if ($data['opened_on'] > $account->openedOn && $this->statements->hasBefore($owner, $account->id, Month::fromDate($data['opened_on']))) {
+            return ['opened_on' => 'Un relevé existe avant ce mois d’ouverture.'];
+        }
         if ($account->linkedAssetId !== null && $data['nature'] !== Nature::Liability->value) {
             return ['nature' => 'Ce crédit est rattaché à un bien : détachez-le d\'abord.'];
         }

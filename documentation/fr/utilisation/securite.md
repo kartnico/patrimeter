@@ -73,6 +73,8 @@ seuls les mois saisis et les étoiles gagnées servent, jamais un montant. Le li
 désactive le rappel sans vous connecter (une page, puis un bouton). Le rappel n'existe que si l'instance envoie des
 e-mails.
 
+Si le transport de courrier échoue, le rappel reste éligible au prochain passage horaire tant que le mois est à saisir.
+
 ## Langue des e-mails
 
 **Langue des e-mails** (onglet Profil) : **Français**, **English**, ou **Celle de l'interface au moment de l'envoi**

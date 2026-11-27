@@ -88,12 +88,26 @@ final class GameRepository
         return $stars;
     }
 
+    /** @return array<string, int> newly claimed announcements, keyed by challenge */
+    public function claimAnnouncements(UserId $owner): array
+    {
+        $awards = [];
+        foreach ($this->connection->fetchAllAssociative(
+            'UPDATE game_stars SET announcement_pending = 0 WHERE user_id = ? AND announcement_pending = 1 RETURNING challenge, stars',
+            [$owner->value],
+        ) as $row) {
+            $awards[Row::string($row, 'challenge')] = Row::int($row, 'stars');
+        }
+
+        return $awards;
+    }
+
     /** Keeps the stars of a challenge if they beat the best ones stored (never lowers them). */
     public function raise(UserId $owner, Challenge $challenge, int $stars, string $today): void
     {
         $this->connection->executeStatement(
-            'INSERT INTO game_stars (user_id, challenge, stars, earned_on) VALUES (?, ?, ?, ?)
-             ON CONFLICT(user_id, challenge) DO UPDATE SET stars = excluded.stars, earned_on = excluded.earned_on
+            'INSERT INTO game_stars (user_id, challenge, stars, earned_on, announcement_pending) VALUES (?, ?, ?, ?, 1)
+             ON CONFLICT(user_id, challenge) DO UPDATE SET stars = excluded.stars, earned_on = excluded.earned_on, announcement_pending = 1
              WHERE excluded.stars > game_stars.stars',
             [$owner->value, $challenge->value, $stars, $today],
         );

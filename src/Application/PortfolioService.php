@@ -204,8 +204,8 @@ final class PortfolioService
     /** @return list<array<string, mixed>> */
     public function accountList(UserId $owner): array
     {
-        $valuation = $this->statements->valuation($owner);
         $month = $this->calendar->currentMonth();
+        $valuation = $this->statements->latestValuation($owner, $month);
 
         return array_map(
             static function (Account $account) use ($valuation, $month): array {

@@ -63,6 +63,24 @@ final class ReminderTest extends FunctionalTestCase
         self::assertSame(0, $reminders->sendDue(), 'once a month');
     }
 
+    public function testAFailedTransportCanBeRetriedWithoutCountingTheFailure(): void
+    {
+        $reminders = self::service(EntryReminders::class);
+        $reminders->choose(self::owner(), 10, 'fr');
+        $events = self::service(\Symfony\Component\EventDispatcher\EventDispatcherInterface::class);
+        $fail = static function (): never {
+            throw new \Symfony\Component\Mailer\Exception\TransportException('Test failure');
+        };
+        $events->addListener(\Symfony\Component\Mailer\Event\MessageEvent::class, $fail);
+        try {
+            self::assertSame(0, $reminders->sendDue());
+        } finally {
+            $events->removeListener(\Symfony\Component\Mailer\Event\MessageEvent::class, $fail);
+        }
+        self::assertSame(1, $reminders->sendDue());
+        self::assertSame(0, $reminders->sendDue());
+    }
+
     public function testTheReminderOfTheDayWaitsUntilNineInTheMorning(): void
     {
         $reminders = self::service(EntryReminders::class);

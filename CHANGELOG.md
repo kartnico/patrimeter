@@ -4,6 +4,56 @@ Toutes les évolutions notables de Patrimeter sont consignées ici. Format :
 [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) ; numérotation :
 [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [3.6.0] - 2026-11-27
+
+### Modifié
+
+- **Page Défis redessinée** : vos deux statuts en tête (**Mon niveau**, **Mon profil**), un cadran des étoiles et leur
+  répartition par famille de défis, la distance au niveau suivant et au stade suivant, puis la série de saisies. Chaque
+  défi montre ses paliers de gauche à droite (acquis, suivant, à venir), ce qui est déjà fait et ce qui manque pour la
+  prochaine étoile ; sa règle se déplie. Repères indicatifs, à adapter à votre situation : ce n'est pas un conseil en
+  investissement.
+- **Premier démarrage plus clair** : un fil « Étape 2 sur 4 » en tête de chaque écran (compte, sécurité, clé de
+  récupération, premiers comptes), sans le « Dernière étape » trompeur ; « Pourquoi deux secrets ? » distingue les codes
+  de secours de la clé de récupération, qui s'impriment tous deux ; l'accueil recommande les questions, propose ensuite
+  la pyramide et replie les trois autres façons de commencer ; un compte famille y devient un vrai choix.
+- **Page Membres de la famille** : le statut du mois de chaque membre en mots (« À jour », « À mettre à jour »), son
+  nouveau fichier déposé sur sa carte, « Retirer » replié sous « Plus d'actions », et les trois étapes du mois. Sous le
+  choix de la vue, une ligne dit ce qu'elle additionne et signale chaque fichier à mettre à jour ; « Ce compte » devient
+  « Comptes de la famille », et les soldes importés se comptent « du mois » ou « reportés ».
+- CI : le test de la promotion des images Docker Hub tourne dans chaque pipeline complet, avant toute étiquette, et non
+  plus seulement au moment de la publication.
+
+### Corrigé
+
+- Publication sur Docker Hub : le job lit la version de l'image testée avec Buildah et partage ses identifiants avec
+  Skopeo. En 3.5.0, il était refusé par le registre (403) : l'image 3.5.0 n'a pas été publiée, la 3.6.0 la remplace.
+
+## [3.5.0] - 2026-11-27
+
+### Installation
+
+- Docker Compose : reprenez le fichier Compose de la version pour la configuration recommandée. La sonde HTTP
+  concerne le service web ; après un échec de sauvegarde ou de vérification, une nouvelle tentative a lieu après 1 h.
+- Linux : réinstaller la même archive préserve les droits des données et les secrets existants.
+
+### Modifié
+
+- Les composants Symfony concernés passent à la version 7.4.24, qui intègre des correctifs de sécurité.
+- La liste des comptes ne déchiffre que le dernier relevé applicable à chaque solde affiché.
+- Une reconstruction Docker ancienne ne peut plus remplacer une reconstruction plus récente de la même version.
+
+### Corrigé
+
+- La date d’ouverture d’un compte ne peut plus être décalée au-delà du mois d’un relevé existant.
+- La copie d’un bien vers un mois antérieur conserve la quote-part initiale du bien et de son crédit au prorata.
+- Consulter les défis ou l’API ne consomme plus l’annonce des étoiles lors de la prochaine saisie mensuelle.
+- Sur Linux, l’outil de mise à jour 3.5 conserve la dernière saisie validée dans une sauvegarde vérifiée,
+  hors rotation. Un retour arrière refuse une copie manquante ou corrompue avant de couper le site.
+- Les rappels mensuels peuvent être retentés après une panne de transport de courrier.
+- Le calendrier permet de revenir au mois en cours depuis le mois suivant ; les boutons des champs mois et année
+  conservent un nom accessible qui identifie le champ.
+
 ## [3.4.1] - 2026-11-26
 
 ### Installation
@@ -1482,6 +1532,8 @@ Première version : PHP natif, SQLite, mono-utilisateur.
 - Authentification par mot de passe unique (Argon2id), limitation des tentatives, sessions
   durcies, jeton CSRF, en-têtes de sécurité dont une CSP stricte.
 
+[3.6.0]: https://github.com/kartnico/patrimeter/compare/v3.5.0...v3.6.0
+[3.5.0]: https://github.com/kartnico/patrimeter/compare/v3.4.1...v3.5.0
 [3.4.1]: https://github.com/kartnico/patrimeter/tree/v3.4.1
 [3.4.0]: https://gitlab.example.org/kartzone/patrimeter/-/compare/v3.3.0...v3.4.0
 [3.3.0]: https://gitlab.example.org/kartzone/patrimeter/-/compare/v3.2.0...v3.3.0

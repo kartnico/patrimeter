@@ -40,6 +40,19 @@ final class StatementRepositoryTest extends IntegrationTestCase
         self::assertTrue($valuation->valueAt($livret, $february)->carried, 'livret A non saisi en février : valeur reportée');
     }
 
+    public function testLatestValuationLoadsOnlyTheLastEligibleMonth(): void
+    {
+        $id = self::createAccount('CC', 'compte_courant');
+        $at = Month::fromString('2026-03');
+        foreach (['2026-01' => 100, '2026-02' => 200, '2026-04' => 400] as $month => $amount) {
+            $this->statements->save(self::owner(), $id, Month::fromString($month), $amount);
+        }
+        $valuation = $this->statements->latestValuation(self::owner(), $at);
+        self::assertNull($valuation->valueAt($id, Month::fromString('2026-01')));
+        self::assertSame(200, $valuation->valueAt($id, $at)?->cents);
+        self::assertSame('2026-02', $valuation->valueAt($id, $at)->sourceMonth->toString());
+    }
+
     public function testEmptyValueRemovesExistingStatement(): void
     {
         $id = self::createAccount('CC', 'compte_courant');

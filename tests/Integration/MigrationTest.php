@@ -92,6 +92,10 @@ final class MigrationTest extends TestCase
         $latest = $runner->normalizedSchema();
         self::assertArrayNotHasKey('settings', $latest, 'table de la v1 retirée');
 
+        $runner->migrateDown('DoctrineMigrations\\Version20261126220000');
+        self::assertStringNotContainsString('announcement_pending', $runner->normalizedSchema()['game_stars']);
+        $runner->migrateDown('DoctrineMigrations\\Version20261126190000');
+        self::assertStringNotContainsString('claim_hash', $runner->normalizedSchema()['entry_reminders']);
         self::assertArrayHasKey('custom_indicators', $latest);
         $runner->migrateDown(self::CUSTOM_INDICATORS);
         self::assertArrayNotHasKey('custom_indicators', $runner->normalizedSchema());

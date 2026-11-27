@@ -10,6 +10,18 @@ elles et un profil d'épargnant. Rien à saisir en plus : tout se calcule à par
 
 ![Défis et étoiles](../captures/defis-ordinateur.png)
 
+## La page Défis
+
+En haut, **Mon niveau** et **Mon profil** donnent vos deux statuts ; chacun mène à sa carte. Viennent ensuite :
+
+- **Mes étoiles** : le total, sur un cadran, et **D'où viennent mes étoiles ?**, les étoiles gagnées par famille de
+  défis (premiers pas, saisie des soldes, budget et objectifs, coussin et crédit, sécurité du compte) ;
+- **Mon niveau** : où vous en êtes entre votre niveau et le suivant, et combien d'étoiles il manque ; **Voir les 6
+  niveaux** déplie l'échelle ;
+- **Mon profil** : votre stade, le suivant, une barre quand sa condition se compte (mois saisis, mois de dépenses de
+  côté…) et ce qu'il demande ; **Voir les 5 stades** déplie l'échelle ;
+- **Ma série** : les mois de saisie de suite et le joker de l'année.
+
 ## Les défis
 
 Chaque défi donne jusqu'à trois étoiles, à des paliers (cinq pour **Premiers pas**, deux pour **Compte protégé**) :
@@ -37,26 +49,30 @@ Chaque défi donne jusqu'à trois étoiles, à des paliers (cinq pour **Premiers
   égale au taux que **vous** choisissez sur sa carte (de 5 % à 50 %) : Patrimeter n'en propose aucun. Sans taux choisi,
   ni budget, le défi l'indique. Un mois sans budget saisi reprend celui du mois précédent, comme dans le budget.
 
-Chaque carte montre ses étoiles et son score (« 1 sur 3 »), ce qu'elle récompense, puis l'échelle de ses étoiles, de la
-première en bas (gagnée, cochée) à la dernière en haut : chaque palier dit ce qu'il demande, et le prochain porte la
-mention **prochaine étoile**. Viennent ensuite où vous en êtes ce mois-ci et une barre jusqu'à la prochaine étoile. Les
-défis aux étoiles toutes gagnées passent dans **Réussis**.
+Chaque carte montre son score (« 1 étoile acquise sur 3 »), puis ses paliers de gauche à droite, chacun sous son
+étoile : **Acquise** (étoile pleine), **Suivante** (étoile cerclée) ou **À venir**. Viennent ensuite **Déjà fait** (où
+vous en êtes ce mois-ci) et ce qui manque pour la prochaine étoile, par exemple « Pour la 2ᵉ étoile : encore 3 mois de
+saisie de suite. » ; un défi qu'il faut d'abord rendre mesurable dit quoi faire (**Avant de commencer**). **Règle du
+défi** déplie ce qu'il récompense. Les défis aux étoiles toutes gagnées passent dans **Réussis**, avec la mention
+**Défi réussi**.
 
 **Une étoile gagnée ne se perd jamais** : si une série s'arrête ou si un solde baisse, les étoiles déjà obtenues
 restent ; seule la progression du mois change.
 
 ## Étoiles après la saisie du mois
 
-Après **Valider la saisie …** du mois, un message annonce chaque nouvelle étoile : « Nouvelle étoile, défi « Série de
-saisies » : 1 sur 3. » Les étoiles gagnées ailleurs (une clé d'accès ajoutée, un budget saisi) sont comptées à la
-prochaine visite de la page Défis.
+Après **Valider la saisie …** du mois, un message annonce le meilleur score nouvellement atteint pour chaque défi,
+par exemple « Nouvelle étoile, défi « Série de saisies » : 1 sur 3. » Consulter d'abord le tableau de bord, la page
+Défis ou l'API ne fait pas disparaître l'annonce. Enregistrer à nouveau les mêmes soldes ne la répète pas. Si vous
+désactivez les défis, la saisie reste disponible sans annonce d'étoile. Vos étoiles et les annonces en attente sont
+conservées pour la réactivation.
 
 ## Niveau
 
 Le total des étoiles donne un **niveau**, de 1 à 6 : Curieux (dès le départ), Attentif (4 étoiles), Régulier (8),
 Prévoyant (13), Constant (18) et Maître de sa pyramide (24). En tout, 28 étoiles sont possibles : la page Défis affiche
-« 8 étoiles sur 28 » en haut, et l'échelle des six niveaux, du premier en bas au dernier en haut, avec le vôtre
-(**vous êtes ici**) et ce qui manque pour le suivant.
+« 8 étoiles sur 28 » en haut, et l'échelle des six niveaux, du premier au dernier, avec le vôtre (**vous êtes ici**) et
+ce qui manque pour le suivant.
 
 ## Profil d'épargnant
 

@@ -55,8 +55,21 @@ final class AccountMailer implements EventSubscriberInterface, ResetInterface
      */
     public function send(string $to, string|TranslatableInterface $subject, string $template, array $context = [], ?string $locale = null): void
     {
+        $this->queue[] = $this->message($to, $subject, $template, $context, $locale);
+    }
+
+    /** @param array<string, mixed> $context */
+    public function sendNow(string $to, TranslatableInterface $subject, string $template, array $context, string $locale): bool
+    {
+        return $this->deliver($this->message($to, $subject, $template, $context, $locale));
+    }
+
+    /** @param array<string, mixed> $context */
+    private function message(string $to, string|TranslatableInterface $subject, string $template, array $context, ?string $locale): TemplatedEmail
+    {
         $locale ??= $this->users->emailLocaleOf($to) ?? $this->translator->getLocale();
-        $this->queue[] = (new TemplatedEmail())
+
+        return (new TemplatedEmail())
             ->from(Address::create($this->from))
             ->to($to)
             ->subject(is_string($subject) ? $this->translator->trans($subject, [], null, $locale) : $subject->trans($this->translator, $locale))
@@ -68,13 +81,22 @@ final class AccountMailer implements EventSubscriberInterface, ResetInterface
     public function flush(): void
     {
         foreach ($this->queue as $email) {
-            try {
-                $this->mailer->send($email);
-            } catch (TransportExceptionInterface $e) {
-                $this->logger->error('Échec de l\'envoi d\'un e-mail : {reason}', ['reason' => $e->getMessage()]);
-            }
+            $this->deliver($email);
         }
         $this->queue = [];
+    }
+
+    private function deliver(TemplatedEmail $email): bool
+    {
+        try {
+            $this->mailer->send($email);
+
+            return true;
+        } catch (TransportExceptionInterface) {
+            $this->logger->error('Échec du transport de courrier.');
+
+            return false;
+        }
     }
 
     #[\Override]

@@ -40,51 +40,43 @@
     <a class="btn" href="{{ path('app_family') }}">{{ 'Membres de la famille'|trans }}</a>
 </div>
 {% elseif not has_accounts %}
-{#- Welcome: five ways to start, the pyramid built level by level first. -#}
+{#- Welcome, last step of the first start: the beginner's questions recommended, the pyramid next, the other three ways
+    folded; then a family account, which imports its members instead of being filled. -#}
 <section class="card welcome" aria-labelledby="welcome-title">
-    <h2 id="welcome-title">{{ 'Bienvenue dans Patrimeter'|trans }}</h2>
-    <p>{{ 'En quelques minutes, dessinons votre pyramide de patrimoine : comment voulez-vous commencer ? Tout se modifie ensuite.'|trans }}</p>
+    {{ include('_onboarding_steps.html.twig', {current: 4, duration: 'environ 4 minutes'|trans}, with_context = false) }}
+    <h2 id="welcome-title">{{ 'Dessinons votre pyramide'|trans }}</h2>
+    <p>{{ 'Votre compte est prêt. Des ordres de grandeur suffisent : vous les préciserez lors de la saisie du mois.'|trans }}</p>
     <ul class="welcome-choices">
         <li>
-            <a class="welcome-choice is-default" href="{{ path('app_welcome_pyramid') }}">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 22 20H2zM6.5 13h11M9.3 8h5.4"/></svg>
-                <span><strong>{{ 'Construire ma pyramide'|trans }}</strong> <span class="welcome-tag">{{ 'le plus simple'|trans }}</span><br>
-                <span class="muted small">{{ 'Niveau par niveau, en partant de la base · environ 5 minutes'|trans }}</span></span>
-            </a>
-        </li>
-        <li>
-            <a class="welcome-choice" href="{{ path('app_welcome_questions') }}">
+            <a class="welcome-choice is-default" href="{{ path('app_welcome_questions') }}">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></svg>
-                <span><strong>{{ 'Répondre à quelques questions'|trans }}</strong> <span class="welcome-tag">{{ 'pour débuter'|trans }}</span><br>
-                <span class="muted small">{{ 'Une question à la fois, des montants par tranches · environ 4 minutes'|trans }}</span></span>
+                <span><strong>{{ 'Répondre à quelques questions'|trans }}</strong> <span class="welcome-tag">{{ 'recommandé'|trans }}</span><br>
+                <span class="muted small">{{ 'Une question à la fois, en mots courants, des montants par tranches · environ 4 minutes'|trans }}</span></span>
             </a>
         </li>
         <li>
-            <a class="welcome-choice" href="{{ path('app_welcome_express') }}">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>
-                <span><strong>{{ 'Saisie express'|trans }}</strong><br>
-                <span class="muted small">{{ 'Tous vos comptes et leurs soldes sur une seule page · environ 2 minutes'|trans }}</span></span>
-            </a>
-        </li>
-        <li>
-            <a class="welcome-choice" href="{{ path('app_data', {_fragment: 'csv'}) }}">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>
-                <span><strong>{{ 'Importer un fichier CSV'|trans }}</strong><br>
-                <span class="muted small">{{ 'Comptes, crédits et biens depuis un tableur'|trans }}</span></span>
-            </a>
-        </li>
-        <li>
-            <a class="welcome-choice" href="{{ path('app_account_new') }}">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                <span><strong>{{ 'Créer compte par compte'|trans }}</strong><br>
-                <span class="muted small">{{ 'Avec tous les réglages : niveau, nature, date d\'ouverture'|trans }}</span></span>
+            <a class="welcome-choice" href="{{ path('app_welcome_pyramid') }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 22 20H2zM6.5 13h11M9.3 8h5.4"/></svg>
+                <span><strong>{{ 'Construire ma pyramide'|trans }}</strong><br>
+                <span class="muted small">{{ 'Vous connaissez vos comptes : niveau par niveau, depuis la base · environ 5 minutes'|trans }}</span></span>
             </a>
         </li>
     </ul>
+    <details class="welcome-more">
+        <summary>{{ 'Autres façons de commencer'|trans }}</summary>
+        <ul>
+            <li><a href="{{ path('app_welcome_express') }}">{{ 'Saisie express'|trans }}</a> : {{ 'tous vos comptes et leurs soldes sur une seule page'|trans }}</li>
+            <li><a href="{{ path('app_data', {_fragment: 'csv'}) }}">{{ 'Importer un fichier CSV'|trans }}</a> : {{ 'comptes, crédits et biens depuis un tableur'|trans }}</li>
+            <li><a href="{{ path('app_account_new') }}">{{ 'Créer compte par compte'|trans }}</a> : {{ 'avec tous les réglages, niveau, nature, date d\'ouverture'|trans }}</li>
+        </ul>
+    </details>
     <p class="muted small">{{ 'Propriétaire d\'un logement ou d\'un bien locatif ? Créez-le comme bien immobilier, avec votre part et ses crédits.'|trans }}
         <a href="{{ path('app_property_new') }}">{{ 'Créer un bien immobilier'|trans }}</a></p>
-    <p class="muted small">{{ 'Compte famille : importez plutôt les données de ses membres.'|trans }}
-        <a href="{{ path('app_family') }}">{{ 'Membres de la famille'|trans }}</a></p>
+</section>
+<section class="card welcome-family" aria-labelledby="welcome-family-title">
+    <h2 id="welcome-family-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20a6 6 0 0 1 12 0M13 20a6 6 0 0 1 8-5.6"/></svg>{{ 'Ce compte est pour une famille ?'|trans }}</h2>
+    <p class="small">{{ 'Un compte famille ne se remplit pas : il réunit les données de deux personnes qui tiennent chacune leur propre compte.'|trans }}</p>
+    <p class="actions"><a class="btn" href="{{ path('app_family') }}">{{ 'Réunir une famille'|trans }}</a></p>
 </section>
 {% elseif first_steps is not null %}
 {#- First steps of the challenges: five steps to see the whole wealth, one star each (until they are done once). -#}
@@ -188,7 +180,8 @@
                 <a href="{{ path('app_entry', {mois: month.toString}) }}">{{ '%count% saisi|%count% saisis'|trans({'%count%': snapshot.enteredCount}) }},
                 {{ '%count% reporté|%count% reportés'|trans({'%count%': snapshot.carriedCount}) }}</a>
                 {%- else -%}
-                {{ '%count% saisi|%count% saisis'|trans({'%count%': snapshot.enteredCount}) }},
+                {#- Family or member: the balances come from the members' files, not entered here. -#}
+                {{ '%count% du mois|%count% du mois'|trans({'%count%': snapshot.enteredCount}) }},
                 {{ '%count% reporté|%count% reportés'|trans({'%count%': snapshot.carriedCount}) }}
                 {%- endif -%}
             </dd>

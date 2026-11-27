@@ -5,7 +5,14 @@ declare(strict_types=1);
 namespace Patrimeter\Tests\Functional;
 
 use Doctrine\DBAL\Connection;
+use Patrimeter\Application\Game\ChallengeCard;
 use Patrimeter\Domain\Budget\BudgetGroup;
+use Patrimeter\Domain\Game\Challenge;
+use Patrimeter\Domain\Game\ChallengeFamily;
+use Patrimeter\Domain\Game\ChallengeResult;
+use Patrimeter\Domain\Game\FirstStep;
+use Patrimeter\Domain\Game\SaverLevel;
+use Patrimeter\Domain\Game\SaverStage;
 use Patrimeter\Domain\Goal\GoalScope;
 use Patrimeter\Domain\Goal\GoalStatus;
 use Patrimeter\Domain\Level;
@@ -87,6 +94,7 @@ final class TranslationCompletenessTest extends KernelTestCase
             ...self::journalLabels(),
             WealthDistribution::SOURCE, WealthDistribution::REFERENCE,
             WorldWealthDistribution::SOURCE, WorldWealthDistribution::REFERENCE,
+            ...self::gameLabels(),
         ];
         foreach ($labels as $label) {
             self::assertTrue($catalogue->defines($label), $label);
@@ -110,6 +118,37 @@ final class TranslationCompletenessTest extends KernelTestCase
     private function catalogue(): MessageCatalogueInterface
     {
         return self::getContainer()->get(TranslatorInterface::class)->getCatalogue('en');
+    }
+
+    /** @return list<string> texts of the challenges, their families, the stages, the levels and the first steps */
+    private static function gameLabels(): array
+    {
+        $labels = [];
+        foreach (Challenge::cases() as $challenge) {
+            array_push($labels, $challenge->title(), $challenge->description(), $challenge->progressLabel(), $challenge->thresholdLabel(), $challenge->stepLabel(), $challenge->missingLabel());
+            $unavailable = $challenge->unavailableLabel();
+            if ($unavailable !== null) {
+                $labels[] = $unavailable;
+            }
+        }
+        foreach (SaverStage::cases() as $stage) {
+            array_push($labels, $stage->label(), $stage->requirement());
+            $measure = $stage->measureLabel();
+            if ($measure !== null) {
+                $labels[] = $measure;
+            }
+        }
+        $firstSteps = new ChallengeResult(Challenge::FirstSteps, 0, [1, 2, 3, 4, 5]);
+        foreach (range(0, 4) as $stars) {
+            $labels[] = (string) (new ChallengeCard($firstSteps, $stars))->nextStarLabel();
+        }
+
+        return [
+            ...$labels,
+            ...array_map(static fn(ChallengeFamily $family): string => $family->label(), ChallengeFamily::cases()),
+            ...array_map(static fn(FirstStep $step): string => $step->label(), FirstStep::cases()),
+            ...array_column(SaverLevel::ladder(), 'name'),
+        ];
     }
 
     /** @return list<string> labels of the sign-in log (AuthJournal::LABELS, private) */

@@ -68,6 +68,8 @@ your entry streak and what entering the month would bring to it ("By entering No
 an amount. The link at the bottom of the email turns the reminder off without signing in (a page, then a button). The
 reminder only exists if the instance sends emails.
 
+If mail delivery fails, the reminder remains eligible for the next hourly run while the month still needs an entry.
+
 ## Language of the emails
 
 **Language of the emails** (Profile tab): **Français**, **English**, or **That of the interface at the time of

@@ -42,9 +42,34 @@ final class StatementRepository
         return $result;
     }
 
+    public function hasBefore(UserId $owner, int $accountId, Month $month): bool
+    {
+        return $this->connection->fetchOne('SELECT 1 FROM statements WHERE user_id = ? AND account_id = ? AND month < ? LIMIT 1', [$owner->value, $accountId, $month->toString()]) !== false;
+    }
+
     public function valuation(UserId $owner): Valuation
     {
         return new Valuation($this->all($owner));
+    }
+
+    /** Only the latest eligible ciphertext is needed for each account in a single-month view. */
+    public function latestValuation(UserId $owner, Month $at): Valuation
+    {
+        $values = [];
+        $rows = $this->connection->fetchAllAssociative(
+            'SELECT s.account_id, s.month, s.ciphertext FROM accounts a
+             JOIN statements s ON s.user_id = a.user_id AND s.account_id = a.id AND s.month = (
+                 SELECT MAX(h.month) FROM statements h WHERE h.account_id = a.id AND h.user_id = a.user_id AND h.month <= ?
+             ) WHERE a.user_id = ?',
+            [$at->toString(), $owner->value],
+        );
+        foreach ($rows as $row) {
+            $id = Row::int($row, 'account_id');
+            $month = Row::string($row, 'month');
+            $values[$id][$month] = $this->amount($owner, $id, $month, Row::string($row, 'ciphertext'));
+        }
+
+        return new Valuation($values);
     }
 
     /** @return array<string, int> YYYY-MM => cents, descending months */

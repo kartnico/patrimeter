@@ -67,7 +67,7 @@ final class SetupController extends AbstractController
             throw $this->createNotFoundException();
         }
         $security->login($user, PasswordLoginAuthenticator::class, 'main');
-        $this->addFlash('success', t('Compte créé. Dernière étape : configurez votre application d\'authentification.'));
+        $this->addFlash('success', t('Compte créé. Étape suivante : protégez-le avec une application d\'authentification.'));
 
         return $this->redirectToRoute('app_totp_setup', status: Response::HTTP_SEE_OTHER);
     }

@@ -37,16 +37,22 @@ creates the account for you.
 
 ## Authenticator app
 
-At the first sign-in, Patrimeter asks you to set up an **authenticator app** (mandatory second factor): scan
-the QR code, then enter the 6-digit code it shows. Patrimeter then shows **ten backup codes**, each usable
-once: write them down somewhere safe, they replace the phone if it is lost. **Copy the codes** puts them in the
-clipboard, one per line, to paste them into a password manager.
+The first start has four steps, recalled at the top of each screen ("Step 2 of 4 · about 2 minutes"): your account,
+security (authenticator app and backup codes), the recovery key, then your first accounts.
+
+At the first sign-in, Patrimeter asks you to set up an **authenticator app** (mandatory second factor), on the
+**Protect your account** screen: scan the QR code, then enter the 6-digit code it shows and **Enable and see my backup
+codes**. Patrimeter then shows **ten backup codes**, each usable once: write them down somewhere safe, they replace the
+phone if it is lost. **Copy the codes** puts them in the clipboard, one per line, to paste them into a password
+manager; **Print** prints them.
 
 Then, at every sign-in: address and password, then the code from the app (or a backup code).
 
 ## Recovery key
 
-Patrimeter shows a **recovery key**, only once, and asks you to type part of it again. Your data is encrypted
+Patrimeter shows a **recovery key**, only once, and asks you to type part of it again.
+**Why two secrets?** recalls the role of each: the backup codes replace the phone to sign in, the key opens your data
+again if you forget your password. **Print** prints the key. Your data is encrypted
 with a key that only your password opens: **without a recovery key, a forgotten password means losing the
 data** (access to the account, however, can be restored). Keep it with your backup codes, for example in a
 password manager: **Copy the key** puts it in the clipboard.
@@ -74,20 +80,25 @@ the AI agents.
 
 ## First accounts
 
-As long as no account exists, the **Net worth** page stays on the current month and offers five ways to start:
+As long as no account exists, the **Net worth** page stays on the current month and offers, as the last step of the
+first start, to draw your pyramid (**Let's draw your pyramid**):
 
-- **Build my pyramid** (the simplest): the empty pyramid, and its six levels from the base to the top. **Fill** opens a
-  level with its common accounts (current account, Livret A, LDDS, LEP, PEA, life insurance…): enter today's balance
-  of what you hold, leave the rest empty, then **Confirm this level**; the level takes its colour in the pyramid.
-  **I have none** goes on to the next one;
-- **Answer a few questions** (for beginners): one question at a time, in everyday words ("Do you have money put
+- **Answer a few questions** (recommended): one question at a time, in everyday words ("Do you have money put
   aside, available right away?"), answered by a range ("from €1,000 to €5,000"), an exact amount or "No, or I don't
   know". **Why this question?** says which level of the pyramid it is about. A range counts for its middle. The last
   question, optional, chooses your saver style ([challenges](defis.md#saver-profile)). **Create my accounts** creates
   the accounts answered at once;
-- **Express entry**: all these accounts on a single page, created at once with **Create my accounts**;
-- **Import a CSV file**: accounts, loans and properties from a spreadsheet ([CSV import](import-csv.md));
-- **Create account by account**, with every setting: level, nature, opening date ([accounts](comptes.md)).
+- **Build my pyramid**, if you know your accounts: the empty pyramid, and its six levels from the base to the top.
+  **Fill** opens a level with its common accounts (current account, Livret A, LDDS, LEP, PEA, life insurance…): enter
+  today's balance of what you hold, leave the rest empty, then **Confirm this level**; the level takes its colour in
+  the pyramid. **I have none** goes on to the next one;
+- **Other ways to start**, folded:
+    - **Express entry**: all these accounts on a single page, created at once with **Create my accounts**;
+    - **Import a CSV file**: accounts, loans and properties from a spreadsheet ([CSV import](import-csv.md));
+    - **Create account by account**, with every setting: level, nature, opening date ([accounts](comptes.md)).
+
+A family account is not filled in: under **Is this account for a family?**, **Bring a family together** leads to the
+[family members](famille.md).
 
 The name of each account repeats its type and can be changed. For a loan, enter the outstanding principal. Approximate
 amounts are enough: they are marked **to refine** in the [monthly entry](saisie.md#reading-the-screen), until you save

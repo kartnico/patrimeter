@@ -76,7 +76,7 @@ make serve            # http://localhost:8000
 make test             # PHPUnit : unitaires, intégration, fonctionnels, non-régression, architecture
 make lint cs stan psalm
 make js               # ESLint, Prettier, Stylelint, Vitest (après npm ci)
-make ci               # tout ce que la CI vérifie et qui peut tourner en local
+make ci               # contrôles PHP, W3C et audit ; lancer make js séparément
 make docs             # documentation, en français et en anglais (documentation/site/)
 make help             # toutes les commandes
 ```

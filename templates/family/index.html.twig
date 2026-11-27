@@ -1,21 +1,40 @@
 {% extends 'base.html.twig' %}
 
+{#- Members of a family account, the monthly meeting point: how many are up to date for the month, then each member's
+    card (status in words, net worth, imported file, a new import, removal folded), and the monthly steps, first while
+    nobody is imported yet. Variables: members (member, accounts, net, budget, stale), up_to_date, can_add, current_month. -#}
 {% block title %}{{ 'Membres de la famille'|trans }}{% endblock %}
 
 {% block body %}
-{% import '_advice.html.twig' as advice_ui %}
 <div class="page-head">
-    <h1>{{ 'Membres de la famille'|trans }}</h1>
+    <h1>{{ 'Membres de la famille'|trans }} <span class="muted">{{ current_month|month_label|capitalize }}</span></h1>
     {% if members is not empty %}
-    <a class="btn btn-small" href="{{ path('app_dashboard', {perimetre: 'famille'}) }}">{{ 'Voir la famille'|trans }}</a>
+    <p class="page-head-links"><a class="btn btn-small btn-primary" href="{{ path('app_dashboard', {perimetre: 'famille'}) }}">{{ 'Voir toute la famille'|trans }}</a></p>
     {% endif %}
 </div>
 <p class="sheet-lead">{{ 'Un compte famille réunit les données de deux personnes, saisies chacune dans son propre compte. Chaque mois, chacune exporte ses données ; ce compte importe son fichier, qui remplace le précédent. Les pages Patrimoine et Budget montrent alors la famille, ou chacun.'|trans }}</p>
 
+{% if members is empty %}
+{{ include('family/_steps.html.twig') }}
+{% else %}
+<p class="family-status" role="status">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 8h.01M11 12h1v5h1"/></svg>
+    <span><strong>{{ '%count% membre à jour sur %total% pour %month%.|%count% membres à jour sur %total% pour %month%.'|trans({'%count%': up_to_date, '%total%': members|length, '%month%': current_month|month_label}) }}</strong>
+    {% if up_to_date < members|length %}{{ 'Chaque fichier d\'un mois précédent est à remplacer par celui du mois.'|trans }}{% endif %}</span>
+</p>
+<div class="family-grid">
 {% for item in members %}
 {%- set member = item.member -%}
-<section class="sheet family-member" aria-labelledby="member-{{ member.id }}">
-    <h2 id="member-{{ member.id }}">{{ member.name }}</h2>
+<section class="card family-member{{ item.stale ? ' is-stale' }}" aria-labelledby="member-{{ member.id }}">
+    <div class="family-member-head">
+        <span class="family-avatar" aria-hidden="true">{{ member.name|first|upper }}</span>
+        <h2 id="member-{{ member.id }}">{{ member.name }}</h2>
+        {% if item.stale %}
+        <span class="family-pill is-stale"><span aria-hidden="true">⚠</span> {{ 'À mettre à jour'|trans }}</span>
+        {% else %}
+        <span class="family-pill"><span aria-hidden="true">✓</span> {{ 'À jour'|trans }}</span>
+        {% endif %}
+    </div>
     <dl class="wealth-tiles">
         <div class="wealth-tile">
             <dt>{{ 'Patrimoine net'|trans }}</dt>
@@ -25,40 +44,36 @@
             </dd>
         </div>
         <div class="wealth-tile">
-            <dt>{{ 'Comptes'|trans }}</dt>
+            <dt>{{ 'Fichier'|trans }}</dt>
             <dd>
-                <span class="wealth-tile-value num">{{ item.accounts }}</span>
-                <span class="wealth-tile-sub">{{ item.budget ? 'avec son budget'|trans : 'sans budget'|trans }}</span>
-            </dd>
-        </div>
-        <div class="wealth-tile">
-            <dt>{{ 'Dernier import'|trans }}</dt>
-            <dd>
-                <span class="wealth-tile-value">{{ member.importedOn|date_fr }}</span>
-                <span class="wealth-tile-sub">{{ member.exportedOn ? 'fichier du %date%'|trans({'%date%': member.exportedOn|date_fr}) : 'date du fichier inconnue'|trans }}</span>
+                <span class="wealth-tile-value">{{ member.exportedOn ? member.exportedOn|date_fr : 'date inconnue'|trans }}</span>
+                <span class="wealth-tile-sub">{{ 'importé le %date%'|trans({'%date%': member.importedOn|date_fr}) }} · {{ '%count% compte|%count% comptes'|trans({'%count%': item.accounts}) }}, {{ item.budget ? 'avec son budget'|trans : 'sans budget'|trans }}</span>
             </dd>
         </div>
     </dl>
-    {% if item.stale %}
-    <p class="advice is-warning">{{ advice_ui.tag('warning') }}
-        {{ 'Ce fichier date d\'avant %month% : importez celui du mois pour une vue à jour.'|trans({'%month%': current_month|month_label}) }}</p>
-    {% endif %}
-    <form method="post" action="{{ path('app_family_member_update', {id: member.id}) }}" enctype="multipart/form-data" class="form family-import">
+    <form method="post" action="{{ path('app_family_member_update', {id: member.id}) }}" enctype="multipart/form-data" class="family-drop{{ item.stale ? ' is-stale' }}">
         <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
-        <label for="fichier-{{ member.id }}">{{ 'Nouveau fichier d\'export de %name% (JSON, 2 Mo au plus)'|trans({'%name%': member.name}) }}</label>
+        <label for="fichier-{{ member.id }}">{{ item.stale
+            ? 'Fichier de %month% de %name% : choisissez-le ou déposez-le ici (JSON, 2 Mo au plus)'|trans({'%month%': current_month|month_label, '%name%': member.name})
+            : 'Fichier plus récent de %name% ? Choisissez-le ou déposez-le ici : il remplace celui-ci.'|trans({'%name%': member.name}) }}</label>
         <input type="file" id="fichier-{{ member.id }}" name="fichier" accept="application/json,.json" required>
-        <p class="actions"><button type="submit" class="btn btn-primary">{{ 'Mettre à jour'|trans }}</button></p>
+        <button type="submit" class="btn{{ item.stale ? ' btn-primary' : ' btn-small' }}">{{ 'Mettre à jour'|trans }}</button>
     </form>
-    <form method="post" action="{{ path('app_family_member_delete', {id: member.id}) }}"
-          data-confirm="{{ 'Retirer %name% de la famille ? Ses données importées sont supprimées de ce compte (pas de son propre compte).'|trans({'%name%': member.name}) }}">
-        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
-        <button type="submit" class="btn btn-danger btn-small">{{ 'Retirer %name%'|trans({'%name%': member.name}) }}</button>
-    </form>
+    <details class="family-more">
+        <summary>{{ 'Plus d\'actions'|trans }}</summary>
+        <form method="post" action="{{ path('app_family_member_delete', {id: member.id}) }}"
+              data-confirm="{{ 'Retirer %name% de la famille ? Ses données importées sont supprimées de ce compte (pas de son propre compte).'|trans({'%name%': member.name}) }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+            <button type="submit" class="btn btn-danger btn-small">{{ 'Retirer %name% de la famille'|trans({'%name%': member.name}) }}</button>
+        </form>
+    </details>
 </section>
 {% endfor %}
+</div>
+{% endif %}
 
 {% if can_add %}
-<section class="sheet" aria-labelledby="member-new-title">
+<section class="card" aria-labelledby="member-new-title">
     <h2 id="member-new-title">{{ 'Ajouter un membre'|trans }}</h2>
     <form method="post" action="{{ path('app_family_member_add') }}" enctype="multipart/form-data" class="form">
         <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
@@ -75,14 +90,7 @@
 </section>
 {% endif %}
 
-<section class="sheet" aria-labelledby="family-how-title">
-    <h2 id="family-how-title">{{ 'Comment ça marche'|trans }}</h2>
-    <ol class="family-steps">
-        <li>{{ 'Chacun crée son propre compte Patrimeter, y saisit ses comptes, ses soldes et son budget.'|trans }}</li>
-        <li>{{ 'Ce qui est commun se partage : chacun saisit sa part (la moitié du compte joint, sa quote-part de la maison, sa part du loyer et des courses). La famille additionne, sans rien compter deux fois.'|trans }}</li>
-        <li>{{ 'Chaque mois, chacun télécharge ses données depuis « Vos données » de son compte.'|trans }}</li>
-        <li>{{ 'Ce compte importe chaque fichier pour son membre : les données importées sont chiffrées avec la clé de ce compte, en lecture seule.'|trans }}</li>
-    </ol>
-    <p class="muted small">{{ 'Ce compte peut aussi avoir ses propres comptes (par exemple ceux des enfants) : ils comptent dans la famille. L\'export de ce compte ne contient que ses propres données.'|trans }}</p>
-</section>
+{% if members is not empty %}
+{{ include('family/_steps.html.twig') }}
+{% endif %}
 {% endblock %}

@@ -48,7 +48,13 @@ final class RegistrationTest extends FunctionalTestCase
         $this->submit($link, ['password' => self::NEW_PASSWORD], $link);
         self::assertResponseRedirects('/securite/application', Response::HTTP_SEE_OTHER);
         $crawler = $this->client->followRedirect();
-        self::assertSelectorTextContains('h1', 'Application d\'authentification');
+        self::assertSelectorTextContains('h1', 'Protégez votre compte');
+        // The steps of the first start, the account already done: no "last step" any more before three more screens.
+        self::assertSelectorTextContains('.onboarding-steps', 'Étape 2 sur 4');
+        self::assertSelectorTextContains('.onboarding-steps [aria-current="step"]', 'Sécurité');
+        self::assertSelectorTextContains('.onboarding-steps .is-done', 'Compte');
+        self::assertSelectorTextNotContains('main', 'Dernière étape');
+        self::assertSelectorTextContains('.setup-card button[type="submit"]', 'Activer et voir mes codes de secours');
         self::assertCount(1, $crawler->filter('svg.qr-code path.qr-code-modules'));
 
         $this->client->request('GET', '/');

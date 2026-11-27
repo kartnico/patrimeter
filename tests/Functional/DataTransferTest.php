@@ -47,6 +47,9 @@ final class DataTransferTest extends FunctionalTestCase
         $portfolio->archiveAccount($owner, $savings, new ClosePayload('2023-01-15'));
 
         $this->logIn();
+        $this->submit("/comptes/$house", ['name' => 'Maison', 'type_id' => (string) self::queryInt("SELECT id FROM account_types WHERE code = 'residence_principale'"), 'level_code' => 'residence', 'nature' => 'asset', 'opened_on' => '2026-11-01']);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertSelectorTextContains('#err-opened_on', 'Un relevé existe');
         $export = $this->export();
         self::assertSame('patrimeter', $export['format']);
         self::assertIsArray($export['accounts']);

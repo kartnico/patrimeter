@@ -13,6 +13,8 @@ name opens its page.
 
 ![List of accounts](../captures/comptes-ordinateur.png)
 
+Changing the opening date cannot put an existing statement before the account’s first active month.
+
 ## Creating an account
 
 **+ New account**, then:

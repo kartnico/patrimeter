@@ -69,6 +69,14 @@
             });
         }
 
+        // Print buttons (backup codes, recovery key): hidden without JavaScript, they open the browser's print dialog.
+        if (typeof window.print === 'function') {
+            document.querySelectorAll('[data-print]').forEach((button) => {
+                button.hidden = false;
+                button.addEventListener('click', () => window.print());
+            });
+        }
+
         // Second factor: the security key form takes the "trust this browser" box of the code form along.
         document.querySelectorAll('[data-trust-copy]').forEach((copy) => {
             const box = document.getElementById(copy.dataset.trustCopy);
@@ -471,7 +479,16 @@
         // The accessible name starts with the visible value (WCAG 2.5.3), then says what the button does.
         const hint = document.createElement('span');
         hint.className = 'visually-hidden';
+        const label = input.labels?.[0];
         hint.textContent = ` — ${labelOpen}`;
+        if (label && input.id) {
+            toggle.id = `${input.id}-toggle`;
+            label.htmlFor = toggle.id;
+            label.id ||= `${input.id}-label`;
+            value.id = `${input.id}-value`;
+            hint.id = `${input.id}-hint`;
+            toggle.setAttribute('aria-labelledby', `${value.id} ${label.id} ${hint.id}`);
+        }
         toggle.append(svg, value, hint);
 
         // The value as shown: "Oct. 2026" or "1985"; the field's own text while it cannot be read.

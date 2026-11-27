@@ -47,6 +47,9 @@ docker compose up -d
 docker compose ps
 ```
 
+Seul `app` a une sonde HTTP. `scheduler` et `backup` doivent être en cours d’exécution, sans mention `healthy`.
+Pour vérifier leur activité, consultez `docker compose logs scheduler backup`.
+
 Le conteneur sert le site en HTTP sur le port 8080. Le proxy inverse le publie en HTTPS, par exemple avec nginx :
 
 ```nginx
@@ -106,8 +109,11 @@ docker compose up -d
 
 ## 5. Sauvegarder et restaurer
 
-Le service `backup` sauvegarde la base chaque jour dans le volume `backups` (30 archives gardées). Copiez ces archives
-hors du serveur, avec `patrimeter.env` ([sauvegarde](backup.md)).
+Le service `backup` sauvegarde la base dans le volume `backups` (30 archives gardées), puis contrôle la dernière
+archive. Si les deux opérations réussissent, la prochaine sauvegarde a lieu 24 heures plus tard par défaut
+(`PATRIMETER_BACKUP_INTERVAL`, en secondes). Si la sauvegarde ou le contrôle échoue, le service journalise l’échec
+et recommence par une nouvelle sauvegarde une heure plus tard. Copiez les archives et `patrimeter.env` hors du
+serveur ([sauvegarde](backup.md)).
 
 ```sh
 cd /srv/patrimeter-docker

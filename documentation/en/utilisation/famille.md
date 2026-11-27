@@ -11,8 +11,9 @@ Net worth page (with its history), the Budget page and the report then show **th
 1. Each person creates their Patrimeter account and enters their accounts, their balances and, if they wish, their
    [budget](budget.md).
 2. Create a **third account**, for the family (another email address).
-3. In this account, open **Family members** (link of the welcome Net worth page, or of the [Your data](donnees.md) page),
-   then **Add a member**: their name and their export file.
+3. In this account, open **Family members** (**Bring a family together** on the welcome Net worth page, or the
+   [Your data](donnees.md) page), then **Add a member**: their name and their export file. As long as no member is
+   imported, the page starts with the three monthly steps.
 
 A family account brings together **two members at most**.
 
@@ -31,13 +32,15 @@ The family account can also have **its own accounts**, the children's for exampl
 
 ## Every month
 
-1. Each person downloads their data: **Your data** → **Download my data**.
-2. In the family account, **Family members** → **Update** for each member, with their new file: it **replaces** the
-   previous import.
+1. Each person downloads their data: **My profile**, **Export or import**, then **Download my data**.
+2. In the family account, **Family members**: on each member's card, choose or drop their new file, then **Update**;
+   it **replaces** the previous import.
 
-For each member, the page shows the date of the last import and the date of the file; a file from a previous month
-is flagged (**Warning**). **Removing** a member deletes their imported data from the family account, never from
-their own account.
+At the top, the page says how many members are up to date for the month ("1 member up to date out of 2 for November
+2026"). Each card carries the member's status, in words: **Up to date**, or **To update** when their file is from a
+previous month; it also gives their net worth, the date of the file, the date of the import and the number of
+accounts. **More actions**, then **Remove … from the family**, deletes their imported data from the family account,
+never from their own account.
 
 ## Family views
 
@@ -47,7 +50,11 @@ the top of the page:
 - **Whole family** (by default): the members' accounts and the family account's own; the budget brings together the
   members' budgets;
 - **one member**: their data only, as they see it in their account;
-- **This account**: the family account's own data, if it has any.
+- **Family's accounts**: the family account's own accounts, the children's for example, if it has any.
+
+A line under the choice recalls what the view adds up, and flags each member whose file is to update ("Julien's file
+to update", with a link to the members). In these views, the balances are counted "of the month" or "carried over":
+they come from the members' files, not from an entry in the family account.
 
 The choice is kept from one page to the next. In the family:
 

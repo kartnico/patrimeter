@@ -4,8 +4,8 @@
 # Usage: sh ci/install-composer.sh
 set -eu
 
-version=2.11.1
-sha256=6f1b891e1d4927d62740276c540fb490e47689e19e102c49e8da849794882f8c
+version=2.11.2
+sha256=dd158c0afd41d15fac89e1b4e47b5d42911fe316c3687cd5edac98319b25d028
 
 # Already there with the expected checksum (CI image): nothing to download.
 if [ -x /usr/local/bin/composer ] && echo "$sha256  /usr/local/bin/composer" | sha256sum -c - > /dev/null 2>&1; then

@@ -43,7 +43,7 @@
             <li><button type="button" class="mp-cell{{ cell.today ? ' is-today' }}" data-year="{{ cell.year }}"{% if cell.current %} aria-current="true"{% endif %}>{{ cell.year }}</button></li>
             {% endfor %}
         </ul>
-        {% if not picker.selected.equals(picker.max) %}
+        {% if not picker.selected.equals(picker.todayMonth) %}
         <p class="mp-foot"><a href="{{ picker.base }}">{{ 'Revenir au mois en cours'|trans }}</a></p>
         {% endif %}
     </div>

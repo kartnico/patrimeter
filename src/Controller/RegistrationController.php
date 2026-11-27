@@ -130,7 +130,7 @@ final class RegistrationController extends AbstractController
         }
         $journal->record($user->id, AuthJournal::EMAIL_VERIFIED, $request);
         $security->login($user, PasswordLoginAuthenticator::class, 'main');
-        $this->addFlash('success', t('Adresse confirmée. Dernière étape : configurez votre application d\'authentification.'));
+        $this->addFlash('success', t('Adresse confirmée. Étape suivante : protégez votre compte avec une application d\'authentification.'));
 
         return $this->redirectToRoute('app_totp_setup', status: Response::HTTP_SEE_OTHER);
     }

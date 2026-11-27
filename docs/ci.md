@@ -297,7 +297,9 @@ elles, sont suivies chaque jour par [Renovate](#renovate)) :
    `vX.Y.Z`, pas `main`) avec les paquets Debian et PHP du jour ; `container-smoke` la démarre, `trivy-image`
    l'analyse et la barrière de sécurité tranche. Si tout passe, `container-publish` la republie sous `vX.Y.Z` et
    `latest`, et sous `vX.Y.Z-AAAAMMJJ-p<ID>` (identifiant du pipeline). Un échec des contrôles conserve
-   l’image publique précédente.
+   l’image publique précédente. Le job lit la version dans les métadonnées de l’image testée, sans télécharger
+   l’archive de livraison. Sous le verrou de publication, il compare les identifiants des reconstructions déjà
+   publiées pour cette version : une relance ancienne ne peut pas écraser une image plus récente.
 
 ## Activer les publications publiques
 

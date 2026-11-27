@@ -13,6 +13,11 @@ publication à la main : [docs/developpement.md](docs/developpement.md).
 - **PHP 8.3 à 8.5** : aucune syntaxe ni fonction postérieure à 8.3 (pas de property hooks ni de
   visibilité asymétrique, pas d'opérateur `|>`…), aucune dépréciation sur 8.5. PHPStan vérifie `phpVersion` 8.3 → 8.5 ;
   la CI contrôle la syntaxe et fait tourner toutes les suites sur 8.3, 8.4 et 8.5 (`PhpVersionsCiTest`).
+- **Logiciels système : paquets Debian uniquement.** Sur l’hôte et dans l’image de production, installer les outils
+  et bibliothèques système (y compris `age` et `age-keygen`) par APT depuis les dépôts Debian de la version utilisée
+  ou son dépôt de sécurité. Pour PHP, utiliser le dépôt Surý indiqué ci-dessous. Ne compiler aucun de ces composants,
+  même dans une étape de construction séparée, et ne pas télécharger de binaire amont. Si aucun paquet corrigé
+  n’est disponible, signaler la vulnérabilité et attendre sa mise à jour sans masquer l’alerte.
 - **PHP vient du dépôt d'Ondřej Surý sur Debian** (packages.sury.org), partout : production, CI
   (`ci/install-php.sh`) et l'image de conteneur (`docker/Dockerfile`, [docs/docker.md](docs/docker.md)). Jamais les images
   `php:*` officielles.

@@ -71,12 +71,15 @@ case "${1:-web}" in
         wait_ready
         while true; do
             # Backup, then full check of the archive just made (the monthly test restore of a server, here every day).
-            if patrimeter-backup; then
-                patrimeter-restore --check-latest || echo "patrimeter : la dernière archive ne passe pas le contrôle." >&2
-            else
+            if ! patrimeter-backup; then
                 echo "patrimeter : la sauvegarde a échoué ; nouvel essai dans une heure." >&2
+            elif ! patrimeter-restore --check-latest; then
+                echo "patrimeter : la dernière archive ne passe pas le contrôle ; nouvel essai dans une heure." >&2
+            else
+                sleep "${PATRIMETER_BACKUP_INTERVAL:-86400}" || sleep 3600
+                continue
             fi
-            sleep "${PATRIMETER_BACKUP_INTERVAL:-86400}" || sleep 3600
+            sleep 3600
         done
         ;;
     selftest)

@@ -39,6 +39,10 @@ final class ColorAccessibilityTest extends TestCase
         ['positive', 'surface-2'], ['negative', 'surface-2'],
         // Stars of the challenges: on the cards, on their tinted background (total, icons).
         ['star', 'surface'], ['star', 'star-soft'], ['text', 'star-soft'],
+        // Défis page: thresholds on the rail of a card, captions of the two statuses on their tinted background.
+        ['star', 'surface-2'], ['muted', 'star-soft'], ['muted', 'primary-soft'],
+        // Family account: a member file to update, under the perimeter choice (page background).
+        ['carried', 'bg'],
     ];
 
     /** Components and graphical elements: [element, background]. */

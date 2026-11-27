@@ -81,4 +81,5 @@ valeur habituelle. Le même cadre mène à l'ajout d'un **compte** ou d'un **bie
 s'il n'y a encore aucun compte ouvert ce mois-là, la page propose directement la copie, depuis le mois courant.
 Copiez les soldes de novembre : les comptes ouverts après octobre sont repris eux aussi, avec la mention « ouverture
 avancée ». À la validation, leur date d'ouverture passe au 1er octobre et leurs soldes d'octobre sont enregistrés ; un
-compte dont vous videz le champ reste ouvert à sa date.
+compte dont vous videz le champ reste ouvert à sa date. Pour un bien immobilier, la quote-part définie à l’ouverture
+s’applique aussi au mois repris, y compris pour le crédit lié au prorata. Les changements ultérieurs restent datés.

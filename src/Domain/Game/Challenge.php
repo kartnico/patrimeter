@@ -91,6 +91,47 @@ enum Challenge: string
         };
     }
 
+    /** Short name of a threshold, under its star on the rail of the card: %count% (the threshold). */
+    public function stepLabel(): string
+    {
+        return match ($this) {
+            self::FirstSteps => '%count% étape|%count% étapes',
+            self::Goal => '%count% %',
+            self::Security => '%count% clé|%count% clés',
+            default => '%count% mois|%count% mois',
+        };
+    }
+
+    /**
+     * What is still missing for the next star: %count% (difference between the next threshold and the value
+     * measured), %next% (that threshold), %rate% (savings rate aimed at), %name% (goal).
+     */
+    public function missingLabel(): string
+    {
+        return match ($this) {
+            self::FirstSteps => 'Encore %count% étape, parmi :|Encore %count% étapes, parmi :',
+            self::Streak => 'Encore %count% mois de saisie de suite.|Encore %count% mois de saisie de suite.',
+            self::UpToDate => 'Encore %count% mois où tous les comptes ont leur solde saisi. Un solde reporté ne compte pas.|Encore %count% mois où tous les comptes ont leur solde saisi. Un solde reporté ne compte pas.',
+            self::Precaution => 'Encore l\'équivalent de %count% mois de dépenses à mettre de côté.|Encore l\'équivalent de %count% mois de dépenses à mettre de côté.',
+            self::NoConsumerCredit => 'Encore %count% mois de suite sans crédit à la consommation à rembourser.|Encore %count% mois de suite sans crédit à la consommation à rembourser.',
+            self::Goal => 'Objectif « %name% » à porter à %next% % : encore %count% point.|Objectif « %name% » à porter à %next% % : encore %count% points.',
+            self::Budget => 'Encore %count% mois de budget à saisir, pas forcément de suite.|Encore %count% mois de budget à saisir, pas forcément de suite.',
+            self::Security => 'Encore %count% clé d\'accès à enregistrer.|Encore %count% clés d\'accès à enregistrer.',
+            self::SavingsRate => 'Encore %count% mois de suite dont le budget prévoit au moins %rate% % d\'épargne.|Encore %count% mois de suite dont le budget prévoit au moins %rate% % d\'épargne.',
+        };
+    }
+
+    public function family(): ChallengeFamily
+    {
+        return match ($this) {
+            self::FirstSteps => ChallengeFamily::FirstSteps,
+            self::Streak, self::UpToDate => ChallengeFamily::Entries,
+            self::Goal, self::Budget, self::SavingsRate => ChallengeFamily::BudgetAndGoals,
+            self::Precaution, self::NoConsumerCredit => ChallengeFamily::CushionAndCredit,
+            self::Security => ChallengeFamily::Security,
+        };
+    }
+
     /** What to do first when the data needed is missing; null if the challenge can always be measured. */
     public function unavailableLabel(): ?string
     {

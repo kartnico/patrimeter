@@ -122,6 +122,20 @@ final class ApiTest extends ApiTestCase
         self::assertSame(['enabled' => false, 'notice' => PortfolioService::CHALLENGES_NOTICE], $this->json());
     }
 
+    public function testReadingStarsWithATokenLeavesTheAnnouncementForMonthlyEntry(): void
+    {
+        $account = self::createAccount('Livret A', 'livret_a', '2026-01-01');
+        foreach (['2026-09', '2026-10', '2026-11'] as $month) {
+            self::service(StatementRepository::class)->save(self::owner(), $account, Month::fromString($month), 100_000);
+        }
+        $token = $this->personalToken();
+        self::assertSame(200, $this->api('GET', '/api/v1/challenges', $token)->getStatusCode());
+        $this->logIn();
+        $this->submit('/saisie', ['mois' => '2026-11', 'amounts' => [$account => '1000']], '/saisie');
+        $this->client->followRedirect();
+        self::assertStringContainsString('Nouvelle étoile, défi « Série de saisies » : 1 sur 3.', $this->flashes());
+    }
+
     public function testAccountLifecycleWithAWriteToken(): void
     {
         $token = $this->personalToken(write: true);
@@ -145,6 +159,11 @@ final class ApiTest extends ApiTestCase
         self::assertStringContainsString('"amount_cents":60000', $this->body());
         $this->api('DELETE', "/api/v1/accounts/$id/statements/2026-10", $token);
         self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
+
+        $this->api('PUT', "/api/v1/accounts/$id", $token, ['name' => 'Renommé', 'type_id' => $type, 'opened_on' => '2026-12-01']);
+        self::assertResponseStatusCodeSame(422);
+        $this->api('GET', "/api/v1/accounts/$id", $token);
+        self::assertSame('2025-01-15', $this->json()['opened_on']);
 
         $this->api('PUT', "/api/v1/accounts/$id", $token, ['name' => 'Renommé', 'type_id' => $type, 'opened_on' => '2025-01-15']);
         self::assertResponseIsSuccessful();

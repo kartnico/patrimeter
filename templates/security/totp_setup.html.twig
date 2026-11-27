@@ -4,10 +4,12 @@
 
 {% block body %}
 <section class="card setup-card">
-    <h1>{{ 'Application d\'authentification'|trans }}</h1>
     {% if first_setup %}
-    <p>{{ 'Dernière étape : à chaque connexion, Patrimeter vous demandera, en plus du mot de passe, un code à 6 chiffres généré par une application de votre téléphone (Aegis, FreeOTP, Google Authenticator, Microsoft Authenticator, 2FAS, Bitwarden…).'|trans }}</p>
+    {{ include('_onboarding_steps.html.twig', {current: 2, duration: 'environ 2 minutes'|trans}, with_context = false) }}
+    <h1>{{ 'Protégez votre compte'|trans }}</h1>
+    <p>{{ 'À chaque connexion, Patrimeter vous demandera, en plus du mot de passe, un code à 6 chiffres donné par une application de votre téléphone (Aegis, FreeOTP, Google Authenticator, Microsoft Authenticator, 2FAS, Bitwarden…). Vous noterez ensuite dix codes de secours, au cas où vous perdriez ce téléphone.'|trans }}</p>
     {% else %}
+    <h1>{{ 'Application d\'authentification'|trans }}</h1>
     <p>{{ 'Configurez votre nouvelle application. L\'ancienne reste valable jusqu\'à la validation du code ci-dessous.'|trans }}</p>
     {% endif %}
     {% if error %}
@@ -29,7 +31,7 @@
                 <label for="code">{{ 'Code à 6 chiffres'|trans }}</label>
                 <input type="text" id="code" name="code" inputmode="numeric" autocomplete="one-time-code"
                        pattern="[0-9 ]{6,7}" maxlength="7" required>
-                <button type="submit" class="btn btn-primary btn-block">{{ 'Activer'|trans }}</button>
+                <button type="submit" class="btn btn-primary btn-block">{{ first_setup ? 'Activer et voir mes codes de secours'|trans : 'Activer'|trans }}</button>
             </form>
         </li>
     </ol>

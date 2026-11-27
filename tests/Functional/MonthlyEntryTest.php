@@ -298,6 +298,30 @@ final class MonthlyEntryTest extends FunctionalTestCase
         self::assertAnySelectorTextContains('.entry-advance', 'ouvert le 01/01/2025 : ouverture avancée au 01/12/2024');
     }
 
+    public function testBackdatingCarriesInitialOwnershipButKeepsLaterChanges(): void
+    {
+        $owner = self::owner();
+        $house = self::createAccount('Maison', 'residence_principale', '2026-11-02');
+        $loan = self::createAccount('Prêt', 'credit_immo_rp', '2026-11-02');
+        self::service(AccountRepository::class)->linkLoan($owner, $loan, $house, \Patrimeter\Domain\LoanMode::Prorata);
+        $shares = self::service(OwnershipShareRepository::class);
+        $opening = Month::fromString('2026-11');
+        $shares->save($owner, $house, $opening, 500_000);
+        $shares->save($owner, $house, Month::fromString('2026-12'), 750_000);
+        $statements = self::service(StatementRepository::class);
+        $statements->save($owner, $house, $opening, 20_000_000);
+        $statements->save($owner, $loan, $opening, 8_000_000);
+        $preview = $this->client->request('GET', '/saisie?mois=2026-10&depuis=2026-11');
+        self::assertSame("60\u{202F}000,00\u{A0}€", $preview->filter('.level-residence [data-level-total]')->text());
+        $this->submit('/saisie', ['mois' => '2026-10', 'depuis' => '2026-11', 'advance' => [(string) $house, (string) $loan], 'amounts' => [$house => '200000', $loan => '80000']]);
+        self::assertResponseRedirects('/?mois=2026-10', Response::HTTP_SEE_OTHER);
+        foreach (['2026-10', '2026-11'] as $month) {
+            $crawler = $this->client->request('GET', '/saisie?mois=' . $month);
+            self::assertSame("60\u{202F}000,00\u{A0}€", $crawler->filter('.level-residence [data-level-total]')->text());
+        }
+        self::assertSame(['2026-10' => 500_000, '2026-12' => 750_000], $shares->all($owner)[$house]);
+    }
+
     public function testSavingAdvancesTheOpeningOfFilledAccountsOnly(): void
     {
         $this->submit('/saisie', [

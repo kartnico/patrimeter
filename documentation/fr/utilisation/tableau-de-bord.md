@@ -20,6 +20,8 @@ Chaque niveau affiche sa **valeur nette** (ses actifs moins les crédits qui lui
 du total. Les flèches et le sélecteur changent de mois. Tant qu'aucun compte n'existe, la page reste sur le mois en
 cours, celui où vous créez vos premiers comptes : ni flèches ni sélecteur (de même pour la [saisie du mois](saisie.md)).
 
+Depuis un autre mois, y compris le mois suivant, le sélecteur permet de revenir directement au mois en cours.
+
 Survoler un niveau de la pyramide, ou cliquer dessus, **surligne ses lignes** dans les autres cadres (**Détail par
 niveau**, **Répartition de vos placements**, **Depuis le début de l'année**) : fond teinté et barre à gauche, les
 autres niveaux de la pyramide pâlissent. Un clic garde le surlignage ; un second clic, un clic ailleurs ou **Échap**

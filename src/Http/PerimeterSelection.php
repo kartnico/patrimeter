@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Patrimeter\Http;
 
+use Patrimeter\Application\Calendar;
 use Patrimeter\Application\Family\FamilyPortfolio;
 use Patrimeter\Application\Family\Perimeter;
 use Patrimeter\Domain\UserId;
@@ -12,22 +13,31 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Perimeter chosen in a family account (FamilyPortfolio): the one asked for by the "perimetre" parameter, kept in the
  * session for the next pages (dashboard, history, report, budget); otherwise the one kept; otherwise the family. An
- * account without members only shows its own data, without a choice.
+ * account without members only shows its own data, without a choice. Each member's choice says when their file was
+ * exported and whether it is older than the current month (to update).
  */
 final class PerimeterSelection
 {
     public const string QUERY = 'perimetre';
     private const string SESSION = 'patrimeter_perimeter';
 
-    public function __construct(private readonly FamilyPortfolio $family) {}
+    public function __construct(
+        private readonly FamilyPortfolio $family,
+        private readonly Calendar $calendar,
+    ) {}
 
     /**
-     * @return array{perimeter: Perimeter, choices: list<array{key: string, name: ?string, current: bool}>}
-     *               choices offered: name of the member, or null for the family ("famille" key) and this account ("compte")
+     * @return array{perimeter: Perimeter, choices: list<array{key: string, name: ?string, current: bool, exported: ?string, stale: bool}>}
+     *               choices offered: name of the member, or null for the family ("famille" key) and this account ("compte");
+     *               for a member, the date of their file and whether it is older than the current month
      */
     public function resolve(Request $request, UserId $owner): array
     {
-        $choices = $this->family->perimeters($owner, $this->family->members($owner));
+        $members = [];
+        foreach ($this->family->members($owner) as $member) {
+            $members[$member->id] = $member;
+        }
+        $choices = $this->family->perimeters($owner, array_values($members));
         if ($choices === []) {
             return ['perimeter' => Perimeter::own(), 'choices' => []];
         }
@@ -44,13 +54,21 @@ final class PerimeterSelection
             $key = self::kept($session?->get(self::SESSION), array_keys($valid));
         }
 
+        $current = $this->calendar->currentMonth();
+
         return [
             'perimeter' => $valid[$key],
-            'choices' => array_map(static fn(array $choice): array => [
-                'key' => $choice['perimeter']->key,
-                'name' => $choice['name'],
-                'current' => $choice['perimeter']->key === $key,
-            ], $choices),
+            'choices' => array_map(static function (array $choice) use ($key, $members, $current): array {
+                $member = $members[$choice['perimeter']->memberId ?? 0] ?? null;
+
+                return [
+                    'key' => $choice['perimeter']->key,
+                    'name' => $choice['name'],
+                    'current' => $choice['perimeter']->key === $key,
+                    'exported' => $member?->exportedOn,
+                    'stale' => $member?->isStale($current) ?? false,
+                ];
+            }, $choices),
         ];
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Patrimeter\Tests\Functional;
 
 use Doctrine\DBAL\Connection;
+use Patrimeter\Application\Family\FamilyPortfolio;
 use Patrimeter\Domain\Month;
 use Patrimeter\Infrastructure\Persistence\StatementRepository;
 use Patrimeter\Tests\Support\FunctionalTestCase;
@@ -39,7 +40,9 @@ final class FamilyTest extends FunctionalTestCase
 
         self::assertSame("10\u{202F}500,00\u{00A0}€", trim($crawler->filter('.summary-total')->text()));
         $choices = $crawler->filter('.perimeter-nav a')->each(static fn($link): string => trim($link->text()));
-        self::assertSame(['Toute la famille', 'Alex', 'Ce compte'], $choices);
+        self::assertSame(['Toute la famille', 'Alex', 'Comptes de la famille'], $choices);
+        // What the chosen view adds up, said under the choice.
+        self::assertSelectorTextContains('.perimeter-note', 'Toute la famille additionne les données importées des membres et les comptes de la famille.');
         self::assertSame('Toute la famille', trim($crawler->filter('.perimeter-nav [aria-current="true"]')->text()));
         // Imported account: read, without an edit link, with the name of its member.
         self::assertStringContainsString('Livret d\'Alex · Alex', preg_replace('/\s+/u', ' ', $crawler->filter('.levels-card')->text()) ?? '');
@@ -66,7 +69,7 @@ final class FamilyTest extends FunctionalTestCase
         self::assertSame("3\u{202F}000,00\u{00A0}€", trim($crawler->filter('.summary-total')->text()));
         // An unknown or malformed perimeter brings back to the family.
         $crawler = $this->client->request('GET', '/?perimetre=membre-999999');
-        self::assertSelectorTextContains('.perimeter-nav [aria-current="true"]', 'Ce compte');
+        self::assertSelectorTextContains('.perimeter-nav [aria-current="true"]', 'Comptes de la famille');
         $this->client->request('GET', '/?perimetre=famille');
         $crawler = $this->client->request('GET', '/?perimetre=../etc');
         self::assertSame("23\u{202F}000,00\u{00A0}€", trim($crawler->filter('.summary-total')->text()));
@@ -141,7 +144,7 @@ final class FamilyTest extends FunctionalTestCase
         self::createAccount('Livret de Léa', 'livret_a', '2020-01-01');
         $this->client->request('GET', '/budget?perimetre=compte');
         self::assertSelectorTextContains('h1', 'Budget du foyer');
-        self::assertSelectorTextContains('.perimeter-nav [aria-current="true"]', 'Ce compte');
+        self::assertSelectorTextContains('.perimeter-nav [aria-current="true"]', 'Comptes de la famille');
     }
 
     public function testDashboardRecommendationsUseTheFamilyBudget(): void
@@ -174,14 +177,46 @@ final class FamilyTest extends FunctionalTestCase
 
         self::assertSelectorTextContains('h1', 'Membres de la famille');
         self::assertSelectorExists('form[action="/famille/membres"][enctype="multipart/form-data"] input[type="file"][name="fichier"]');
-        self::assertCount(4, $crawler->filter('.family-steps li'));
+        self::assertCount(3, $crawler->filter('.family-steps li'));
         self::assertSelectorNotExists('.perimeter-nav');
 
         self::createFamilyMember(self::owner(), 'Alex', 'Livret', 100_000);
         $crawler = $this->client->request('GET', '/famille');
         // File of 1 November, import of the 15th: up to date for November.
-        self::assertCount(0, $crawler->filter('.family-member .advice.is-warning'));
-        self::assertStringContainsString('fichier du 01/11/2026', preg_replace('/\s+/u', ' ', $crawler->filter('.family-member')->text()) ?? '');
+        self::assertCount(0, $crawler->filter('.family-member.is-stale'));
+        self::assertStringContainsString('À jour', $crawler->filter('.family-member .family-pill')->text());
+        self::assertSelectorTextContains('.family-status', '1 membre à jour sur 1 pour novembre 2026.');
+        $card = preg_replace('/\s+/u', ' ', $crawler->filter('.family-member')->text()) ?? '';
+        self::assertStringContainsString('01/11/2026', $card);
+        self::assertStringContainsString('importé le 15/11/2026', $card);
+    }
+
+    public function testAMemberFileFromAnEarlierMonthIsToUpdate(): void
+    {
+        self::createFamilyMember(self::owner(), 'Alex', 'Livret d\'Alex', 100_000);
+        $export = self::memberExport('Livret de Sam', 200_000, null, 'Sam');
+        $export['exported_on'] = '2026-10-31';
+        self::service(FamilyPortfolio::class)->import(self::owner(), null, 'Sam', json_encode($export, JSON_THROW_ON_ERROR));
+
+        $crawler = $this->client->request('GET', '/famille');
+        self::assertSelectorTextContains('.family-status', '1 membre à jour sur 2 pour novembre 2026.');
+        $cards = $crawler->filter('section.family-member');
+        self::assertStringContainsString('À jour', $cards->eq(0)->filter('.family-pill')->text());
+        self::assertStringContainsString('À mettre à jour', $cards->eq(1)->filter('.family-pill')->text(), 'said in words, not by the colour alone');
+        self::assertStringContainsString('Fichier de novembre 2026 de Sam', $cards->eq(1)->filter('.family-drop label')->text());
+        self::assertCount(1, $cards->eq(1)->filter('form.family-drop.is-stale button.btn-primary'));
+        self::assertCount(1, $cards->eq(1)->filter('details.family-more form[action$="/supprimer"]'), 'removal folded');
+
+        // The perimeter flags the file to update; the balances come from the members' files, not from an entry here.
+        $crawler = $this->client->request('GET', '/');
+        self::assertSelectorTextContains('.perimeter-note', 'Toute la famille additionne les données importées des membres.');
+        self::assertSelectorTextContains('.perimeter-note a[href="/famille"]', 'Fichier de Sam à mettre à jour');
+        self::assertStringContainsString('fichier à mettre à jour', $crawler->filter('.perimeter-nav a')->eq(2)->text());
+        $balances = $crawler->filter('.summary-figures')->text();
+        self::assertStringContainsString('du mois', $balances);
+        self::assertStringNotContainsString('saisi', $balances);
+        $crawler = $this->client->request('GET', '/?perimetre=membre-' . self::queryInt('SELECT MAX(id) FROM family_members WHERE user_id = ?', [self::owner()->value]));
+        self::assertSelectorTextContains('.perimeter-note', 'Données importées de Sam, en lecture seule : fichier du 31/10/2026.');
     }
 
     /** @param array<string, mixed> $export */

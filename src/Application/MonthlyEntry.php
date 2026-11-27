@@ -9,6 +9,7 @@ use Patrimeter\Domain\Account;
 use Patrimeter\Domain\Month;
 use Patrimeter\Domain\UserId;
 use Patrimeter\Infrastructure\Persistence\AccountRepository;
+use Patrimeter\Infrastructure\Persistence\OwnershipShareRepository;
 use Patrimeter\Infrastructure\Persistence\StatementRepository;
 
 /**
@@ -22,6 +23,7 @@ final class MonthlyEntry
         private readonly Connection $connection,
         private readonly AccountRepository $accounts,
         private readonly StatementRepository $statements,
+        private readonly OwnershipShareRepository $shares,
     ) {}
 
     /**
@@ -49,7 +51,10 @@ final class MonthlyEntry
     {
         $this->connection->transactional(function () use ($owner, $month, $values, $advance): void {
             foreach ($advance as $id) {
-                $this->accounts->advanceOpening($owner, $id, $month->toString() . '-01');
+                $opening = $this->accounts->advanceOpening($owner, $id, $month->toString() . '-01');
+                if ($opening !== null) {
+                    $this->shares->moveInitialShare($owner, $id, $opening, $month);
+                }
             }
             $this->statements->saveMonth($owner, $month, $values);
         });
