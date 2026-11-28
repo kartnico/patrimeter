@@ -5,13 +5,13 @@
 -#}
 {%- set account_tab_current = account_tab(app.request.pathInfo) -%}
 {%- set account_tab_items = [
-    {tab: 'profile', route: 'app_security', label: 'Profil'|trans, icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0'},
-    {tab: 'sign_in', route: 'app_security_signin', label: 'Connexion et sécurité'|trans, icon: 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4'},
-    {tab: 'accounts', route: 'app_accounts', label: 'Comptes'|trans, icon: 'M3 6h18M3 12h18M3 18h18'},
-    {tab: 'properties', route: 'app_properties', label: 'Biens immobiliers'|trans, icon: 'M4 21V8l8-5 8 5v13M4 21h16M9 21v-6h6v6'},
-    {tab: 'budget', route: 'app_budget_household', label: 'Foyer fiscal et catégories'|trans, icon: 'M21.2 15.9A10 10 0 1 1 8 2.8M22 12A10 10 0 0 0 12 2v10z'},
-    {tab: 'carbure', route: 'app_budget_carbure', label: 'Carbure'|trans, icon: 'M4 7h16v10H4zM8 7V5h8v2M8 12h8'},
-]|merge(api_access_available() ? [{tab: 'agents', route: 'app_security_agents', label: 'Agents IA'|trans, icon: 'M5 9h14v11H5zM12 9V6M12 3v1M9 14v1M15 14v1M2 13v3M22 13v3'}] : []) -%}
+    {tab: 'profile', route: 'app_security', label: 'Profil'|trans, icon: 'user'},
+    {tab: 'sign_in', route: 'app_security_signin', label: 'Connexion et sécurité'|trans, icon: 'lock'},
+    {tab: 'accounts', route: 'app_accounts', label: 'Comptes'|trans, icon: 'accounts'},
+    {tab: 'properties', route: 'app_properties', label: 'Biens immobiliers'|trans, icon: 'property'},
+    {tab: 'budget', route: 'app_budget_household', label: 'Foyer fiscal et catégories'|trans, icon: 'budget'},
+    {tab: 'carbure', route: 'app_budget_carbure', label: 'Carbure'|trans, icon: 'carbure'},
+]|merge(api_access_available() ? [{tab: 'agents', route: 'app_security_agents', label: 'Agents IA'|trans, icon: 'agents'}] : []) -%}
 <div class="page-head">
     <h1>{{ 'Mon compte'|trans }}</h1>
 </div>
@@ -19,7 +19,7 @@
     {#- A demonstration account only sees the tabs it may use (DemoGuard). -#}
     {% for account_tab_item in account_tab_items|filter(item => demo_allows(item.route)) %}
     <a href="{{ path(account_tab_item.route) }}"{% if account_tab_item.tab == account_tab_current %} aria-current="{{ path(account_tab_item.route) == app.request.pathInfo ? 'page' : 'true' }}"{% endif %}>
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ account_tab_item.icon }}"/></svg>
+        {{ icon(account_tab_item.icon) }}
         <span>{{ account_tab_item.label }}</span>
     </a>
     {% endfor %}

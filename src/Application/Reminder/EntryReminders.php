@@ -6,11 +6,15 @@ namespace Patrimeter\Application\Reminder;
 
 use Patrimeter\Application\Calendar;
 use Patrimeter\Application\Game\Game;
+use Patrimeter\Domain\AccountActivity;
+use Patrimeter\Domain\AccountsChanged;
 use Patrimeter\Domain\UserId;
 use Patrimeter\Http\PublicUrl;
 use Patrimeter\Infrastructure\Mail\AccountMailer;
+use Patrimeter\Infrastructure\Persistence\AccountRepository;
 use Patrimeter\Infrastructure\Persistence\EntryReminderRepository;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Mime\Address;
 use Symfony\Contracts\Translation\LocaleAwareInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -20,8 +24,9 @@ use function Symfony\Component\Translation\t;
 /**
  * Monthly email reminder to enter the balances, chosen by each user (off by default). The email holds no amount and
  * no status: outside a session, the server cannot read the data. With the challenges on, it gives the entry streak
- * and the next star within reach, worked out from the months entered (in clear) and the stars kept. It leaves on the chosen day of the month from
- * SEND_HOUR, once, and only if no balance of the month is entered yet. Each email carries a single-use unsubscribe
+ * and the next star within reach, worked out from the months entered (in clear) and the stars kept. It leaves on the
+ * chosen day of the month from SEND_HOUR, once, only if no balance of the month is entered yet and an account is active
+ * in it (span of the accounts, recorded in session at each account change). Each email carries a single-use unsubscribe
  * link, which works without signing in; only its fingerprint is kept.
  */
 final class EntryReminders
@@ -32,6 +37,7 @@ final class EntryReminders
 
     public function __construct(
         private readonly EntryReminderRepository $reminders,
+        private readonly AccountRepository $accounts,
         private readonly AccountMailer $mailer,
         private readonly PublicUrl $urls,
         private readonly Calendar $calendar,
@@ -66,6 +72,23 @@ final class EntryReminders
             return;
         }
         $this->reminders->save($user, max(1, min(28, $day)), $locale === 'en' ? 'en' : 'fr');
+        $this->recordActivity($user);
+    }
+
+    /** An account changed: the span of the active accounts follows, if this owner receives the reminder. */
+    #[AsEventListener]
+    public function onAccountsChanged(AccountsChanged $event): void
+    {
+        if ($this->reminders->find($event->owner) !== null) {
+            $this->recordActivity($event->owner);
+        }
+    }
+
+    /** Span of the active accounts, read in session (they are encrypted) and kept for the reminders sent without it. */
+    private function recordActivity(UserId $user): void
+    {
+        $activity = AccountActivity::of($this->accounts->all($user));
+        $this->reminders->saveActivity($user, $activity->from, $activity->until);
     }
 
     public function canUnsubscribe(string $token): bool

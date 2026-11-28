@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Patrimeter\Twig;
 
 use Patrimeter\Application\Calendar;
-use Patrimeter\Infrastructure\Persistence\StatementRepository;
+use Patrimeter\Application\MonthlyEntry;
 use Patrimeter\Security\CurrentUser;
+use Patrimeter\Security\Vault\Vault;
 use Symfony\Contracts\Service\ResetInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -21,7 +22,8 @@ final class EntryDueExtension extends AbstractExtension implements ResetInterfac
 
     public function __construct(
         private readonly CurrentUser $currentUser,
-        private readonly StatementRepository $statements,
+        private readonly MonthlyEntry $entry,
+        private readonly Vault $vault,
         private readonly Calendar $calendar,
     ) {}
 
@@ -38,12 +40,16 @@ final class EntryDueExtension extends AbstractExtension implements ResetInterfac
         $this->due = null;
     }
 
-    /** True if the signed-in user has accounts and no statement for the current month (computed once per request). */
+    /**
+     * True if the current month waits for the signed-in user's balances: an account active in it and nothing entered
+     * yet (computed once per request, with the data unlocked: the accounts are encrypted).
+     */
     public function isDue(): bool
     {
         if ($this->due === null) {
             $user = $this->currentUser->authenticated();
-            $this->due = $user !== null && $user->isReady() && $this->statements->isMonthToEnter($user->id, $this->calendar->currentMonth());
+            $this->due = $user !== null && $user->isReady() && $this->vault->isUnlocked($user->id)
+                && $this->entry->isDue($user->id, $this->calendar->currentMonth());
         }
 
         return $this->due;

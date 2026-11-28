@@ -84,6 +84,39 @@
     </form>
 </section>
 
+{#- Look of the interface on this browser (AppearanceController): accent colour and display density. -#}
+{%- set current_appearance = appearance(app.request) -%}
+<section class="card" aria-labelledby="appearance-title">
+    <h2 id="appearance-title">{{ 'Apparence'|trans }}</h2>
+    <p>{{ 'Ces choix valent pour ce navigateur. Le thème clair ou sombre se change avec le bouton en haut de la page.'|trans }}</p>
+    <form method="post" action="{{ path('app_security_appearance') }}" class="appearance-form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token('patrimeter') }}">
+        <fieldset>
+            <legend>{{ 'Couleur d\'accent'|trans }}</legend>
+            <p class="muted small">{{ 'Celle des boutons, des liens et de la page en cours.'|trans }}</p>
+            <div class="accent-choices">
+                {% for accent_option in enum_cases('Patrimeter\\Http\\Accent') %}
+                <label class="accent-choice">
+                    <input type="radio" name="accent" value="{{ accent_option.value }}"{% if current_appearance.accent == accent_option %} checked{% endif %}>
+                    <span class="accent-swatch accent-swatch-{{ accent_option.value }}" aria-hidden="true"></span>
+                    <span>{{ accent_option.label|trans }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>{{ 'Densité d\'affichage'|trans }}</legend>
+            {% for density_option in enum_cases('Patrimeter\\Http\\Density') %}
+            <label class="style-choice">
+                <input type="radio" name="density" value="{{ density_option.value }}"{% if current_appearance.density == density_option %} checked{% endif %}>
+                <span><strong>{{ density_option.label|trans }}</strong> <span class="muted small">{{ density_option.description|trans }}</span></span>
+            </label>
+            {% endfor %}
+        </fieldset>
+        <button type="submit" class="btn btn-small">{{ 'Enregistrer l\'apparence'|trans }}</button>
+    </form>
+</section>
+
 {% if game_offered() %}
 {#- Challenges and stars: on or off for this account (ChallengeController). -#}
 <section class="card" aria-labelledby="game-title">
@@ -230,7 +263,7 @@
     </form>
     {% else %}
     {#- Highlighted: adding a FIDO2 device needs a fresh identity confirmation, in the second factor box above. -#}
-    <p class="flash identity-notice"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>
+    <p class="flash identity-notice">{{ icon('lock') }}
         <strong>{{ 'Confirmez votre identité ci-dessus pour ajouter ou modifier un appareil.'|trans }}</strong></p>
     {% endif %}
 </section>
@@ -275,7 +308,7 @@
         <p class="actions"><button type="submit" class="btn">{{ 'Déconnecter mes autres sessions'|trans }}</button></p>
     </form>
     {% else %}
-    <p class="flash identity-notice"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>
+    <p class="flash identity-notice">{{ icon('lock') }}
         <strong>{{ 'Confirmez votre identité ci-dessus pour déconnecter une session.'|trans }}</strong></p>
     {% endif %}
 </section>
@@ -323,7 +356,7 @@
         <p class="actions"><button type="submit" class="btn">{{ 'Retirer tous les navigateurs de confiance'|trans }}</button></p>
     </form>
     {% else %}
-    <p class="flash identity-notice"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>
+    <p class="flash identity-notice">{{ icon('lock') }}
         <strong>{{ 'Confirmez votre identité ci-dessus pour retirer un navigateur de confiance.'|trans }}</strong></p>
     {% endif %}
     {% endif %}

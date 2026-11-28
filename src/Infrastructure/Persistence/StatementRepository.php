@@ -88,17 +88,6 @@ final class StatementRepository
         return $result;
     }
 
-    /**
-     * True if the owner has at least one account and no statement for the month: the month is still to enter. Reads the
-     * months of the statements only, which are in clear (never an amount).
-     */
-    public function isMonthToEnter(UserId $owner, Month $month): bool
-    {
-        return Row::int(['due' => $this->connection->fetchOne(
-            'SELECT EXISTS (SELECT 1 FROM accounts WHERE user_id = ?) AND NOT EXISTS (SELECT 1 FROM statements WHERE user_id = ? AND month = ?)',
-            [$owner->value, $owner->value, $month->toString()],
-        )], 'due') === 1;
-    }
 
     /**
      * Months with at least one balance entered, ascending. Reads the months only, in clear (never an amount): usable

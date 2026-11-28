@@ -21,6 +21,8 @@ export default defineConfig({
     use: {
         baseURL: `http://localhost:${port}`,
         locale: 'fr-FR',
+        // Steady pages: no micro-animation caught halfway by a check or a picture (app.css, Motion).
+        reducedMotion: 'reduce',
         // Mobile first: the project's reference width.
         viewport: { width: 390, height: 844 },
         trace: 'retain-on-failure',

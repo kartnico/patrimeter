@@ -69,12 +69,12 @@ Sous la carte, Patrimeter en fait une **image** (PNG de 1080 × 1350 pixels, le 
 votre navigateur :
 
 - **Partager l'image…** ouvre le partage du téléphone (ou de l'ordinateur, s'il le propose) : choisissez l'application,
-  Instagram, WhatsApp, Mastodon, Signal…
+  Instagram, WhatsApp, Mastodon, Signal… Sur téléphone, c'est la seule action de partage, avec l'enregistrement. Fermer
+  le partage ne dit rien ; s'il est refusé, la page propose d'enregistrer l'image pour l'ajouter à votre publication.
 - **Enregistrer l'image** la télécharge.
-- **Publier sur** Mastodon, X (Twitter), Facebook, WhatsApp ou Instagram : sur téléphone, le partage du téléphone
-  s'ouvre avec l'image ; sur ordinateur, l'image est enregistrée et le réseau s'ouvre dans un nouvel onglet, avec un
-  court texte pour Mastodon, X et WhatsApp : ajoutez-y l'image enregistrée. Pour Mastodon, indiquez votre instance
-  (par exemple `mastodon.social`) ; le navigateur s'en souvient.
+- **Publier sur** Mastodon, X (Twitter), Facebook, WhatsApp ou Instagram, sur ordinateur : l'image est enregistrée et le
+  réseau s'ouvre dans un nouvel onglet, avec un court texte pour Mastodon, X et WhatsApp : ajoutez-y l'image
+  enregistrée. Pour Mastodon, indiquez votre instance (par exemple `mastodon.social`) ; le navigateur s'en souvient.
 - Avec les montants, un avertissement le rappelle : publiée sur un réseau social, l'image les rend publics.
   **Masquer les montants** avant de partager ne laisse que les pourcentages.
 

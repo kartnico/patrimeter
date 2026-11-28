@@ -68,19 +68,20 @@ données : c'est l'écran **Déverrouiller**.
 
 ## Mois en cours
 
-Au milieu de la barre du haut, Patrimeter rappelle le **mois en cours** (« Novembre 2026 », « Nov. 2026 » sur
-téléphone), quel que soit le mois affiché par la page : c'est celui que la saisie du mois propose d'abord. Un clic
-dessus y revient : sur la même page pour le patrimoine, le rapport, la saisie du mois et le budget, sinon sur la page
-Patrimoine. Seul, un mois s'écrit avec une majuscule, comme en anglais (« Novembre 2026 ») ; dans une phrase, il
-garde sa minuscule.
+Sous le logo sur un ordinateur, au milieu de la barre du haut sur un téléphone, Patrimeter rappelle le **mois en
+cours** (« Novembre 2026 », « Nov. 2026 » sur téléphone), quel que soit le mois affiché par la page : c'est celui que
+la saisie du mois propose d'abord. Un clic dessus y revient : sur la même page pour le patrimoine, le rapport, la
+saisie du mois et le budget, sinon sur la page Patrimoine. Seul, un mois s'écrit avec une majuscule, comme en anglais
+(« Novembre 2026 ») ; dans une phrase, il garde sa minuscule.
 
 ## Menus
 
-En haut sur ordinateur, en bas sur téléphone : **Patrimoine**, **Budget**, **Objectifs**, **Défis**
-([défis et étoiles](defis.md), si vous ne les avez pas désactivés), puis, toujours mis en avant à droite, **Saisie du
-mois**. Vos **Comptes** et vos **Biens immobiliers** s'ouvrent depuis la page Patrimoine (boutons en haut), votre
-**Foyer fiscal et catégories** depuis la page Budget. **Mon compte**, à droite, réunit le profil, la sécurité et les
-agents IA.
+Dans une barre latérale à gauche sur un ordinateur (à partir de 1 024 pixels de large), en haut sur une tablette, en
+bas sur un téléphone : **Patrimoine**, **Budget**, **Objectifs**, **Défis** ([défis et étoiles](defis.md), si vous ne
+les avez pas désactivés), puis, toujours mis en avant en dernier, **Saisie du mois**. Vos **Comptes** et vos **Biens
+immobiliers** s'ouvrent depuis la page Patrimoine (boutons en haut), votre **Foyer fiscal et catégories** depuis la
+page Budget. **Mon compte**, en bas de la barre latérale (à droite de la barre du haut), réunit le profil, la sécurité
+et les agents IA ; dans la barre latérale, son menu et celui de la langue s'ouvrent vers le haut.
 
 ## Premiers comptes
 
@@ -119,8 +120,9 @@ compte, jusqu'à ce que les deux existent.
 
 ## Thème
 
-Le bouton en haut de chaque page bascule entre thème clair et sombre ; sans choix, le thème du système
-s'applique.
+Le bouton du thème, en bas de la barre latérale sur un ordinateur et en haut de la page sinon, bascule entre thème
+clair et sombre ; sans choix, le thème du système s'applique. La couleur d'accent et la densité d'affichage se
+choisissent dans Mon compte ([apparence](securite.md#apparence)).
 
 ![Page Patrimoine en thème sombre](../captures/tableau-de-bord-sombre.png)
 

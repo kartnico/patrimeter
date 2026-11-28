@@ -4,6 +4,37 @@ Toutes les évolutions notables de Patrimeter sont consignées ici. Format :
 [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) ; numérotation :
 [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [3.7.0] - 2026-11-28
+
+### Installation
+
+- **Migration** : trois colonnes pour les rappels mensuels (les mois où un compte est actif) ; elles s'appliquent avec
+  la mise à jour habituelle.
+
+### Ajouté
+
+- **Apparence** (Mon compte, onglet Profil) : une couleur d'accent au choix (**Forêt**, **Océan**, **Aurore** ou
+  **Ardoise**) et une densité d'affichage (**Confortable** ou **Compacte**), retenues par ce navigateur. Chaque couleur
+  garde des contrastes suffisants dans les deux thèmes.
+- **Barre latérale sur ordinateur** : à partir de 1 024 pixels de large, la navigation, le mois en cours et Mon compte
+  passent dans une colonne à gauche ; la tablette et le téléphone gardent leur barre.
+- **Micro-animations** : couleurs au survol, menus qui se déplient, messages qui apparaissent, point de la saisie qui
+  pulse deux fois ; toutes coupées si le système demande de réduire les animations.
+
+### Modifié
+
+- **Un seul jeu d'icônes**, au même trait sur toutes les pages : navigation, Mon compte, messages, défis.
+- **Rapport sur téléphone** : une seule action, **Partager l'image…**, ouvre le partage du téléphone, à côté du
+  téléchargement ; annuler ne dit rien, un partage refusé explique comment enregistrer l'image.
+- Code : les règles des comptes et le serveur d'autorisation OAuth quittent leurs contrôleurs pour des services, sans
+  nouvelle dépendance.
+
+### Corrigé
+
+- La saisie du mois n'est plus réclamée (bandeau, entrée **Saisie** mise en avant, e-mail de rappel) quand aucun compte
+  n'est actif ce mois-là : comptes tous clôturés, ou ouverts plus tard.
+- CHANGELOG : les liens des versions 3.5.0 et 3.6.0 mènent à des pages qui existent.
+
 ## [3.6.0] - 2026-11-27
 
 ### Modifié
@@ -1532,8 +1563,9 @@ Première version : PHP natif, SQLite, mono-utilisateur.
 - Authentification par mot de passe unique (Argon2id), limitation des tentatives, sessions
   durcies, jeton CSRF, en-têtes de sécurité dont une CSP stricte.
 
-[3.6.0]: https://github.com/kartnico/patrimeter/compare/v3.5.0...v3.6.0
-[3.5.0]: https://github.com/kartnico/patrimeter/compare/v3.4.1...v3.5.0
+[3.7.0]: https://github.com/kartnico/patrimeter/compare/v3.6.0...v3.7.0
+[3.6.0]: https://github.com/kartnico/patrimeter/compare/v3.4.1...v3.6.0
+[3.5.0]: https://gitlab.example.org/kartzone/patrimeter/-/releases/v3.5.0
 [3.4.1]: https://github.com/kartnico/patrimeter/tree/v3.4.1
 [3.4.0]: https://gitlab.example.org/kartzone/patrimeter/-/compare/v3.3.0...v3.4.0
 [3.3.0]: https://gitlab.example.org/kartzone/patrimeter/-/compare/v3.2.0...v3.3.0

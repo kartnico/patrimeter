@@ -76,6 +76,9 @@ final class ReportTest extends FunctionalTestCase
             $panel->filter('[data-share-network]')->each(static fn($button): string => trim($button->text())),
         );
         self::assertSame('mastodon-form', $panel->filter('[data-share-network="mastodon"]')->attr('aria-controls'));
+        // The networks are grouped, hidden by report.js on a phone, whose share sheet already lists them.
+        self::assertCount(5, $panel->filter('[data-share-networks] [data-share-network]'));
+        self::assertSame('Le partage n\'a pas abouti : enregistrez l\'image, puis ajoutez-la à votre publication.', $panel->attr('data-share-refused'));
         self::assertSelectorExists('#mastodon-form label[for="mastodon-instance"]');
         self::assertStringContainsString('publiée sur un réseau social, elle les rend publics', $panel->filter('.report-share-warning')->text());
         self::assertSame('/rapport?mois=2026-11&montants=0', $panel->filter('.report-share-warning a')->attr('href'));

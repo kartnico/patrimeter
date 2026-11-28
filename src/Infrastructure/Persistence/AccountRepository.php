@@ -6,6 +6,7 @@ namespace Patrimeter\Infrastructure\Persistence;
 
 use Doctrine\DBAL\Connection;
 use Patrimeter\Domain\Account;
+use Patrimeter\Domain\AccountsChanged;
 use Patrimeter\Domain\Level;
 use Patrimeter\Domain\LoanMode;
 use Patrimeter\Domain\Month;
@@ -13,6 +14,7 @@ use Patrimeter\Domain\Nature;
 use Patrimeter\Domain\UserId;
 use Patrimeter\Infrastructure\Crypto\Aead;
 use Patrimeter\Security\Vault\Vault;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Accounts and loans of a user, encrypted with their data key.
@@ -20,7 +22,7 @@ use Patrimeter\Security\Vault\Vault;
  * Isolation: each method requires the owner and each query filters on `user_id` (checked by
  * tests/Architecture/OwnedDataQueriesTest); another user's account cannot be found, exactly like a non-existent
  * account. The ciphertext is tied to its row and to its owner. The sorting (level, nature, name) is therefore done
- * after decryption.
+ * after decryption. Each write publishes AccountsChanged.
  *
  * @phpstan-type AccountData array{name: string, type_id: int, level_code: string, nature: string, opened_on: string}
  * @phpstan-type AccountPayload array{name: string, type_id: int, level_code: string, nature: string, opened_on: string, closed_on: ?string, linked_asset_id: ?int, loan_mode: string}
@@ -33,6 +35,7 @@ final class AccountRepository
         private readonly Connection $connection,
         private readonly Vault $vault,
         private readonly AccountTypeRepository $types,
+        private readonly EventDispatcherInterface $events,
     ) {}
 
     /** @return list<Account> all the owner's accounts, sorted by level, nature then name */
@@ -119,6 +122,7 @@ final class AccountRepository
             }
             $this->connection->executeStatement('DELETE FROM accounts WHERE id = ? AND user_id = ?', [$id, $owner->value]);
         });
+        $this->events->dispatch(new AccountsChanged($owner));
     }
 
     public function deleteAll(UserId $owner): void
@@ -179,6 +183,7 @@ final class AccountRepository
     {
         $sealed = Aead::seal($this->vault->key($owner), json_encode($payload, JSON_THROW_ON_ERROR), self::context($owner, $id));
         $this->connection->executeStatement('UPDATE accounts SET ciphertext = ? WHERE id = ? AND user_id = ?', [$sealed, $id, $owner->value]);
+        $this->events->dispatch(new AccountsChanged($owner));
     }
 
     /** @param array<string, mixed> $row */

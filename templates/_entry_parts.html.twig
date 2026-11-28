@@ -3,14 +3,14 @@
     goals. Variable: month (Month).
 -#}
 {%- set entry_part_items = [
-    {route: 'app_entry', label: 'Patrimoine'|trans, icon: 'M3 11 12 3l9 8v10h-6v-6H9v6H3z', month: true},
-    {route: 'app_budget_entry', label: 'Budget'|trans, icon: 'M21.2 15.9A10 10 0 1 1 8 2.8M22 12A10 10 0 0 0 12 2v10z', month: true},
-    {route: 'app_goal_entry', label: 'Objectifs'|trans, icon: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 12h.01', month: false},
+    {route: 'app_entry', label: 'Patrimoine'|trans, icon: 'home', month: true},
+    {route: 'app_budget_entry', label: 'Budget'|trans, icon: 'budget', month: true},
+    {route: 'app_goal_entry', label: 'Objectifs'|trans, icon: 'goal', month: false},
 ] -%}
 <nav class="account-tabs entry-parts" aria-label="{{ 'Parties de la saisie du mois'|trans }}">
     {% for entry_part_item in entry_part_items %}
     <a href="{{ entry_part_item.month ? path(entry_part_item.route, {mois: month.toString}) : path(entry_part_item.route) }}"{% if path(entry_part_item.route) == app.request.pathInfo %} aria-current="page"{% endif %}>
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ entry_part_item.icon }}"/></svg>
+        {{ icon(entry_part_item.icon) }}
         <span>{{ entry_part_item.label }}</span>
     </a>
     {% endfor %}

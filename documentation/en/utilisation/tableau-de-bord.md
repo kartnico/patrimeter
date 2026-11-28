@@ -69,12 +69,12 @@ Below the card, Patrimeter turns it into a **picture** (a 1080 × 1350 pixel PNG
 your browser:
 
 - **Share the picture…** opens the phone's share sheet (or the computer's, if it has one): choose the app,
-  Instagram, WhatsApp, Mastodon, Signal…
+  Instagram, WhatsApp, Mastodon, Signal… On a phone, it is the only share action, next to saving. Closing the sheet
+  says nothing; if sharing is refused, the page suggests saving the picture to add it to your post.
 - **Save the picture** downloads it.
-- **Post on** Mastodon, X (Twitter), Facebook, WhatsApp or Instagram: on a phone, the share sheet opens with the
-  picture; on a computer, the picture is saved and the network opens in a new tab, with a short text for Mastodon, X
-  and WhatsApp: add the saved picture to it. For Mastodon, enter your server (for example `mastodon.social`); the
-  browser remembers it.
+- **Post on** Mastodon, X (Twitter), Facebook, WhatsApp or Instagram, on a computer: the picture is saved and the
+  network opens in a new tab, with a short text for Mastodon, X and WhatsApp: add the saved picture to it. For
+  Mastodon, enter your server (for example `mastodon.social`); the browser remembers it.
 - With amounts, a warning reminds you: posted on a social network, the picture makes them public. **Hide amounts**
   before sharing only keeps the percentages.
 

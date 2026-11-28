@@ -7,7 +7,7 @@ the administrator of your instance.
 ## Sight: low vision and colour blindness
 
 - **Contrast**: at least 4.5:1 for all text, 3:1 for field borders, the focus outline and graphical elements,
-  in the light theme as in the dark theme.
+  in the light theme as in the dark theme, and for each of the four accent colours.
 - **Colour blindness**: the six colours of the pyramid remain distinct from one another when simulating
   protanopia, deuteranopia and tritanopia. Above all, **no information relies on colour alone**:
     - each level of the pyramid shows its name, its amount and its share;
@@ -15,7 +15,8 @@ the administrator of your instance.
       monthly values gives the same figures;
     - increases and decreases carry their sign (+ or −), carried-over balances the "carried over" label, loans in
       the monthly update the "owed" label, the "−" sign and a dotted underline, input errors a written message.
-- **Dark theme** if you wish (button at the top of the screen), otherwise the system's theme.
+- **Dark theme** if you wish (theme button), otherwise the system's theme; **accent colour** and **display
+  density** to choose too ([appearance](securite.md#appearance)).
 - **Zoom**: the page follows the browser's zoom and text size; designed for mobile first (checked at 390 pixels
   wide), it rearranges itself into a single column instead of scrolling sideways.
 - **Screen readers**: language declared, headings in order, named navigation areas, fields linked to their
@@ -41,11 +42,12 @@ Patrimeter plays **no sound, no video, no audio content**: all the information i
 - Everything can be done with the keyboard; the focus is always visible (thick outline).
 - The **Patrimeter** logo, at the top of every page, leads back to the Net worth page. The header, the navigation
   and the content are marked-up areas: a screen reader goes straight to the content.
-- Input fields are 44 pixels high, except those of the monthly update, more compact to fit on a table row (at
-  least 24 pixels, like isolated buttons and links).
+- Input fields are 44 pixels high (38 with the compact density), except those of the monthly update, more
+  compact to fit on a table row (at least 24 pixels, like isolated buttons and links).
 - Monthly update: **Enter** moves to the next field, **Shift + Enter** to the previous one, **Esc** restores
   the suggested amount ([monthly update](saisie.md#entering-quickly-with-the-keyboard)).
-- Chart animations are turned off if the system asks to reduce motion.
+- Animations (charts, menus unfolding, messages appearing, colours of the buttons on hover) are turned off if the
+  system asks to reduce motion.
 
 ## Known limits
 

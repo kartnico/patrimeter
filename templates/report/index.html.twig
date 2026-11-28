@@ -71,6 +71,7 @@
          data-share-file="patrimeter-{{ month.toString }}{{ amounts ? '' : '-pourcentages' }}.png"
          data-share-saved="{{ 'Image enregistrée : ajoutez-la à votre publication.'|trans }}"
          data-share-failed="{{ 'L\'image n\'a pas pu être créée.'|trans }}"
+         data-share-refused="{{ 'Le partage n\'a pas abouti : enregistrez l\'image, puis ajoutez-la à votre publication.'|trans }}"
          data-share-invalid="{{ 'Indiquez l\'adresse de votre instance, par exemple mastodon.social.'|trans }}">
     <h2 id="report-share-title" class="visually-hidden">{{ 'Partager l\'image du rapport'|trans }}</h2>
     <div class="report-share-main">
@@ -81,6 +82,8 @@
     <p class="report-share-warning small">{{ 'Les montants figurent sur l\'image : publiée sur un réseau social, elle les rend publics.'|trans }}
         <a href="{{ path('app_report', {mois: month.toString, montants: 0, etoiles: game ? 1 : null}) }}">{{ 'Masquer les montants'|trans }}</a></p>
     {% endif %}
+    {#- On a computer, each network opens its own site; on a phone, the share sheet above already lists them. -#}
+    <div class="report-share-networks" data-share-networks>
     <p class="report-share-label small">{{ 'Publier sur'|trans }}</p>
     <ul class="share-networks">
         <li><button type="button" class="btn btn-small" data-share-network="mastodon" aria-controls="mastodon-form">Mastodon</button></li>
@@ -96,6 +99,7 @@
             <button type="submit" class="btn btn-small">{{ 'Publier'|trans }}</button>
         </span>
     </form>
+    </div>
     <p class="report-share-status small" role="status" data-share-status></p>
 </section>
 

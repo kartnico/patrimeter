@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Patrimeter\Tests\Architecture;
 
+use Patrimeter\Http\Accent;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Colour accessibility, checked on app.css in both themes (user documentation, Accessibility page):
+ * Colour accessibility, checked on app.css in both themes and for each accent colour (user documentation,
+ * Accessibility page):
  * - WCAG 2.2 contrasts: 4.5:1 for text (1.4.3), 3:1 for field borders, focus and graphical elements (1.4.11);
  * - pyramid levels, and budget groups (50/30/20 rule), distinct two by two for normal vision and for the three
  *   colour blindnesses (simulation by Machado, Oliveira and Fernandes, 2009), gap measured in CIE76 ΔE.
@@ -73,9 +75,27 @@ final class ColorAccessibilityTest extends TestCase
         $darkExplicit = self::variables(self::block($css, ':root[data-theme="dark"] {'));
         $darkSystem = self::variables(self::block($css, ':root:not([data-theme="light"]) {'));
         self::assertSame($darkExplicit, $darkSystem, 'le jeu sombre est défini deux fois dans app.css : modifier les deux');
+        // The dark theme gives each accent its dark shades; the primary colour keeps pointing to the chosen accent.
+        self::assertArrayNotHasKey('primary', $darkExplicit, 'le thème sombre redéfinit les --accent-*, pas --primary');
 
-        yield 'thème clair' => [$light];
-        yield 'thème sombre' => [array_merge($light, $darkExplicit)];
+        foreach (['thème clair' => $light, 'thème sombre' => array_merge($light, $darkExplicit)] as $theme => $colors) {
+            foreach (Accent::cases() as $accent) {
+                // The default accent has no data-accent attribute: the primary colour of :root.
+                $accented = $accent === Accent::DEFAULT
+                    ? $colors
+                    : array_merge($colors, self::variables(self::block($css, sprintf(':root[data-accent="%s"] {', $accent->value))));
+                yield "$theme, accent {$accent->value}" => [self::resolved($accented)];
+            }
+        }
+    }
+
+    /** The browser's bar on a phone (meta theme-color) takes the light shade of the accent chosen. */
+    public function testThemeColorOfEachAccentIsItsLightShade(): void
+    {
+        $light = self::variables(self::block((string) file_get_contents(self::CSS), ':root {'));
+        foreach (Accent::cases() as $accent) {
+            self::assertSame($light["accent-{$accent->value}"] ?? null, $accent->themeColor(), $accent->value);
+        }
     }
 
     /** @param array<string, string> $colors */
@@ -146,13 +166,34 @@ final class ColorAccessibilityTest extends TestCase
         return substr($css, $open, $end - $open);
     }
 
-    /** @return array<string, string> */
+    /** @return array<string, string> colours of a block: a hexadecimal value, or a reference var(--name) */
     private static function variables(string $block): array
     {
-        preg_match_all('/--([a-z0-9_-]+):\s*(#[0-9a-f]{6})\s*;/i', $block, $matches, PREG_SET_ORDER);
+        preg_match_all('/--([a-z0-9_-]+):\s*(#[0-9a-f]{6}|var\(--[a-z0-9_-]+\))\s*;/i', $block, $matches, PREG_SET_ORDER);
         $variables = [];
         foreach ($matches as $match) {
             $variables[$match[1]] = strtolower($match[2]);
+        }
+
+        return $variables;
+    }
+
+    /**
+     * Colours with each reference var(--name) replaced by the value it points to, as the browser computes them.
+     *
+     * @param array<string, string> $variables
+     *
+     * @return array<string, string>
+     */
+    private static function resolved(array $variables): array
+    {
+        foreach ($variables as $name => $value) {
+            for ($depth = 0; preg_match('/\Avar\(--([a-z0-9_-]+)\)\z/', $value, $reference) === 1; ++$depth) {
+                self::assertLessThan(5, $depth, "--$name : références en boucle");
+                self::assertArrayHasKey($reference[1], $variables, "--$name renvoie à --{$reference[1]}, absente");
+                $value = $variables[$reference[1]];
+            }
+            $variables[$name] = $value;
         }
 
         return $variables;

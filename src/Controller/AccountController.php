@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 namespace Patrimeter\Controller;
 
-use Doctrine\DBAL\Connection;
+use Patrimeter\Application\AccountBook;
 use Patrimeter\Application\Calendar;
 use Patrimeter\Application\Form\AccountForm;
-use Patrimeter\Application\PropertyPortfolio;
+use Patrimeter\Application\Refused;
+use Patrimeter\Application\ValidationFailed;
 use Patrimeter\Domain\Account;
-use Patrimeter\Domain\BankStatement\BankStatementReader;
-use Patrimeter\Domain\BankStatement\UnreadableBankStatement;
-use Patrimeter\Domain\DateInput;
-use Patrimeter\Domain\Level;
-use Patrimeter\Domain\Money;
 use Patrimeter\Domain\Month;
-use Patrimeter\Domain\Nature;
+use Patrimeter\Domain\UserId;
 use Patrimeter\Infrastructure\Persistence\AccountRepository;
 use Patrimeter\Infrastructure\Persistence\AccountTypeRepository;
-use Patrimeter\Infrastructure\Persistence\OwnershipShareRepository;
-use Patrimeter\Infrastructure\Persistence\StatementRepository;
 use Patrimeter\Security\CurrentUser;
 use Patrimeter\Security\OwnedResourceVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,10 +27,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use function Symfony\Component\Translation\t;
 
 /**
- * Management of the accounts and loans, and of their statements.
+ * Pages of the accounts and loans, and of their statements: reads the request, lets AccountBook apply the rules, and
+ * shows the outcome.
  *
- * All reads and writes go through the signed-in owner (CurrentUser); an account of another user cannot be
- * found (404), and the OwnedResourceVoter voter checks again the owner of each account read.
+ * All reads and writes go through the signed-in owner (CurrentUser); an account of another user cannot be found
+ * (404), and the OwnedResourceVoter voter checks again the owner of each account read.
  */
 final class AccountController extends AbstractController
 {
@@ -45,40 +40,22 @@ final class AccountController extends AbstractController
     /** Bank statement read on an account page: 2 MB at most (also the limit of nginx for this address). */
     private const int STATEMENT_FILE_MAX_BYTES = 2 * 1024 * 1024;
     private const array FORM_FIELDS = ['name', 'type_id', 'level_code', 'nature', 'opened_on', 'initial_amount'];
-    /** Properties are created on their own screen (PropertyController), with their share and their loans. */
-    private const string PROPERTY_ELSEWHERE = 'Un bien immobilier (résidence, location, SCPI…) se crée depuis Biens immobiliers, « Nouveau bien ».';
 
     public function __construct(
-        private readonly Calendar $calendar,
+        private readonly AccountBook $book,
         private readonly AccountRepository $accounts,
         private readonly AccountTypeRepository $types,
-        private readonly StatementRepository $statements,
-        private readonly Connection $connection,
+        private readonly Calendar $calendar,
         private readonly CurrentUser $currentUser,
-        private readonly OwnershipShareRepository $shares,
-        private readonly PropertyPortfolio $portfolio,
         private readonly ValidatorInterface $validator,
     ) {}
 
     #[Route('/comptes', name: 'app_accounts', methods: ['GET'])]
     public function index(): Response
     {
-        $owner = $this->currentUser->id();
         $month = $this->calendar->currentMonth();
-        $valuation = $this->statements->latestValuation($owner, $month);
 
-        $active = [];
-        $archived = [];
-        foreach ($this->accounts->all($owner) as $account) {
-            $line = ['account' => $account, 'value' => $valuation->valueAt($account->id, $month)];
-            if ($account->isArchived()) {
-                $archived[] = $line;
-            } else {
-                $active[$account->level->value][] = $line;
-            }
-        }
-
-        return $this->render('account/index.html.twig', ['active' => $active, 'archived' => $archived, 'month' => $month]);
+        return $this->render('account/index.html.twig', $this->book->overview($this->owner(), $month) + ['month' => $month]);
     }
 
     #[Route('/comptes/nouveau', name: 'app_account_new', methods: ['GET'])]
@@ -94,23 +71,14 @@ final class AccountController extends AbstractController
     public function store(Request $request): Response
     {
         $form = $this->form($request, true);
-        if ($form->isValid() && self::makesAProperty($form->data)) {
-            $form->errors['type_id'] = self::PROPERTY_ELSEWHERE;
-        }
         if (!$form->isValid()) {
             return $this->renderForm(null, $form->raw, $form->errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        $owner = $this->currentUser->id();
-        $this->connection->transactional(function () use ($form, $owner): void {
-            $id = $this->accounts->create($owner, $form->data);
-            if ($form->initialCents !== null) {
-                // Initial balance: current month, or opening month if later.
-                $month = $this->calendar->currentMonth();
-                $opened = Month::fromDate($form->data['opened_on']);
-                $this->statements->save($owner, $id, $opened->compare($month) > 0 ? $opened : $month, $form->initialCents);
-            }
-        });
+        try {
+            $this->book->create($this->owner(), $form);
+        } catch (ValidationFailed $failure) {
+            return $this->renderForm(null, $form->raw, $failure->errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $this->addFlash('success', t('Compte « %name% » créé.', ['%name%' => $form->data['name']]));
 
         return $this->redirectToRoute('app_accounts', status: Response::HTTP_SEE_OTHER);
@@ -127,20 +95,14 @@ final class AccountController extends AbstractController
     {
         $account = $this->findOr404($id);
         $form = $this->form($request, false);
-        if ($form->isValid() && $account->closedOn !== null && $form->data['opened_on'] > $account->closedOn) {
-            $form->errors['opened_on'] = 'La date d\'ouverture doit précéder la date de clôture.';
-        }
-        if ($form->isValid()) {
-            $form->errors = $this->portfolio->conflicts($this->currentUser->id(), $account, $form->data);
-        }
-        // After the conflicts, more precise (a loan linked to a property must first be unlinked from it).
-        if ($form->isValid() && !PropertyPortfolio::isProperty($account) && self::makesAProperty($form->data)) {
-            $form->errors['type_id'] = self::PROPERTY_ELSEWHERE;
-        }
         if (!$form->isValid()) {
             return $this->renderForm($account, $form->raw, $form->errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        $this->accounts->update($this->currentUser->id(), $account->id, $form->data);
+        try {
+            $this->book->update($this->owner(), $account, $form);
+        } catch (ValidationFailed $failure) {
+            return $this->renderForm($account, $form->raw, $failure->errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $this->addFlash('success', t('Compte mis à jour.'));
 
         return $this->redirectToAccount($account);
@@ -150,13 +112,13 @@ final class AccountController extends AbstractController
     public function archive(Request $request, int $id): Response
     {
         $account = $this->findOr404($id);
-        $closedOn = trim($request->request->getString('closed_on'));
-        if (!DateInput::isValid($closedOn) || $closedOn < $account->openedOn) {
-            $this->addFlash('error', t('Date de clôture invalide (elle doit suivre la date d\'ouverture).'));
+        try {
+            $this->book->archive($this->owner(), $account, $request->request->getString('closed_on'));
+        } catch (Refused $refused) {
+            $this->addFlash('error', $refused->reason);
 
             return $this->redirectToAccount($account);
         }
-        $this->accounts->archive($this->currentUser->id(), $account->id, $closedOn);
         $this->addFlash('success', t('Compte « %name% » archivé.', ['%name%' => $account->name]));
 
         return $this->redirectToRoute('app_accounts', status: Response::HTTP_SEE_OTHER);
@@ -166,7 +128,7 @@ final class AccountController extends AbstractController
     public function unarchive(int $id): Response
     {
         $account = $this->findOr404($id);
-        $this->accounts->unarchive($this->currentUser->id(), $account->id);
+        $this->book->unarchive($this->owner(), $account);
         $this->addFlash('success', t('Compte réactivé.'));
 
         return $this->redirectToAccount($account);
@@ -176,7 +138,7 @@ final class AccountController extends AbstractController
     public function destroy(int $id): Response
     {
         $account = $this->findOr404($id);
-        $this->accounts->delete($this->currentUser->id(), $account->id);
+        $this->book->delete($this->owner(), $account);
         $this->addFlash('success', t('Compte « %name% » supprimé avec son historique.', ['%name%' => $account->name]));
 
         return $this->redirectToRoute('app_accounts', status: Response::HTTP_SEE_OTHER);
@@ -187,26 +149,12 @@ final class AccountController extends AbstractController
     public function saveStatement(Request $request, int $id): Response
     {
         $account = $this->findOr404($id);
-        $month = Month::tryFromString(trim($request->request->getString('mois')));
-        if ($month === null) {
-            $this->addFlash('error', t('Mois invalide (AAAA-MM).'));
-
-            return $this->redirectToAccount($account);
-        }
-        if (!$account->isActiveIn($month)) {
-            $this->addFlash('error', t('Le compte n\'est pas ouvert en %month%.', ['%month%' => $month->label($request->getLocale())]));
-
-            return $this->redirectToAccount($account);
-        }
         try {
-            $cents = Money::parse($request->request->getString('montant'), $request->getLocale());
-        } catch (\InvalidArgumentException $e) {
-            $this->addFlash('error', t($e->getMessage()));
-
-            return $this->redirectToAccount($account);
+            $month = $this->book->saveStatement($this->owner(), $account, $request->request->getString('mois'), $request->request->getString('montant'), $request->getLocale());
+            $this->addFlash('success', t('Relevé %of_month% enregistré.', ['%of_month%' => $month->ofLabel($request->getLocale())]));
+        } catch (Refused $refused) {
+            $this->addFlash('error', $refused->reason);
         }
-        $this->statements->save($this->currentUser->id(), $account->id, $month, $cents);
-        $this->addFlash('success', t('Relevé %of_month% enregistré.', ['%of_month%' => $month->ofLabel($request->getLocale())]));
 
         return $this->redirectToAccount($account);
     }
@@ -219,22 +167,14 @@ final class AccountController extends AbstractController
     public function readStatementFile(Request $request, int $id, #[MapUploadedFile(name: 'releve')] ?UploadedFile $file = null): Response
     {
         $account = $this->findOr404($id);
+        $content = $file !== null && $file->isValid() && $file->getSize() <= self::STATEMENT_FILE_MAX_BYTES ? $file->getContent() : null;
         try {
-            if ($file === null || !$file->isValid() || $file->getSize() > self::STATEMENT_FILE_MAX_BYTES) {
-                throw new UnreadableBankStatement('Fichier illisible : choisissez un relevé OFX ou CAMT.053 exporté par votre banque.');
-            }
-            $balance = BankStatementReader::read($file->getContent());
-        } catch (UnreadableBankStatement $e) {
-            return $this->renderAccount($account, ['statement_file_error' => t($e->getMessage())], Response::HTTP_UNPROCESSABLE_ENTITY);
+            $proposal = $this->book->readStatement($account, $content, $request->getLocale());
+        } catch (Refused $refused) {
+            return $this->renderAccount($account, ['statement_file_error' => $refused->reason], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        $month = Month::fromString(substr($balance->date, 0, 7));
-        if (!$account->isActiveIn($month)) {
-            return $this->renderAccount($account, ['statement_file_error' => t('Le compte n\'est pas ouvert en %month%.', ['%month%' => $month->label($request->getLocale())])], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-        // A loan's statement shows the debt as a negative balance; Patrimeter keeps the capital owed, positive.
-        $cents = $account->isLiability() ? -$balance->cents : $balance->cents;
 
-        return $this->renderAccount($account, ['statement_proposal' => ['month' => $month, 'date' => $balance->date, 'cents' => $cents]]);
+        return $this->renderAccount($account, ['statement_proposal' => $proposal]);
     }
 
     #[Route(
@@ -247,16 +187,21 @@ final class AccountController extends AbstractController
     {
         $account = $this->findOr404($id);
         $statementMonth = Month::tryFromString($month) ?? throw $this->createNotFoundException();
-        $this->statements->delete($this->currentUser->id(), $account->id, $statementMonth);
+        $this->book->deleteStatement($this->owner(), $account, $statementMonth);
         $this->addFlash('success', t('Relevé %of_month% supprimé.', ['%of_month%' => $statementMonth->ofLabel($request->getLocale())]));
 
         return $this->redirectToAccount($account);
     }
 
+    private function owner(): UserId
+    {
+        return $this->currentUser->id();
+    }
+
     /** Account of the signed-in owner; that of another user cannot be found. */
     private function findOr404(int $id): Account
     {
-        $account = $this->accounts->find($this->currentUser->id(), $id) ?? throw $this->createNotFoundException('Compte introuvable.');
+        $account = $this->accounts->find($this->owner(), $id) ?? throw $this->createNotFoundException('Compte introuvable.');
         $this->denyAccessUnlessGranted(OwnedResourceVoter::OWNER, $account);
 
         return $account;
@@ -291,53 +236,9 @@ final class AccountController extends AbstractController
      */
     private function renderForm(?Account $account, array $values, array $errors, int $status = Response::HTTP_OK, array $extra = []): Response
     {
-        $response = $this->render('account/form.html.twig', $extra + [
-            'account' => $account,
-            'values' => $values,
-            'errors' => $errors,
-            // An existing property keeps all the types; otherwise, no property type (PROPERTY_ELSEWHERE).
-            'types' => $account !== null && PropertyPortfolio::isProperty($account) ? $this->types->all() : array_values(array_filter(
-                $this->types->all(),
-                static fn(array $t): bool => !PropertyPortfolio::isPropertyKind(Level::from($t['default_level']), Nature::from($t['nature'])),
-            )),
-            'levels' => Level::ordered(),
-            'statements' => $account === null ? [] : $this->statementLines($account),
-            'is_property' => $account !== null && PropertyPortfolio::isProperty($account),
-            'share_lines' => $account === null ? [] : $this->shareLines($account),
-            'properties' => array_values(array_filter($this->accounts->all($this->currentUser->id()), PropertyPortfolio::isProperty(...))),
-            'today' => $this->calendar->today(),
-            'current_month' => $this->calendar->currentMonth(),
-        ]);
+        $page = $extra + ['values' => $values, 'errors' => $errors] + $this->book->formView($this->owner(), $account);
 
-        return $response->setStatusCode($status);
-    }
-
-    /** @return list<array{month: Month, share: int}> shares of the property, from the most recent to the oldest */
-    private function shareLines(Account $account): array
-    {
-        $lines = [];
-        foreach (array_reverse($this->shares->all($this->currentUser->id())[$account->id] ?? [], true) as $month => $share) {
-            $lines[] = ['month' => Month::fromString($month), 'share' => $share];
-        }
-
-        return $lines;
-    }
-
-    /** @return list<array{month: Month, cents: int}> statements of the account, from the most recent to the oldest */
-    private function statementLines(Account $account): array
-    {
-        $lines = [];
-        foreach ($this->statements->forAccount($this->currentUser->id(), $account->id) as $month => $cents) {
-            $lines[] = ['month' => Month::fromString($month), 'cents' => $cents];
-        }
-
-        return $lines;
-    }
-
-    /** @param array{level_code: string, nature: string, ...} $data */
-    private static function makesAProperty(array $data): bool
-    {
-        return PropertyPortfolio::isPropertyKind(Level::from($data['level_code']), Nature::from($data['nature']));
+        return $this->render('account/form.html.twig', $page)->setStatusCode($status);
     }
 
     private function form(Request $request, bool $withInitialAmount): AccountForm

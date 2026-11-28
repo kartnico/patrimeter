@@ -31,8 +31,8 @@ and loans; Patrimeter works out the rest.
   target.
 - **Benchmarks**: how your investments are split compared with a balanced allocation, and where your net worth
   stands among French households and among adults worldwide.
-- **On phone and computer alike**, in French or English, in a light or dark theme, accessible (contrast,
-  colour blindness, keyboard).
+- **On phone and computer alike**, in French or English, in a light or dark theme, with the accent colour and the
+  density of your choice, accessible (contrast, colour blindness, keyboard).
 - **API and MCP service** for your own tools or an assistant, with the same authentication.
 
 > **Not financial advice.** Patrimeter is a tracking tool: its benchmarks (pyramid, split of the investments,

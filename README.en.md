@@ -32,7 +32,8 @@ What's new: [CHANGELOG.en.md](CHANGELOG.en.md); roadmap: [ROADMAP.md](ROADMAP.md
   passkeys.
 - **And also**: family account, link with [Carbure](https://github.com/ltoinel/Carbure), REST API and MCP service,
   export and import, demo mode.
-- Interface in French and in English, designed for the phone, light or dark theme, accessible.
+- Interface in French and in English, designed for the phone (sidebar on a computer), light or dark theme, accent
+  colour and density of your choice, accessible.
 
 ### The pyramid
 

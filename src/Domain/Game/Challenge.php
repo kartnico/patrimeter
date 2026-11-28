@@ -143,19 +143,19 @@ enum Challenge: string
         };
     }
 
-    /** Line icon (SVG path, 24 × 24). */
+    /** Icon of the challenge, a name of the interface's icon set (Patrimeter\Twig\Icons). */
     public function icon(): string
     {
         return match ($this) {
-            self::FirstSteps => 'M5 12.5l4.5 4.5L19 7.5',
-            self::Streak => 'M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-5 1-8.5z',
-            self::UpToDate => 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4M8.5 15l2.5 2.5 4.5-4.5',
-            self::Precaution => 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
-            self::NoConsumerCredit => 'M3 7h18v11H3zM3 11h18M7 15h4',
-            self::Goal => 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 12h.01',
-            self::Budget => 'M21.2 15.9A10 10 0 1 1 8 2.8M22 12A10 10 0 0 0 12 2v10z',
-            self::Security => 'M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4',
-            self::SavingsRate => 'M19 5 5 19M6.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM17.5 20a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
+            self::FirstSteps => 'check',
+            self::Streak => 'flame',
+            self::UpToDate => 'calendar-check',
+            self::Precaution => 'shield',
+            self::NoConsumerCredit => 'card',
+            self::Goal => 'goal',
+            self::Budget => 'budget',
+            self::Security => 'lock',
+            self::SavingsRate => 'percent',
         };
     }
 

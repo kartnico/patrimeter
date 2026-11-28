@@ -7,6 +7,8 @@ namespace Patrimeter\Tests\Functional;
 use Patrimeter\Application\Game\Game;
 use Patrimeter\Application\Reminder\EntryReminders;
 use Patrimeter\Domain\Month;
+use Patrimeter\Infrastructure\Persistence\AccountRepository;
+use Patrimeter\Infrastructure\Persistence\EntryReminderRepository;
 use Patrimeter\Infrastructure\Persistence\StatementRepository;
 use Patrimeter\Tests\Support\FunctionalTestCase;
 use Patrimeter\Tests\Support\TestUsers;
@@ -39,6 +41,7 @@ final class ReminderTest extends FunctionalTestCase
 
     public function testTheReminderLeavesOnceFromItsDayIfTheMonthIsNotEntered(): void
     {
+        self::createAccount('Compte courant', 'compte_courant', '2025-01-01');
         $reminders = self::service(EntryReminders::class);
         $reminders->choose(self::owner(), 10, 'fr');
         $later = TestUsers::create(static::getContainer(), 'plus-tard@example.test');
@@ -65,6 +68,7 @@ final class ReminderTest extends FunctionalTestCase
 
     public function testAFailedTransportCanBeRetriedWithoutCountingTheFailure(): void
     {
+        self::createAccount('Compte courant', 'compte_courant', '2025-01-01');
         $reminders = self::service(EntryReminders::class);
         $reminders->choose(self::owner(), 10, 'fr');
         $events = self::service(\Symfony\Component\EventDispatcher\EventDispatcherInterface::class);
@@ -83,6 +87,7 @@ final class ReminderTest extends FunctionalTestCase
 
     public function testTheReminderOfTheDayWaitsUntilNineInTheMorning(): void
     {
+        self::createAccount('Compte courant', 'compte_courant', '2025-01-01');
         $reminders = self::service(EntryReminders::class);
         $reminders->choose(self::owner(), 15, 'fr');
         self::clock()->modify('2026-11-15 08:59:00');
@@ -93,6 +98,7 @@ final class ReminderTest extends FunctionalTestCase
 
     public function testTheReminderOfAnEarlierDayLeavesBeforeNine(): void
     {
+        self::createAccount('Compte courant', 'compte_courant', '2025-01-01');
         $reminders = self::service(EntryReminders::class);
         $reminders->choose(self::owner(), 14, 'fr');
         self::clock()->modify('2026-11-15 07:00:00');
@@ -109,6 +115,7 @@ final class ReminderTest extends FunctionalTestCase
 
     public function testTheLinkOfTheEmailUnsubscribesWithoutSigningIn(): void
     {
+        self::createAccount('Compte courant', 'compte_courant', '2025-01-01');
         $reminders = self::service(EntryReminders::class);
         $reminders->choose(self::owner(), 1, 'en');
         $reminders->sendDue();
@@ -132,6 +139,37 @@ final class ReminderTest extends FunctionalTestCase
         self::assertStringContainsString('Ce lien n\'est plus valable', $this->client->getCrawler()->filter('main')->text());
     }
 
+    public function testNoReminderWhenNoAccountIsActiveInTheMonth(): void
+    {
+        $reminders = self::service(EntryReminders::class);
+        // Closed in October: nothing to enter in November. Opened in January: nothing yet.
+        $closed = self::createAccount('Ancien livret', 'livret_a', '2024-01-01');
+        self::service(AccountRepository::class)->archive(self::owner(), $closed, '2026-10-15');
+        $reminders->choose(self::owner(), 10, 'fr');
+        $future = TestUsers::create(static::getContainer(), 'futur@example.test');
+        $reminders->choose($future, 10, 'fr');
+        self::createAccount('Livret', 'livret_a', '2027-01-04', $future);
+        $empty = TestUsers::create(static::getContainer(), 'sans-compte@example.test');
+        $reminders->choose($empty, 10, 'fr');
+
+        self::assertSame(0, $reminders->sendDue());
+
+        // Reopened: the span follows the change of the account, and the reminder leaves.
+        self::service(AccountRepository::class)->unarchive(self::owner(), $closed);
+        self::assertSame(1, $reminders->sendDue());
+        $email = self::getMailerMessages()[0] ?? null;
+        self::assertInstanceOf(Email::class, $email);
+        self::assertSame(TestUsers::EMAIL, $email->getTo()[0]->getAddress());
+    }
+
+    public function testAReminderChosenBeforeTheSpanWasRecordedStillLeaves(): void
+    {
+        // A reminder kept from 3.6 (span unknown until the next account change): sent as before.
+        self::service(EntryReminderRepository::class)->save(self::owner(), 10, 'fr');
+
+        self::assertSame(1, self::service(EntryReminders::class)->sendDue());
+    }
+
     public function testTheWealthPagePointsOutAMonthNotEnteredFromThe20th(): void
     {
         $account = self::createAccount('Livret', 'livret_a', '2025-01-01');
@@ -148,6 +186,12 @@ final class ReminderTest extends FunctionalTestCase
         self::assertStringContainsString('Les soldes de novembre 2026 ne sont pas encore saisis.', $crawler->filter('.entry-due')->text());
         $this->client->request('GET', '/?mois=2026-10');
         self::assertSelectorNotExists('.entry-due', 'only for the current month');
+
+        // Closed in October: nothing to enter in November, neither in the page nor in the navigation.
+        self::service(AccountRepository::class)->archive(self::owner(), $account, '2026-10-31');
+        $this->client->request('GET', '/');
+        self::assertSelectorNotExists('.entry-due');
+        self::assertSelectorNotExists('nav.nav a.needs-entry');
     }
 
     public function testTheReminderGivesTheStreakAndTheNextStarWithoutAnyAmount(): void
@@ -182,6 +226,7 @@ final class ReminderTest extends FunctionalTestCase
 
     public function testWithoutTheChallengesTheReminderSaysNothingOfThem(): void
     {
+        self::createAccount('Compte courant', 'compte_courant', '2025-01-01');
         self::service(Game::class)->setEnabled(self::owner(), false);
         self::service(EntryReminders::class)->choose(self::owner(), 10, 'fr');
 

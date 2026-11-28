@@ -24,6 +24,10 @@ publication à la main : [docs/developpement.md](docs/developpement.md).
 - **Symfony 7.4 LTS** : utiliser d'abord ce qu'il propose nativement. Toute nouvelle dépendance doit supporter
   PHP 8.3 à 8.5, être maintenue, sous licence compatible MIT, et être **signalée avant** d'être
   ajoutée. `composer.json` : `"php": ">=8.3"`, `config.platform.php` = 8.3.27.
+- **Aucune nouvelle dépendance sans accord explicite de l'utilisateur** (paquet Composer ou npm, bibliothèque JS ou
+  CSS, outil de la CI) : s'appuyer d'abord sur les fonctionnalités natives de Symfony, de PHP et du navigateur
+  (composants et attributs de Symfony, `EventDispatcher`, `Translation`, API du DOM, CSS moderne) ; si aucune ne
+  convient, proposer la dépendance et ses alternatives, puis attendre la réponse.
 - **Base SQLite** (fichier dans `var/`), Doctrine DBAL ; **requêtes préparées uniquement**, SQL
   confiné à `src/Infrastructure/Persistence/`.
 - **Migrations** : uniquement un nouveau fichier `migrations/VersionAAAAMMJJhhmmss.php` écrit en

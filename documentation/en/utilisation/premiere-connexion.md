@@ -64,19 +64,20 @@ the **Unlock** screen.
 
 ## Current month
 
-In the middle of the top bar, Patrimeter shows the **current month** ("November 2026", "Nov 2026" on a phone),
-whatever the month shown by the page: it is the one the monthly update offers first. A click on it goes back to it:
-on the same page for the net worth, the report, the monthly update and the budget, otherwise on the Net worth page.
-On its own, a month is written with a capital in French too ("Novembre 2026"); within a sentence, French keeps the
-lower case.
+Under the logo on a computer, in the middle of the top bar on a phone, Patrimeter shows the **current month**
+("November 2026", "Nov 2026" on a phone), whatever the month shown by the page: it is the one the monthly update
+offers first. A click on it goes back to it: on the same page for the net worth, the report, the monthly update and
+the budget, otherwise on the Net worth page. On its own, a month is written with a capital in French too ("Novembre
+2026"); within a sentence, French keeps the lower case.
 
 ## Menus
 
-At the top on a computer, at the bottom on a phone: **Net worth**, **Budget**, **Goals**, **Challenges**
-([challenges and stars](defis.md), unless you turned them off), then, always put forward on the right, **Monthly
-update**. Your **Accounts** and your **Real estate** open from the Net worth page (buttons at the top), your **Tax
-household and categories** from the Budget page. **My account**, on the right, gathers the profile, the security and
-the AI agents.
+In a sidebar on the left on a computer (from 1,024 pixels wide), at the top on a tablet, at the bottom on a phone:
+**Net worth**, **Budget**, **Goals**, **Challenges** ([challenges and stars](defis.md), unless you turned them off),
+then, always put forward last, **Monthly update**. Your **Accounts** and your **Real estate** open from the Net worth
+page (buttons at the top), your **Tax household and categories** from the Budget page. **My account**, at the bottom
+of the sidebar (on the right of the top bar), gathers the profile, the security and the AI agents; in the sidebar,
+its menu and the language one open upwards.
 
 ## First accounts
 
@@ -115,8 +116,9 @@ until both exist.
 
 ## Theme
 
-The button at the top of every page switches between the light and dark themes; without a choice, the system
-theme applies.
+The theme button, at the bottom of the sidebar on a computer and at the top of the page otherwise, switches between
+the light and dark themes; without a choice, the system theme applies. The accent colour and the display density are
+chosen in My account ([appearance](securite.md#appearance)).
 
 ![Net worth page in the dark theme](../captures/tableau-de-bord-sombre.png)
 

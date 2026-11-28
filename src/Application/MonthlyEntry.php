@@ -27,6 +27,15 @@ final class MonthlyEntry
     ) {}
 
     /**
+     * The month waits for its balances: none entered yet, and at least one account active in it (the form's rule:
+     * opened in the month at the latest, not closed in it or before).
+     */
+    public function isDue(UserId $owner, Month $month): bool
+    {
+        return !$this->statements->hasStatementIn($owner, $month) && $this->accounts->activeIn($owner, $month) !== [];
+    }
+
+    /**
      * Accounts opened in $source but after $month: those that a copy from $source to $month can carry over.
      *
      * @return array<int, Account> indexed by identifier

@@ -10,7 +10,7 @@
          data-label-previous="{{ 'Année précédente'|trans }}" data-label-next="{{ 'Année suivante'|trans }}"
          data-label-year="{{ 'Choisir l\'année, %year%'|trans }}">
     <summary class="btn btn-small month-picker-toggle" aria-label="{{ '%month% — choisir un autre mois'|trans({'%month%': picker.selected|month_short}) }}">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>
+        {{ icon('calendar') }}
         <span>{{ picker.selected|month_short|capitalize }}</span>
     </summary>
     <div class="month-picker-panel" role="group" aria-label="{{ 'Choisir un mois'|trans }}">

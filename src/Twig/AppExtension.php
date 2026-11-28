@@ -15,6 +15,7 @@ use Patrimeter\Domain\Money;
 use Patrimeter\Domain\Month;
 use Patrimeter\Domain\NetWorthSnapshot;
 use Patrimeter\Domain\OwnershipShares;
+use Patrimeter\Http\Appearance;
 use Patrimeter\Http\LocalePreference;
 use Patrimeter\Http\ThemePreference;
 use Patrimeter\Infrastructure\Persistence\WebAuthnCredentialRepository;
@@ -72,6 +73,8 @@ final class AppExtension extends AbstractExtension
             new TwigFunction('budget_groups', static fn(): array => BudgetGroup::cases()),
             new TwigFunction('month_picker', fn(Month $selected, Month $max, ?Month $first, string $base, ?Month $today = null): MonthPicker => new MonthPicker($selected, $max, $first, $base, $this->locale(), $today)),
             new TwigFunction('theme_preference', ThemePreference::current(...)),
+            // Accent colour and density of this browser (Appearance section of My profile).
+            new TwigFunction('appearance', Appearance::of(...)),
             new TwigFunction('locales', static fn(): array => LocalePreference::LOCALES),
             new TwigFunction('month_names', $this->monthNames(...)),
             new TwigFunction('current_month_value', fn(): string => $this->calendar->currentMonth()->toString()),

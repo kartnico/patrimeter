@@ -7,6 +7,8 @@
      data-label-open="{{ 'Choisir l\'année dans un calendrier'|trans }}" data-label-empty="{{ 'Choisir l\'année'|trans }}"
      data-label-previous="{{ 'Années précédentes'|trans }}" data-label-next="{{ 'Années suivantes'|trans }}"
      data-label-clear="{{ 'Aucune année'|trans }}">
+    {#- The calendar icon of the button that app.js adds, from the icon set. -#}
+    <template data-month-field-icon>{{ icon('calendar') }}</template>
     <input type="text" id="{{ id }}" name="{{ name }}" value="{{ value }}" inputmode="numeric" maxlength="4"
            pattern="[0-9]{4}" placeholder="{{ 'AAAA'|trans }}" autocomplete="off"{{ attributes ?? '' }}>
 </div>

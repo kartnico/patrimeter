@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Patrimeter\Infrastructure\Persistence;
 
 use Doctrine\DBAL\Connection;
+use Patrimeter\Domain\Month;
 use Patrimeter\Domain\UserId;
 
 /**
  * Monthly reminders to enter the balances (`entry_reminders` table): day, language, last month sent, fingerprint of the
- * unsubscribe link. Whether the month is already entered is read from the months of the statements, which are in clear
- * (never an amount).
+ * unsubscribe link, span of the active accounts. Whether the month is already entered is read from the months of the
+ * statements, which are in clear (never an amount); whether an account is active in it, from that span (months only),
+ * recorded in session since the accounts themselves are encrypted.
  */
 final class EntryReminderRepository
 {
@@ -33,6 +35,15 @@ final class EntryReminderRepository
         );
     }
 
+    /** Span of the user's active accounts (AccountActivity): first month, month after the last closing (null: open). */
+    public function saveActivity(UserId $user, ?Month $from, ?Month $until): void
+    {
+        $this->connection->executeStatement(
+            'UPDATE entry_reminders SET activity_known = 1, active_from = ?, active_until = ? WHERE user_id = ?',
+            [$from?->toString(), $until?->toString(), $user->value],
+        );
+    }
+
     public function delete(UserId $user): void
     {
         $this->connection->executeStatement('DELETE FROM entry_reminders WHERE user_id = ?', [$user->value]);
@@ -51,7 +62,8 @@ final class EntryReminderRepository
 
     /**
      * Reminders to send for this month on this day: day reached, not sent this month yet, address confirmed, not a
-     * demonstration account, and no statement entered for the month.
+     * demonstration account, an account active in the month (span unknown: sent, as before it was recorded), and no
+     * statement entered for the month.
      *
      * @return list<array{user: UserId, email: string, locale: string}>
      */
@@ -62,9 +74,10 @@ final class EntryReminderRepository
              WHERE r.day <= ? AND (r.last_sent_month IS NULL OR r.last_sent_month <> ?)
                AND u.email IS NOT NULL AND u.email_verified_at IS NOT NULL
                AND NOT EXISTS (SELECT 1 FROM demo_accounts d WHERE d.user_id = r.user_id)
+               AND (r.activity_known = 0 OR (r.active_from <= ? AND (r.active_until IS NULL OR r.active_until > ?)))
                AND NOT EXISTS (SELECT 1 FROM statements s WHERE s.user_id = r.user_id AND s.month = ?)
              ORDER BY r.user_id',
-            [$day, $month, $month],
+            [$day, $month, $month, $month, $month],
         );
 
         return array_map(static fn(array $row): array => [

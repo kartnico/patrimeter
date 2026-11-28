@@ -32,7 +32,8 @@ Nouveautés : [CHANGELOG.md](CHANGELOG.md) ; feuille de route : [ROADMAP.md](ROA
   authentification et passkeys.
 - **Et aussi** : compte famille, lien avec [Carbure](https://github.com/ltoinel/Carbure), API REST et service MCP,
   export et import, mode démonstration.
-- Interface en français et en anglais, pensée pour le téléphone, thème clair ou sombre, accessible.
+- Interface en français et en anglais, pensée pour le téléphone (barre latérale sur ordinateur), thème clair ou
+  sombre, couleur d'accent et densité au choix, accessible.
 
 ### La pyramide
 

@@ -137,6 +137,27 @@ déplacée vers un autre compte ne se déchiffre pas ([encryption.md](encryption
   connexion, adresse de retour limitée aux chemins internes par `InternalPath`). `app.js`
   l'intercepte pour basculer sans rechargement et prévient le graphique de se redessiner.
 
+## Apparence
+
+- **Couleur d'accent** (`Http\Accent` : `forest`, `ocean`, `aurora`, `slate`) et **densité d'affichage**
+  (`Http\Density` : `comfortable`, `compact`), choisies dans Mon compte (`POST /securite/apparence`,
+  `AppearanceController`) et retenues par le navigateur dans les cookies `patrimeter_accent` et `patrimeter_density`
+  (un an, `HttpOnly`, `SameSite=Lax`). `Http\Appearance` les relit ; `base.html.twig` écrit `data-accent` et
+  `data-density` dans `<html>`, seulement pour un choix autre que celui par défaut, et la balise `theme-color` prend
+  la teinte claire de l'accent.
+- Chaque accent a trois variables par thème (`--accent-ocean`, `--accent-ocean-text`, `--accent-ocean-soft`) ;
+  `--primary`, `--primary-text` et `--primary-soft` y renvoient selon `data-accent`. Le thème sombre ne redéfinit que
+  les `--accent-*`. `ColorAccessibilityTest` vérifie les contrastes de chaque accent dans les deux thèmes.
+- La densité règle quelques variables (`--block-gap`, `--card-padding`, `--control-height`, `--row-padding`,
+  `--cell-padding`, `--line-height`) ; la compacte garde des contrôles de 38 pixels de haut.
+- **Barre latérale** sur ordinateur, à partir de 1 024 pixels : la barre du haut d'une page connectée devient une
+  colonne, en CSS seul (`grid-template`, sélecteur `:has(> .topbar)` : le rapport, sans barre, garde toute la
+  largeur).
+- **Micro-animations** : toutes dans un bloc `@media (prefers-reduced-motion: no-preference)` d'`app.css`, ce que
+  vérifie `MotionTest` ; les tests de bout en bout et les captures demandent la réduction des animations.
+- **Icônes** : un seul jeu (`Twig\Icons`, fonction Twig `icon()`), des tracés SVG sur une grille de 24 unités avec le
+  même trait arrondi (règle `.icon`) ; un nom inconnu lève une exception, que les tests des pages révèlent.
+
 ## Langues
 
 - Interface en français (langue source) et en anglais, avec le composant Translation de Symfony. Les clés sont les

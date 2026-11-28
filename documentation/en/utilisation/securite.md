@@ -18,7 +18,7 @@ identity**: password, valid for 5 minutes.
 
 | Tab | Sections | For |
 |---|---|---|
-| Profile | Profile, Password, Monthly reminder, Language of the emails, Your data, Delete my account | Sign-in address and sign-in methods; changing the password (the current one is asked, your data remains readable); [monthly reminder](#monthly-reminder) by email; [language of the emails](#language-of-the-emails); [export and import](donnees.md); [deleting the account](#deleting-your-account) |
+| Profile | Profile, Password, Monthly reminder, Language of the emails, Appearance, Your data, Delete my account | Sign-in address and sign-in methods; changing the password (the current one is asked, your data remains readable); [monthly reminder](#monthly-reminder) by email; [language of the emails](#language-of-the-emails); [appearance](#appearance) of this browser; [export and import](donnees.md); [deleting the account](#deleting-your-account) |
 | Sign-in and security | Second factor, Passkeys (FIDO2) and security keys, Open sessions, Trusted browsers, Sign-in log | Changing app, generating new backup codes, new recovery key; adding, renaming or deleting a passkey or a FIDO2 key; [open sessions](#open-sessions), to sign out one by one or all together; [trusted browsers](#trusted-browsers), to remove; successful or refused sign-ins, with the IP address: spot a suspicious attempt |
 | Accounts | Accounts by level, archived accounts | Creating, editing, archiving an account or a loan ([accounts and loans](comptes.md)) |
 | Real estate | One table per property | Creating a property and its loans, your share ([real estate](biens.md)) |
@@ -70,11 +70,22 @@ reminder only exists if the instance sends emails.
 
 If mail delivery fails, the reminder remains eligible for the next hourly run while the month still needs an entry.
 
+The reminder, like the **Update** item highlighted in the navigation, only concerns the months in which an account is
+active: nothing is asked when all your accounts are closed, or opened later.
+
 ## Language of the emails
 
 **Language of the emails** (Profile tab): **Français**, **English**, or **That of the interface at the time of
 sending** (the default choice). It applies to all the emails of Patrimeter: monthly reminder, security alerts,
 forgotten password, deletion of the account.
+
+## Appearance
+
+**Appearance** (Profile tab): the **accent colour**, that of the buttons, the links and the current page
+(**Forest**, the original colour, **Ocean**, **Dawn** or **Slate**), and the **display density**: **Comfortable**
+(the default), spacious and easy to tap on a phone, or **Compact**, which shows more rows on the screen. **Save the
+appearance** applies these choices to this browser, like the light or dark theme; each colour keeps sufficient
+contrast in both themes ([accessibility](accessibilite.md)).
 
 ## Deleting your account
 

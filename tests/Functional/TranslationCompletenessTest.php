@@ -18,6 +18,8 @@ use Patrimeter\Domain\Goal\GoalStatus;
 use Patrimeter\Domain\Level;
 use Patrimeter\Domain\WealthDistribution;
 use Patrimeter\Domain\WorldWealthDistribution;
+use Patrimeter\Http\Accent;
+use Patrimeter\Http\Density;
 use Patrimeter\Http\HistoryChart;
 use Patrimeter\Security\AuthJournal;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -95,6 +97,9 @@ final class TranslationCompletenessTest extends KernelTestCase
             WealthDistribution::SOURCE, WealthDistribution::REFERENCE,
             WorldWealthDistribution::SOURCE, WorldWealthDistribution::REFERENCE,
             ...self::gameLabels(),
+            ...array_map(static fn(Accent $accent): string => $accent->label(), Accent::cases()),
+            ...array_map(static fn(Density $density): string => $density->label(), Density::cases()),
+            ...array_map(static fn(Density $density): string => $density->description(), Density::cases()),
         ];
         foreach ($labels as $label) {
             self::assertTrue($catalogue->defines($label), $label);

@@ -39,7 +39,7 @@ final class RouteCatalog
         'app_passkey_options', 'app_passkey_register', 'app_passkey_rename', 'app_passkey_delete',
         'app_oauth_authorize', 'app_oauth_authorize_submit', 'app_access_token_create', 'app_access_token_revoke',
         'app_data', 'app_data_export', 'app_data_import', 'app_data_import_csv', 'app_data_csv_model', 'app_demo_tour', 'app_reminder_save',
-        'app_security_email_locale', 'app_challenges_style', 'app_challenges_settings',
+        'app_security_email_locale', 'app_security_appearance', 'app_challenges_style', 'app_challenges_settings',
     ];
 
     /**

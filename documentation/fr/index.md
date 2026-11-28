@@ -31,8 +31,8 @@ soldes de vos comptes et de vos crédits ; Patrimeter calcule le reste.
   cible.
 - **Repères** : répartition de vos placements comparée à une allocation équilibrée, place de votre patrimoine
   parmi les ménages français et parmi les adultes du monde.
-- **Sur téléphone comme sur ordinateur**, en français ou en anglais, en thème clair ou sombre, accessible
-  (contrastes, daltonisme, clavier).
+- **Sur téléphone comme sur ordinateur**, en français ou en anglais, en thème clair ou sombre, avec la couleur
+  d'accent et la densité de votre choix, accessible (contrastes, daltonisme, clavier).
 - **API et service MCP** pour vos propres outils ou un assistant, avec la même authentification.
 
 > **Pas un conseil financier.** Patrimeter est un outil de suivi : ses repères (pyramide, répartition des

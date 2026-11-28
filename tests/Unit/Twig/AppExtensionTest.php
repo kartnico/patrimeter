@@ -66,7 +66,7 @@ final class AppExtensionTest extends TestCase
             array_map(static fn(TwigFilter $f): string => $f->getName(), $extension->getFilters()),
         );
         self::assertSame(
-            ['levels', 'household_child_rows', 'value_badge', 'pyramid', 'budget_sankey', 'precaution_gauge', 'budget_groups', 'month_picker', 'theme_preference', 'locales', 'month_names', 'current_month_value', 'current_month', 'qr_code', 'has_security_key', 'share_percent', 'share_percent_label', 'account_ready'],
+            ['levels', 'household_child_rows', 'value_badge', 'pyramid', 'budget_sankey', 'precaution_gauge', 'budget_groups', 'month_picker', 'theme_preference', 'appearance', 'locales', 'month_names', 'current_month_value', 'current_month', 'qr_code', 'has_security_key', 'share_percent', 'share_percent_label', 'account_ready'],
             array_map(static fn(TwigFunction $f): string => $f->getName(), $extension->getFunctions()),
         );
     }

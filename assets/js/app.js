@@ -468,13 +468,8 @@
         toggle.type = 'button';
         toggle.className = 'btn month-picker-toggle month-field-toggle';
         toggle.setAttribute('aria-expanded', 'false');
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('class', 'icon');
-        svg.setAttribute('viewBox', '0 0 24 24');
-        svg.setAttribute('aria-hidden', 'true');
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4');
-        svg.append(path);
+        // The calendar icon comes from the page (icon set of the server), never redrawn here.
+        const icon = field.querySelector('[data-month-field-icon]')?.content.firstElementChild?.cloneNode(true);
         const value = document.createElement('span');
         // The accessible name starts with the visible value (WCAG 2.5.3), then says what the button does.
         const hint = document.createElement('span');
@@ -489,7 +484,7 @@
             hint.id = `${input.id}-hint`;
             toggle.setAttribute('aria-labelledby', `${value.id} ${label.id} ${hint.id}`);
         }
-        toggle.append(svg, value, hint);
+        toggle.append(...(icon ? [icon] : []), value, hint);
 
         // The value as shown: "Oct. 2026" or "1985"; the field's own text while it cannot be read.
         const shown = () => {

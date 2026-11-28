@@ -118,39 +118,27 @@ CI. Details in the [CHANGELOG](CHANGELOG.en.md).
 - [x] Run the Docker Hub promotion test in every full pipeline, before any tag; describe the reminder claim columns in
   the data model.
 
-## 3.x — Game
+## 3.7.0 — Appearance, sidebar and slimmer controllers
 
-- [ ] **Seasons** (three challenges a quarter, "Your year" summary in January), a tree growing with the level.
+- [x] **Monthly entry asked only for an actionable month**: the banner, the highlighted Entry item and the reminder
+  email need an account active in the month; the reminder keeps a months-only span of the active accounts, refreshed
+  whenever an account changes.
+- [x] **One share action for the report picture on a phone** (native sharing), the download kept; cancelling stays
+  silent, a refused share says how to save the picture, in both languages.
+- [x] **Interface ideas of the 3.0.0 proposals**: accent colour chosen by the user, sidebar on a computer, display
+  density, one consistent icon set, micro-animations respecting `prefers-reduced-motion`.
+- [x] **Slimmer controllers**: the account rules move to `AccountBook`, the OAuth server to `AuthorizationServer`.
+- [x] No new dependency: native Symfony, PHP and browser features only (rule added to `AGENTS.md`).
 
-## 3.x — Code and screens
-
-- [ ] **Interface ideas of the 3.0.0 proposals**: accent colour chosen by the user (Q), sidebar on a computer (R), density
-  (T), consistent icon set (U), micro-animations respecting `prefers-reduced-motion` (V).
-- [ ] **New look** of the entry, accounts, properties and budget screens (after the wizard has set the patterns).
-- [ ] **Symfony Form component**, screen by screen (W3C-valid HTML and strict CSP kept).
-- [ ] **Slimmer controllers** (`AccountController`, `OAuthServerController`): logic moved to services.
-- [ ] **OpenAPI generated from the code** (attributes on the API controllers), then a locally served Swagger UI.
-
-## 4.0.0 — Framework and PHP
+## 4.0.0 — Framework, PHP and screens
 
 - [ ] **Symfony 8.4 LTS** (November 2027) with PHP 8.4 minimum; Rector (new development dependency, to be approved)
   to automate part of the migration.
 - [ ] **Renovate holds tied to PHP 8.3 lifted** (`renovate.json`: doctrine-bundle held below 3 and endroid/qr-code
   below 6.1, which need PHP 8.4).
-
-### Additional review findings
-
-GitLab API snapshot (2026-11-25): `main` disallows direct and force pushes; maintainers may merge. A green pipeline
-and resolved discussions are required. No protected tag rule was listed. The approval rules endpoint returned 404,
-so reviewer enforcement is unverified. Both the daily and weekly schedules are active on `main`.
-
-- [ ] **P2 — Show the entry reminder only for an actionable month.** Match the monthly form's active-account rule in
-  the [reminder query](src/Infrastructure/Persistence/StatementRepository.php). After the reminder date, test households
-  with only closed or future accounts (no banner) and one active account (banner).
-- [ ] **P2 — Make mobile report sharing match the action offered.** The [share handler](assets/js/report.js) opens
-  the same native picker for every named destination. Offer one generic action when native file sharing is available;
-  keep the download option. Test that cancellation is silent, while a refused share announces how to save the image
-  in either language. Retain distinct destination actions where the site actually opens those destinations.
+- [ ] **New look** of the entry, accounts, properties and budget screens (after the wizard has set the patterns).
+- [ ] **Symfony Form component**, screen by screen (W3C-valid HTML and strict CSP kept).
+- [ ] **OpenAPI generated from the code** (attributes on the API controllers), then a locally served Swagger UI.
 
 ## Not tied to a version
 

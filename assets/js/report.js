@@ -43,15 +43,21 @@
         const text = panel.dataset.shareText;
         const status = panel.querySelector('[data-share-status]');
         const nativeButton = panel.querySelector('[data-share-native]');
+        const networks = panel.querySelector('[data-share-networks]');
         const mastodon = panel.querySelector('[data-share-mastodon]');
         const instance = mastodon.querySelector('input');
         const canShare = Boolean(navigator.canShare && navigator.canShare({ files: [file] }));
-        // On a phone, the share sheet lists the installed apps (Instagram, WhatsApp, Mastodon…) and takes the picture.
+        // On a phone, the share sheet lists the installed apps (Instagram, WhatsApp, Mastodon…) and takes the picture:
+        // one action, instead of network buttons that would all open that same sheet.
         const phone = canShare && window.matchMedia('(pointer: coarse)').matches;
 
         const shareNatively = () => {
-            navigator.share({ files: [file], text }).catch(() => {
-                // Closed by the user, or refused by the system: nothing to do.
+            status.textContent = '';
+            navigator.share({ files: [file], text }).catch((error) => {
+                // Closed by the user: nothing to say. Refused by the system or the browser: how to share anyway.
+                if (error?.name !== 'AbortError') {
+                    status.textContent = panel.dataset.shareRefused;
+                }
             });
         };
         const save = () => {
@@ -74,19 +80,19 @@
 
         nativeButton.hidden = !canShare;
         nativeButton.addEventListener('click', shareNatively);
+        networks.hidden = phone;
         panel.querySelector('[data-share-download]').addEventListener('click', () => {
             save();
             status.textContent = panel.dataset.shareSaved;
         });
+        // On a computer, each network opens its own site: the picture is saved first, to add to the post there.
         panel.querySelectorAll('[data-share-network]').forEach((button) => {
-            if (button.dataset.shareNetwork === 'mastodon' && !phone) {
+            if (button.dataset.shareNetwork === 'mastodon') {
                 button.setAttribute('aria-expanded', 'false');
             }
             button.addEventListener('click', () => {
                 const network = button.dataset.shareNetwork;
-                if (phone) {
-                    shareNatively();
-                } else if (network === 'mastodon') {
+                if (network === 'mastodon') {
                     mastodon.hidden = !mastodon.hidden;
                     button.setAttribute('aria-expanded', String(!mastodon.hidden));
                     if (!mastodon.hidden) {

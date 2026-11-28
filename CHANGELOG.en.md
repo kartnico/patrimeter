@@ -4,6 +4,37 @@ All notable changes to Patrimeter are recorded here (English translation of `CHA
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); numbering:
 [semantic versioning](https://semver.org/).
 
+## [3.7.0] - 2026-11-28
+
+### Installation
+
+- **Migration**: three columns for the monthly reminders (the months when an account is active); they apply with the
+  usual update.
+
+### Added
+
+- **Appearance** (My account, Profile tab): an accent colour of your choice (**Forest**, **Ocean**, **Dawn** or
+  **Slate**) and a display density (**Comfortable** or **Compact**), kept by this browser. Each colour keeps sufficient
+  contrast in both themes.
+- **Sidebar on a computer**: from 1,024 pixels wide, the navigation, the current month and My account move to a column
+  on the left; tablets and phones keep their bar.
+- **Micro-animations**: colours on hover, menus unfolding, messages appearing, the entry dot pulsing twice; all turned
+  off if the system asks to reduce motion.
+
+### Changed
+
+- **One icon set**, with the same stroke on every page: navigation, My account, messages, challenges.
+- **Report on a phone**: a single action, **Share the picture…**, opens the phone's sharing, next to the download;
+  cancelling says nothing, a refused share explains how to save the picture.
+- Code: the account rules and the OAuth authorization server leave their controllers for services, without any new
+  dependency.
+
+### Fixed
+
+- The monthly update is no longer asked for (banner, highlighted **Update** item, reminder email) when no account is
+  active that month: all accounts closed, or opened later.
+- CHANGELOG: the links of versions 3.5.0 and 3.6.0 lead to pages that exist.
+
 ## [3.6.0] - 2026-11-27
 
 ### Changed
@@ -1483,8 +1514,9 @@ First version: native PHP, SQLite, single user.
 - Authentication with a single password (Argon2id), limited attempts, hardened sessions, CSRF token, security
   headers including a strict CSP.
 
-[3.6.0]: https://github.com/kartnico/patrimeter/compare/v3.5.0...v3.6.0
-[3.5.0]: https://github.com/kartnico/patrimeter/compare/v3.4.1...v3.5.0
+[3.7.0]: https://github.com/kartnico/patrimeter/compare/v3.6.0...v3.7.0
+[3.6.0]: https://github.com/kartnico/patrimeter/compare/v3.4.1...v3.6.0
+[3.5.0]: https://gitlab.example.org/kartzone/patrimeter/-/releases/v3.5.0
 [3.4.1]: https://github.com/kartnico/patrimeter/tree/v3.4.1
 [3.4.0]: https://gitlab.example.org/kartzone/patrimeter/-/compare/v3.3.0...v3.4.0
 [3.3.0]: https://gitlab.example.org/kartzone/patrimeter/-/compare/v3.2.0...v3.3.0

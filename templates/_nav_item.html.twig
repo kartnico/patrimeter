@@ -3,7 +3,7 @@
     Variables: item, current_section, current_path, due. -#}
 {%- set nav_entry = item.section == 'entry' -%}
 <a href="{{ item.href }}"{% if nav_entry %} class="nav-entry{{ due ? ' needs-entry' }}"{% if due %} title="{{ 'Saisir les soldes du mois'|trans }}"{% endif %}{% endif %}{% if item.section == current_section %} aria-current="{{ item.href == current_path ? 'page' : 'true' }}"{% endif %}>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="{{ item.icon }}"/></svg>
+    {{ icon(item.icon) }}
     <span class="nav-long">{{ item.label }}</span><span class="nav-short">{{ item.short }}</span>
     {%- if nav_entry and due %}<span class="nav-due" aria-hidden="true"></span><span class="visually-hidden"> ({{ 'mois à saisir'|trans }})</span>{% endif %}
 </a>

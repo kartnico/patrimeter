@@ -2,7 +2,7 @@ import { expect, logIn, seededUser, test } from '../support/helpers.mjs';
 
 // Screenshots of the user documentation, in each language, generated again on every main pipeline: they always show
 // the application as it is. Same file names in documentation/fr/captures and documentation/en/captures. Demonstration
-// data: tests/e2e/seed.php (English account names for English).
+// data: tests/e2e/seed.php (English account names for English). Reduced motion: no micro-animation caught halfway.
 const languages = [
     {
         code: 'fr',
@@ -59,6 +59,7 @@ for (const language of languages) {
                 locale: language.locale,
                 viewport: device.viewport,
                 colorScheme: 'light',
+                reducedMotion: 'reduce',
             });
             const page = await context.newPage();
 
@@ -87,6 +88,7 @@ for (const language of languages) {
             locale: language.locale,
             viewport: { width: 1280, height: 860 },
             colorScheme: 'light',
+            reducedMotion: 'reduce',
         });
         const page = await context.newPage();
         await logIn(page, seededUser('famille', language.code));
@@ -104,6 +106,7 @@ for (const language of languages) {
             locale: language.locale,
             viewport: { width: 1280, height: 860 },
             colorScheme: 'dark',
+            reducedMotion: 'reduce',
         });
         const page = await context.newPage();
         await logIn(page, seededUser(3, language.code));
@@ -124,6 +127,7 @@ for (const language of languages) {
             locale: language.locale,
             viewport: { width: 390, height: 844 },
             colorScheme: 'dark',
+            reducedMotion: 'reduce',
         });
         const page = await context.newPage();
         // Distinct user: the same TOTP code only serves once.

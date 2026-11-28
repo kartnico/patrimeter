@@ -460,6 +460,17 @@ describe('month and year fields shown as the month picker', () => {
             <input id="value" name="value" value="${value}" required>
         </div></form>`;
 
+    test('the button takes the calendar icon given by the page', () => {
+        start(
+            field('month', '2026-10').replace(
+                '<input',
+                '<template data-month-field-icon><svg class="icon"><path d="M4 6h16"/></svg></template><input',
+            ),
+        );
+
+        expect(document.querySelector('.month-field-toggle svg.icon')).not.toBeNull();
+    });
+
     test('a month shows as "Oct. 2026", and a click in the calendar fills the field sent', () => {
         start(field('month', '2026-10'));
         const input = document.getElementById('value');

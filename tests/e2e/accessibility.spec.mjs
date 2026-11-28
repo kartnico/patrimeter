@@ -71,7 +71,13 @@ for (const [theme, user] of [
         browser,
         baseURL,
     }) => {
-        const context = await browser.newContext({ baseURL, locale: 'fr-FR', colorScheme: theme });
+        // Reduced motion: contrasts measured on steady pages, not on a message still fading in.
+        const context = await browser.newContext({
+            baseURL,
+            locale: 'fr-FR',
+            colorScheme: theme,
+            reducedMotion: 'reduce',
+        });
         const page = await context.newPage();
         await logIn(page, seededUser(user));
         for (const path of APP_PAGES) {

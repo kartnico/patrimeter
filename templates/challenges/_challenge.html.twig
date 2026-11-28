@@ -6,7 +6,7 @@
 {%- set card_title = card_challenge.title|trans -%}
 <li class="card challenge medal{{ card.complete ? ' is-complete' }}">
     <div class="medal-top">
-        <span class="challenge-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="{{ card_challenge.icon }}"/></svg></span>
+        <span class="challenge-icon" aria-hidden="true">{{ icon(card_challenge.icon) }}</span>
         <div>
             <h3>{{ card_title }}</h3>
             <span class="medal-score">{{ '%count% étoile acquise sur %total%|%count% étoiles acquises sur %total%'|trans({'%count%': card.stars, '%total%': card_result.maxStars}) }}</span>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Patrimeter\Tests\Functional;
 
 use Patrimeter\Domain\Month;
+use Patrimeter\Infrastructure\Persistence\AccountRepository;
 use Patrimeter\Infrastructure\Persistence\StatementRepository;
 use Patrimeter\Tests\Support\FunctionalTestCase;
 
@@ -89,6 +90,20 @@ final class NavigationTest extends FunctionalTestCase
         $this->submit('/saisie', ['mois' => '2026-11', 'amounts' => [$account => '100']], '/saisie');
         $this->client->followRedirect();
         self::assertSelectorNotExists('nav.nav a.needs-entry', 'entered: no more highlight');
+    }
+
+    public function testNothingStandsOutWithoutAnAccountActiveThisMonth(): void
+    {
+        // Closed before November, or opened after it: the monthly form has no line for them.
+        $closed = self::createAccount('Ancien livret', 'livret_a', '2024-01-01');
+        self::service(AccountRepository::class)->archive(self::owner(), $closed, '2026-09-30');
+        self::createAccount('Futur PEA', 'pea', '2027-02-01');
+        $this->client->request('GET', '/');
+        self::assertSelectorNotExists('nav.nav a.needs-entry');
+
+        self::createAccount('Compte courant', 'compte_courant', '2026-11-02');
+        $this->client->request('GET', '/');
+        self::assertSelectorExists('nav.nav a.needs-entry', 'opened this month: to enter');
     }
 
     public function testBudgetSettingsAreTabsOfMyAccount(): void

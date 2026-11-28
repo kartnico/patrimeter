@@ -17,6 +17,8 @@ export default defineConfig({
     use: {
         baseURL: `http://localhost:${port}`,
         locale: 'fr-FR',
+        // Steady pages: no micro-animation caught halfway by a check or a picture (app.css, Motion).
+        reducedMotion: 'reduce',
         launchOptions: process.env.CHROMIUM_PATH
             ? { executablePath: process.env.CHROMIUM_PATH, args: ['--no-sandbox'] }
             : {},

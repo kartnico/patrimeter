@@ -18,7 +18,7 @@ supprimer le compte) demandent de **confirmer votre identité** : mot de passe, 
 
 | Onglet | Sections | Pour |
 |---|---|---|
-| Profil | Profil, Mot de passe, Rappel mensuel, Langue des e-mails, Vos données, Supprimer mon compte | Adresse de connexion et moyens de connexion ; changer le mot de passe (l'actuel est demandé, vos données restent lisibles) ; [rappel mensuel](#rappel-mensuel) par e-mail ; [langue des e-mails](#langue-des-e-mails) ; [export et import](donnees.md) ; [supprimer le compte](#supprimer-votre-compte) |
+| Profil | Profil, Mot de passe, Rappel mensuel, Langue des e-mails, Apparence, Vos données, Supprimer mon compte | Adresse de connexion et moyens de connexion ; changer le mot de passe (l'actuel est demandé, vos données restent lisibles) ; [rappel mensuel](#rappel-mensuel) par e-mail ; [langue des e-mails](#langue-des-e-mails) ; [apparence](#apparence) de ce navigateur ; [export et import](donnees.md) ; [supprimer le compte](#supprimer-votre-compte) |
 | Connexion et sécurité | Second facteur, Passkeys (FIDO2) et clés de sécurité, Sessions ouvertes, Navigateurs de confiance, Journal des connexions | Changer d'application, régénérer les codes de secours, nouvelle clé de récupération ; ajouter, renommer ou supprimer une passkey ou une clé FIDO2 ; [sessions ouvertes](#sessions-ouvertes), à déconnecter une à une ou toutes ensemble ; [navigateurs de confiance](#navigateurs-de-confiance), à retirer ; connexions réussies ou refusées, avec l'adresse IP : repérez une tentative suspecte |
 | Comptes | Comptes par niveau, comptes archivés | Créer, modifier, archiver un compte ou un crédit ([comptes et crédits](comptes.md)) |
 | Biens immobiliers | Un tableau par bien | Créer un bien et ses crédits, votre part ([biens immobiliers](biens.md)) |
@@ -75,11 +75,22 @@ e-mails.
 
 Si le transport de courrier échoue, le rappel reste éligible au prochain passage horaire tant que le mois est à saisir.
 
+Le rappel, comme l'entrée **Saisie** mise en avant dans la navigation, ne concerne que les mois où un compte est actif :
+rien n'est demandé quand tous vos comptes sont clôturés, ou ouverts plus tard.
+
 ## Langue des e-mails
 
 **Langue des e-mails** (onglet Profil) : **Français**, **English**, ou **Celle de l'interface au moment de l'envoi**
 (le choix par défaut). Elle s'applique à tous les e-mails de Patrimeter : rappel mensuel, alertes de sécurité, mot
 de passe oublié, suppression du compte.
+
+## Apparence
+
+**Apparence** (onglet Profil) : la **couleur d'accent**, celle des boutons, des liens et de la page en cours
+(**Forêt**, la couleur d'origine, **Océan**, **Aurore** ou **Ardoise**), et la **densité d'affichage** :
+**Confortable** (par défaut), aérée et facile à toucher sur un téléphone, ou **Compacte**, qui montre plus de lignes à
+l'écran. **Enregistrer l'apparence** applique ces choix à ce navigateur, comme le thème clair ou sombre ; chaque
+couleur garde des contrastes suffisants dans les deux thèmes ([accessibilité](accessibilite.md)).
 
 ## Supprimer votre compte
 
